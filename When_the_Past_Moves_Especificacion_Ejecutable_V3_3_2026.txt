@@ -1,0 +1,929 @@
+================================================================================
+WHEN THE PAST MOVES
+Revision-Aware ML Monitoring & Decision Reliability
+ESPECIFICACIÓN EJECUTABLE V3.3 - ALCANCE CERRADO
+15 de octubre de 2026
+================================================================================
+
+ESTADO: especificación de desarrollo; no hay resultados empíricos propios.
+DESTINATARIO: autor del repositorio, revisores técnicos y reclutadores de
+Senior Data Scientist / Applied Scientist.
+TIPO DE OBRA: prototipo científico-operacional individual, no plataforma MLOps
+empresarial ni evidencia de haber dirigido equipos reales.
+
+ESTA VERSIÓN REEMPLAZA V3.2 COMO GUÍA DE IMPLEMENTACIÓN. No pide crear una
+plataforma nueva. Conserva el diseño factorial 2x2 y corrige definiciones que
+podrían invalidar sus resultados. Las afirmaciones externas están separadas de
+las decisiones propuestas y de los hechos aún no medidos.
+
+================================================================================
+0. DECISIÓN EJECUTIVA Y PRINCIPIO RECTOR
+================================================================================
+
+OBJETIVO
+Construir un sistema pequeño, reproducible y realmente ejecutado que emita
+pronósticos semanales de admisiones hospitalarias por influenza, preserve la
+información disponible cuando fueron emitidos, monitoree su desempeño y mida
+cómo cambia la recomendación de mantenimiento al incorporar:
+  R: historial observable de revisiones del dato;
+  C: indicadores agregados de cobertura de reporte hospitalario.
+
+Solo si la evidencia lo justifica, comparar las consecuencias de políticas de
+reentrenamiento en trayectorias temporales completas y caracterizar la región
+de costos bajo la cual convendría una política especializada.
+
+PREGUNTA CENTRAL
+"Cuando se evalúa un modelo con registros revisables, ¿en qué medida
+la información sobre revisiones y cobertura cambia las recomendaciones
+de mantenimiento, y bajo qué condiciones se justifica intervenir?"
+
+REGLA DE OFICIO
+El proyecto vale por su cadena comprobable de PROBLEMA -> DATO -> MODELO ->
+MONITOR -> DECISIÓN -> EVALUACIÓN -> LÍMITES, no por la cantidad de tecnología,
+documentos o supuestos equipos corporativos que menciona.
+
+CONCLUSIONES ADMISIBLES
+ A. Incorporar R/C cambia recomendaciones y, bajo ciertos supuestos de costo,
+    puede mejorar una política de mantenimiento.
+ B. Las decisiones cambian, pero no existe evidencia suficiente de que mejore
+    su utilidad; se desaconseja incorporar más complejidad.
+ C. Las decisiones apenas cambian o la comparación carece de soporte; se
+    publica la falta de beneficio o de identificación con sus límites.
+
+La conclusión B o C no es un fracaso. No se modifica la pregunta o el universo
+tras ver resultados para forzar la conclusión A.
+
+CAMBIOS DELIMITADOS RESPECTO DE V3.2
+ [P0-1] D(11,00) se llama DISCORDANCIA de recomendaciones, no valor de info.
+ [P0-2] El universo principal incluye ABSTENERSE; el denominador no depende
+        de las recomendaciones observadas en las cuatro ramas.
+ [P0-3] Una unidad operativa fija: UN modelo nacional, UNA decisión semanal.
+        Los estados son diagnósticos, no réplicas de esa decisión.
+ [P0-4] Pérdida predictiva y reglas del monitor fijadas en desarrollo ANTES de
+        cualquier evaluación confirmatoria; frontera económica solo en G3.
+ [P1-1] G3 compara cuatro políticas distintas, sin producto cartesiano 4x4.
+ [P1-2] Se mide el retraso que introduce la madurez de etiquetas.
+ [P1-3] Se verifica autenticación REAL de la API V5; el secreto antiguo no
+        demuestra que el cliente actual funciona.
+ [P2-1] Congelación con publicación externa y, si es viable, sello RFC 3161;
+        no construir infraestructura notarial.
+
+NO SE AGREGA: registry, promotion gate, rollback, MLflow, SQLite, Kubernetes,
+Databricks, dashboard, varios equipos de agentes, RACI extenso o casebook.
+
+================================================================================
+1. POSICIONAMIENTO PROFESIONAL Y LÍMITES DE LA DEMOSTRACIÓN
+================================================================================
+
+ROL OBJETIVO: Senior Data Scientist / Applied Scientist, con capacidades en
+estadística aplicada, forecasting, decisión science y confiabilidad de ML.
+
+LO QUE EL RESULTADO DEBE PROBAR
+  1. Formular una pregunta de negocio/operación en estimandos comprobables.
+  2. Reconstruir históricos as-of y evitar leakage temporal de punta a punta.
+  3. Seleccionar un baseline proporcionado y evaluar con etiquetas revisables.
+  4. Diferenciar señales de calidad y cobertura de conclusiones causales.
+  5. Medir desacuerdos entre recomendaciones SIN confundirlos con beneficios.
+  6. Si hay soporte, comparar políticas con costos e incertidumbre explicitos.
+  7. Incorporar fallos de datos a un flujo operacional reproducible.
+  8. Justificar una decisión que involucraria a distintas funciones.
+  9. Reconocer cuando NO es responsable complejizar la solucion.
+
+LO QUE NO PRUEBA
+  - Experiencia real administrando una plataforma empresarial de MLOps.
+  - Liderazgo ejercido sobre ingenieros, aprobaciones reales o acuerdos logrados.
+  - Ahorro monetario o impacto sanitario atribuible al prototipo.
+  - Un detector nuevo de concept drift ni una atribución causal de tres causas.
+  - Evidencia de despliegue de modelos clínicos o toma de decisiones de salud.
+
+La dimension organizacional se demuestra como diseño de decisiones y criterios
+de gobierno propuestos; nunca como interacciones laborales inventadas.
+
+================================================================================
+2. CASO DE USO Y SISTEMA QUE SE EVALUARÁ
+================================================================================
+
+CONTEXTO
+Un equipo hipotético de vigilancia utiliza un modelo nacional para pronosticar
+semanalmente nuevas hospitalizaciones por influenza. Las observaciones llegan
+con demora, sufren revisiones y dependen de cobertura variable de hospitales.
+Una alarma de desempeño no obliga por si sola a reentrenar.
+
+EL SISTEMA REAL A CONSTRUIR
+  - Captura versiones publicadas, con identidad y procedencia.
+  - Construye la información disponible en un corte de decisión.
+  - Entrena o carga el modelo definido para ese corte.
+  - Emite una predicción inmutable con identificador y hora de emision.
+  - Evalua solo cuando hay etiqueta elegible conforme a una regla de madurez.
+  - Emite señales y una recomendación; puede ABSTENERSE.
+  - Persiste un manifiesto auditable, aun ante un fallo de captura.
+
+UNIDAD PRINCIPAL (DECISIÓN CERRADA AHORA)
+  modelo: nacional;
+  objetivo: admisiones nacionales semanales confirmadas por influenza;
+  horizonte: +1 semana epidemiologica respecto de la última semana finalizada
+             cuya información es elegible en el corte;
+  decisión: una recomendación de mantenimiento para el modelo nacional, por
+            corte semanal previamente programado;
+  evaluación: trayectoria de decisiones nacionales y pérdida por período.
+
+Los datos estatales pueden caracterizar cobertura, revisiones y discrepancias
+entre fuentes, pero NO representan cincuenta decisiones independientes de
+reentrenamiento del modelo nacional. No sumar filas estatales al denominador
+principal N1. No convertir el sistema en 50 modelos independientes en V1.
+
+La fecha exacta semanal de emision no se inventa: se fija al salir de G0 segun
+publicaciones verificadas y un margen conservador de disponibilidad. La
+relación entre el corte, la última semana observada y la semana pronosticada
+se guarda expresamente en cada registro; nunca dependera de una etiqueta como
+"una semana adelante" sin fechas concretas.
+
+================================================================================
+3. DATOS: FUENTES, CAMBIOS DE REPORTE Y VIABILIDAD G0
+================================================================================
+
+FUENTE CANDIDATA CANONICA
+Delphi Epidata V5, source=nhsn.
+  objetivo: confirmed_admissions_flu_ew
+  cobertura absoluta: hosprep_confirmed_admissions_flu_ew
+  cobertura porcentual: hosprep_pct_confirmed_admissions_flu_ew
+  geografía principal: nation; referencia week-ending Saturday.
+
+Los dos identificadores de cobertura anteriores ESTAN DOCUMENTADOS; el segundo
+no es una conjetura por patron. El porcentaje representa hospitales activos
+que reportan la metrica, NO porcentaje de admisiones capturadas [R2].
+
+SEGUNDA RECONSTRUCCION
+cdcepi/FluSight-forecast-hub, historia de Git del archivo:
+  target-data/target-hospital-admissions.csv
+
+Git y Delphi son canales distintos de publicación/procedencia, pero no son dos
+mediciones epidemiologicas independientes. Deben compararse bajo definiciones,
+ubicaciones y cortes compatibles; el desacuerdo se reporta, no se "corrige"
+silenciosamente. Un commit del hub no equivale al instante de disponibilidad
+del valor en NHSN.
+
+EXTERNAMENTE VERIFICADO [R1]-[R4]
+  - V5 ofrece /archive/ (historia de cambios/diffs), /snapshot/ (estado a una
+    fecha) y /metadata/report_times/ (calendario de publicaciones de fuente).
+  - La cobertura de reference_time comienza en 2020-08-08; esto NO certifica
+    que los report_time originales sean recuperables desde 2020.
+  - La documentacion orienta que cerca del 20 % de valores recientes se revisa;
+    no impone la misma definición estadística que nuestros estimandos.
+  - Del 2024-05-01 al 2024-10-31 hubo un período voluntario con caida de
+    participacion. Desde noviembre de 2024 existe el mandato vigente de reporte.
+  - El acceso anonimo de V5 esta limitado; una clave gratuita puede retirar
+    esos límites. Cache, reintentos y límites razonables siguen siendo utiles.
+
+PROCEDIMIENTO G0 (HAY QUE MEDIR, NO AFIRMAR)
+ G0.1 Obtener y validar una respuesta mínima de V5 con el mecanismo real de
+      autenticación indicado por el endpoint/cliente V5. No asumir que el
+      parámetro api_key de FluView V3 sea compatible sin prueba.
+ G0.2 Registrar primer/último reference_time y primer/último report_time
+      efectivamente recuperados para cada señal elegida.
+ G0.3 Reconstruir, en una muestra de cortes, estados /archive/ y compararlos
+      contra /snapshot/, incluyendo altas, cambios y desapariciones.
+ G0.4 Verificar calendario /metadata/report_times/ y republicaciones sin
+      cambios en el universo de señal/geografía seleccionado.
+ G0.5 Emparejar muestras Delphi/Git segun fecha y semántica; conservar una
+      tabla de coincidencias, faltantes y diferencias, sin asumir igualdad.
+ G0.6 Medir cuantos cortes nacionales semanales poseen historia suficiente
+      para predicción, monitoreo, calibración y evaluación madura.
+ G0.7 Medir tiempo y volumen de consulta; cachear identificadores inmutables
+      y no comenzar con muestreo si la reconstruccion exhaustiva es viable.
+
+UNIVERSO Y CAMBIO DE REGIMEN
+Opcion principal propuesta: reference_time desde el nuevo mandato de
+noviembre de 2024, CON fecha exacta de primera semana epidemiologica alineada
+a sabado y registrada en G0. No mezclar con el período voluntario como si
+fuera homogeneo. Comparaciones anteriores solo como contexto estratificado.
+
+La cobertura NO se utilizara como filtro primario ajustado a posteriori: es
+una de las variables cuyo aporte se estudia. Un análisis secundario por
+umbrales de cobertura puede preespecificarse antes de la cohorte futura.
+
+SI G0 ENCUENTRA POCA HISTORIA DE VINTAGES
+  - No fabricar report_time históricos.
+  - Reducir el universo de inferencia y marcar intervalos no reconstruibles.
+  - Aprovechar períodos realmente disponibles en Git cuando sean compatibles.
+  - Mantener captura propia de nuevas publicaciones a partir del presente.
+  - Si no hay soporte para G2, cerrar con dictamen de inviabilidad documentada.
+
+ENTREGABLE G0
+reports/results/00_source_feasibility.json, consultas reproducibles, hashes,
+calendario/ventanas reales y tabla corta de discrepancias. Estado final:
+PROCEED, REDUCE o STOP_SOURCE; con criterio justificado por datos medidos.
+
+================================================================================
+4. CONTRATO TEMPORAL: AS-OF COMO INVARIANTE DEL SISTEMA
+================================================================================
+
+CONCEPTOS DE TIEMPO
+  event_week_end:      semana a la que se refiere una observación.
+  source_report_date: fecha de publicación/ingesta que declara Delphi V5,
+                      con granularidad de DÍA, no hora exacta comprobada.
+  hub_commit_at:       instante del commit Git de otra vía de publicación.
+  observed_at:         instante UTC en que ESTE sistema obtuvo el dato.
+  maturity_rule:       regla declarada que determina elegibilidad de etiquetas.
+  decision_as_of:      corte a partir del cual se decide, NO otro reloj de fuente.
+  vintage_id:          identidad de versión, NO una fecha.
+
+INTERFAZ PÚBLICA ÚNICA
+  load_as_of(decision_as_of, signal, geography, replay_mode)
+    -> {values, provenance, completeness_status}
+
+MODOS
+ PUBLIC_REPLAY: historial con source_report_date anterior al corte segun
+                margen conservador declarado para fechas sin hora.
+ OBSERVED_REPLAY: ademas exige observed_at <= decision_as_of. Solo existe
+                  retrospectivamente para capturas que realmente hizo el
+                  sistema en esas fechas; no reconstruir observed_at del pasado.
+ LIVE: datos que fueron recuperados, validados y sellados en la corrida actual.
+
+INVARIANTES NO NEGOCIABLES
+ I1. Publicaciones posteriores al corte nunca entran en datos, etiquetas,
+     features, decisiones, calibración o reentrenamientos de ese corte.
+ I2. Todas las transformaciones de features respetan el mismo corte.
+ I3. Las etiquetas de entrenamiento y monitoreo cumplen la madurez aplicable
+     CON INFORMACIÓN DISPONIBLE en ese corte.
+ I4. Una predicción emitida no se reescribe cuando se revisa su etiqueta.
+ I5. Ausencia, cero, baja de una clave y republicacion sin cambio son eventos
+     diferentes; ningun caso se imputa en silencio.
+ I6. La misma consulta, snapshot, configuración y código produce igual salida.
+ I7. Si falla la fuente o falta historia necesaria, no se inventa una decisión.
+
+RESPUESTAS DE FALLA
+ INCOMPLETE_HISTORY, INVALID_INPUT, DATA_UNAVAILABLE, SCHEMA_CHANGED,
+ INSUFFICIENT_EVIDENCE. El monitor puede recomendar ABSTENERSE cuando el
+estado es válido pero no permite una decisión estadística; los fallos globales
+del pipeline se registran como ejecuciones FALLIDAS y NO como CONTINUAR.
+
+PRUEBAS OBLIGATORIAS
+ Fixtures pequenas y Hypothesis: historiales aleatorios con nuevas versiones,
+ correcciones, ausencias, republicaciones, orden distinto de entradas y cortes.
+ No permitir ningun dato futuro ni siquiera por transformaciones derivadas.
+ Las pruebas deben cubrir predicción, monitor y reentrenamiento, no solo un
+ filtro de pandas. Retirar freeze_guard basado en regex de nombres de scripts;
+ el contrato temporal lo reemplaza como control de corrección.
+
+================================================================================
+5. UNIDAD DE ANÁLISIS, UNIVERSOS Y POLÍTICA DE ABSTENCIÓN
+================================================================================
+
+CALENDARIO DE DECISIONES
+Definir T_sched = conjunto de cortes semanales nacionales programados en el
+período evaluado. Existe antes de conocer los outputs de los cuatro brazos.
+Cada corte tiene report_time esperado, hora de emision, semanas historicas
+accesibles y semana pronosticada definidos sin inspeccionar resultados futuros.
+
+T_evaluable = subconjunto de T_sched en el que existen fuente, modelo y datos
+minimos validados para EJECUTAR LA REGLA BASE y sus cuatro versiones en el
+mismo instante. Sus criterios son EXOGENOS a las acciones resultantes; no
+exigir que las cuatro ramas recomienden una acción "normal" para incluirlo.
+
+Si una rama no tiene una señal auxiliar suficiente, su respuesta debe ser
+ABSTENERSE (con razon), no quedar fuera del denominador de N1. Una falla
+operacional global que imposibilita ejecutar el sistema se registra aparte:
+T_sched, fallas, T_evaluable y exclusiones se publican explícitamente.
+
+T_all es alias de T_evaluable para el estimando principal. ABSTENERSE es una
+CATEGORÍA Válida, no una observación pérdida ni un no-reentrenamiento.
+
+S_common = cortes en T_evaluable donde las cuatro ramas emiten decisiones
+sin abstencion. Solo se usa para un análisis secundario, no para N1.
+
+S_int = cortes en T_evaluable donde al menos una rama recomienda
+EVALUAR_REENTRENO. Sus análisis condicionales cuentan solo S_int tanto en
+numerador como denominador; si es vacio se reporta cero casos y tasa indefinida.
+
+UNIDAD DEL ESTIMANDO
+Cada t es una decisión nacional, no una fila de hospital, estado, referencia
+semanal o revisión. Las cuatro ramas son MEDIDAS EMPAREJADAS en el mismo t.
+
+DESGLOSE MÍNIMO DE ELEGIBILIDAD
+  total programadas | globalmente fallidas | evaluables | cuatro decisiones
+  no abstenciones | alguna abstencion | al menos una intervención propuesta.
+
+En la evaluación prospectiva la elegibilidad se determina con reglas fijadas
+antes de conocer los resultados, y no con base en la rama ganadora.
+
+================================================================================
+6. FORECASTING MÍNIMO, PÉRDIDA Y MADUREZ
+================================================================================
+
+NO ES UNA COMPETENCIA DE MODELOS.
+Un baseline ingenuo y un modelo interpretable bastan. Propuesta inicial:
+  - Baseline: última semana conocida elegible; estacional ingenuo solo si
+    realmente existen rezagos comparables suficientes.
+  - Modelo de trabajo: Ridge con rezagos y estacionalidad disponibles as-of;
+    si su soporte temporal es insuficiente, usar solo baseline y declararlo.
+  - Un objetivo nacional de conteo, predicción puntual y horizonte +1.
+  - La forma concreta y el momento del forecast se documentan tras G0 y se
+    congelan antes de evaluar la cohorte confirmatoria.
+
+MEDIDA PREDICTIVA PRINCIPAL (DECISIÓN TOMADA)
+Pérdida absoluta escalada, por período elegible:
+  ell_t = abs(y_t^mature - yhat_t) / s_dev
+
+donde s_dev > 0 es una escala fija calculada en una ventana de CALIBRACIÓN
+RETROSPECTIVA, usando diferencias absolutas semanales (ingenuo) de etiquetas
+maduras y obtenibles al corte de calibración. La misma s_dev se usa para todas
+las políticas y períodos; no se actualiza con el futuro. Publicar s_dev, rango
+de calibración, número de pares usados y gestion de s_dev=0/no disponible.
+
+REGLA DE FALLBACK PREDEFINIDA
+Si no puede calcularse una s_dev positiva, NO usar el conjunto confirmatorio
+para escoger otro denominador: evaluar en MAE absoluto, reconocer sus unidades
+y expresar c en unidades equivalentes de ese MAE. Se documenta antes de G1.
+La escala no pretende ser una unidad económica ni una "semana de error" literal.
+
+MONITOR DE DEGRADACION
+Calcula pérdida reciente sobre etiquetas maduras; el umbral, longitud de
+ventana, mínima muestra disponible y persistencia de la señal se calibran
+SOLO en desarrollo. Si no existe base suficiente, recomienda ESPERAR_MADUREZ
+o ABSTENERSE segun causa. El monitor usa una regla única para los cuatro brazos.
+No escoger umbrales mirando las diferencias del conjunto confirmatorio.
+
+MADUREZ
+Definir M días desde event_week_end y la política para escoger la PRIMERA
+publicación disponible a partir de la fecha elegible; dejar fija esa etiqueta
+para el scoring principal de ese período. Otras versiones posteriores se
+estudian solo en sensibilidad. "Final" no implica inmutable.
+
+Medir y publicar:
+  - retraso entre event_week_end y el instante de emision del forecast;
+  - retraso entre event_week_end y la primera etiqueta madura accesible;
+  - retraso adicional entre aparicion de deterioro evaluable y recomendación;
+  - proporcion de períodos sin etiqueta elegible dentro del plazo de análisis.
+
+Contrastar M con ventanas predeclaradas (por ejemplo 45/60/90 días), siempre
+sobre datos de desarrollo y sin elegir retrospectivamente el M que más
+favorezca una política. Los valores definitivos y la selección se fijan antes
+de evaluar la cohorte prospectiva.
+
+NO USAR WIS por prestigio: el hub compara distribuciones probabilisticas;
+este prototipo emite puntos. No introducir pronosticos probabilisticos solo
+para imitar el leaderboard de FluSight.
+
+================================================================================
+7. MOTOR DE RECOMENDACIÓN Y ABLACIÓN FACTORIAL 2x2
+================================================================================
+
+ACCIONES CATEGORICAS
+  CONTINUAR
+  ESPERAR_MADUREZ
+  INVESTIGAR_DATO
+  EVALUAR_REENTRENO
+  ABSTENERSE
+
+SEÑALES
+  DATA_QUALITY | DATA_REVISION | DATA_COVERAGE | PERFORMANCE |
+  PIPELINE_HEALTH | INSUFFICIENT_EVIDENCE.
+
+EL CRUCE 2x2 ES UNA ABLACIÓN DE INFORMACIÓN, NO UNA INTERVENCIÓN SOBRE
+HOSPITALES NI UNA ESTIMACIÓN CAUSAL.
+  Factor R: disponible / no disponible el historial de revisiones.
+  Factor C: disponibles / no disponibles los indicadores de cobertura.
+
+  d_00(t) = base sin R y sin C
+  d_10(t) = base con R
+  d_01(t) = base con C
+  d_11(t) = base con R y con C
+
+Las cuatro ramas comparten t, modelo, forecast, valores del objetivo as-of,
+metrica, umbral base y reglas predeclaradas. Solo cambia la INFORMACIÓN que
+puede usar la regla de mantenimiento. No se deben modificar entradas
+historicas para fingir hospitales ausentes ni borrar revisiones "del mundo".
+
+Se predefine una tabla de prioridad de reglas:
+  - fallo global de fuente/contrato -> corrida FALLIDA, fuera de recomendación;
+  - ausencia de evidencia válida -> ABSTENERSE;
+  - faltan etiquetas maduras -> ESPERAR_MADUREZ;
+  - señal de dato potencialmente inestable, cuando el factor existe y la
+    regla lo amerita -> INVESTIGAR_DATO;
+  - deterioro evaluable y evidencia suficiente -> EVALUAR_REENTRENO;
+  - sin razones anteriores -> CONTINUAR.
+
+Umbrales de "dato inestable" para R/C y precedencia exacta entre condiciones
+se definen en DESARROLLO, se prueban en fixtures y se guardan en configuración
+antes de la evaluación confirmatoria de G2. Nunca se ajustan mirando las cuatro tasas deseadas.
+Se debe aceptar que la lógica predefinida produzca cero diferencias.
+
+ENDPOINT PRINCIPAL N1 - DISCORDANCIA DE RECOMENDACIONES
+  N1 = D_all(11,00) = (1 / |T_evaluable|) *
+                     suma_t 1[d_11(t) != d_00(t)]
+
+Las abstenciones cuentan como categoría. Si |T_evaluable|=0, N1 es NO
+ESTIMABLE, no 0 %. Informar numerador, denominador y motivos de abstencion.
+
+SECUNDARIOS
+  D(10,00): cambio al agregar R sin C.
+  D(01,00): cambio al agregar C sin R.
+  D(11,01): cambio al agregar R con C.
+  D(11,10): cambio al agregar C con R.
+  D_common(11,00) sobre S_common, solo diagnóstico condicionado.
+  Tabla de transiciones d_00 -> d_11 con todas las acciones, incluido ABSTENERSE.
+  Frecuencias de patrones (d_00,d_10,d_01,d_11).
+  Discordancia condicionada a S_int, si S_int no es vacio.
+
+INTERACCIÓN DESCRIPTIVA (OPCIONAL, SIN PROMESA CAUSAL)
+Si los patrones lo justifican, para la acción a = EVALUAR_REENTRENO:
+  p_rc(a) = proporcion de cortes T_evaluable con d_rc(t)=a
+  gamma_a = p_11(a) - p_10(a) - p_01(a) + p_00(a).
+Es una interacción en PROBABILIDAD DE RECOMENDACIÓN producida por reglas
+configuradas, no efecto causal epidemiologico ni beneficio económico.
+
+No sumar tasas de discordancia para repartir "causas". En particular,
+D(11,01)-D(10,00) y D(11,10)-D(01,00) son comparaciones descriptivas de
+discordancias, no interacciones lineales equivalentes ni terminos aditivos.
+Evitar publicar seis números si la tabla de transiciones explica mejor el
+hallazgo. El N1 nunca se titula "valor total de información".
+
+RESULTADO DE G2
+La variacion de RECOMENDACIONES es un resultado de sensibilidad; puede ser
+nula, frecuente, dependiente de una señal o inestable. NINGUNA de estas
+frecuencias prueba mejora de utilidad. La utilidad se aborda solo en G3.
+
+================================================================================
+8. ESTIMACIÓN DE REVISIONES Y VALIDEZ DE LAS COMPARACIONES
+================================================================================
+
+No usar como tasa de revisión: filas devueltas por /archive/ divididas por
+todas las filas devueltas por /archive/. El archivo muestra cambios, no todas
+las oportunidades de observar que un registro permanecio igual.
+
+Estimando de revisión por oportunidad comparable:
+  denominador = pares (geografía, semana-evento, publicación posterior) donde
+                el registro existia antes y después y ambos valores son
+                comparables segun calendario/cortes definidos;
+  numerador   = pares del denominador cuyo valor cambio.
+
+Registrar por separado altas, bajas, faltantes, republicaciones sin cambios y
+publicaciones sin observación elegible. El calendario de /metadata/report_times/
+NO equivale a que cada señal se haya republicado para cada geografía.
+
+Como sensibilidad puede reportarse otra tasa: porcentaje de observaciones
+(evento, geografía) revisadas al menos una vez dentro de una ventana fija.
+No intercambiar esa unidad con la tasa por pares publicación-evento.
+
+Delphi menciona ~20 % de valores recientes revisados y mediana de magnitud
+aproximada del 2 % en su documentacion [R2]. Es un CONTROL CONTEXTUAL: no
+rechazar un cálculo por diferir antes de comprobar período, unidad, elegibilidad
+y definición. El cambio de mandato de 2024 debe tratarse expresamente.
+
+Fuente Git: no asumir que un commit = una revisión en la misma señal ni que
+la diferencia entre V5 y el hub implica un error en alguna fuente sin estudiar
+sincronizacion, lag, poblacion, formato y agregación.
+
+================================================================================
+9. DEPENDENCIA, PRECISIÓN Y LIMITACIONES DE LA INFERENCIA
+================================================================================
+
+Las semanas consecutivas no son independientes, los estados comparten
+choques epidemiologicos y las cuatro ramas del 2x2 estan emparejadas. El
+número de filas del panel NO mide el tamano efectivo de evidencia.
+
+PARA G2
+ - Reportar primero numeradores, denominadores y tasas descriptivas.
+ - Intervalos por remuestreo temporal en bloques solo si existe soporte
+   suficiente para seleccionar longitudes y comprobar sensibilidad.
+ - Si hay muy pocas temporadas independientes, dar rangos descriptivos,
+   análisis de escenarios y la limitacion de precision; no bootstrap de filas.
+ - Comparar hallazgos por temporada y madurez predeclarada, cuando el archivo
+   de vintages realmente lo permita.
+ - No presentar ausencia de significacion como prueba de equivalencia.
+
+PARA G3
+ - Las políticas se ejecutan sobre la misma cronologia y los mismos eventos.
+ - Remuestrear diferencias de trayectorias emparejadas, NO valores aislados.
+ - Si la longitud del replay es reducida, reportar sensibilidad por ventanas
+   y evitar intervalos aparentemente precisos.
+ - La evaluación prospectiva debe permanecer separada de cualquier criterio
+   ajustado tras observar sus resultados.
+
+La inferencia cubre el caso, período, geografía y modelo estudiados; no todas
+las organizaciones, enfermedades ni sistemas de MLOps.
+
+================================================================================
+10. G3 CONDICIONAL: POLÍTICAS CON TRAYECTORIAS COMPLETAS
+================================================================================
+
+G3 SOLO EXISTE SI G2 DEMUESTRA SOPORTE Y LA COMPUERTA LO AUTORIZA.
+
+CUATRO POLÍTICAS OPERACIONALES (NO 4 x 4 COMBINACIONES)
+ P0: nunca reentrenar dentro de la ventana de replay.
+ P1: reentrenar por calendario predefinido.
+ P2: evaluar reentrenamiento cuando un error MADURO supera criterios fijados.
+ P3: política que utiliza R y C para investigar/esperar antes de recomendar
+     reentrenar, segun reglas congeladas.
+
+P0/P1 no se duplican por configuración 00/10/01/11 si su decisión es
+invariante a la disponibilidad de esas señales. P2 representa la alternativa
+reactiva convencional. P3 utiliza información R+C. G2 caracteriza cada rama;
+G3 analiza políticas de intervención realmente distintas, no 16 rutas por
+simetría documental.
+
+INVARIANTE DE TRAYECTORIA
+En cada t:
+  datos conocidos -> etiquetas elegibles -> parámetros vigentes -> forecast
+  -> monitor -> recomendación -> decisión de la política -> entrenamiento
+  si procede -> estado para t+1.
+
+El nuevo modelo cambia las predicciones y errores de períodos posteriores.
+No se puede evaluar una política reentrenando "sobre el mismo vector de
+alarmas" que produjo otra política. Un entrenamiento en t no puede usar
+etiquetas disponibles solo en t+k.
+
+Se mantienen constantes entre políticas: arquitectura predictiva, familias
+de features, presupuesto de busqueda (mínimo), reglas de madurez, universo,
+metrica y procedimiento de evaluación. Solo cambia la política de acción.
+
+Una recomendación EVALUAR_REENTRENO no implica que en una empresa real haya
+habido autorizacion ni despliegue. En la simulación se específica que esa
+recomendación conduce a un reajuste modelado, con fecha, datos y parámetros;
+es una intervención CONTRAFACTUAL OPERACIONAL, no una aprobacion humana.
+
+Si no puede reconstruirse una trayectoria completa sin fuga o si el número de
+períodos es insuficiente, G3 termina como NO_EVALUABLE, sin inventar costos.
+
+================================================================================
+11. N2: FRONTERA DE COSTO CORRECTAMENTE INTERPRETADA
+================================================================================
+
+Se define la pérdida predictiva por período sobre etiquetas maduras con la
+misma escala fija usada desde G1:
+   L_p(c) = e_p + c * r_p
+   e_p = pérdida predictiva media por período comparable de política p.
+   r_p = número de reentrenamientos de p dividido por períodos comparables.
+   c   = costo NO NEGATIVO de un reentrenamiento, expresado en unidades de
+         pérdida predictiva por período, NO en pesos/dolares ni en salud.
+
+A: política especializada P3. P: referencia periódica P1.
+   Delta(c) = L_A(c) - L_P(c)
+            = (e_A - e_P) + c * (r_A - r_P)
+
+   Si r_P != r_A:
+     c_star = (e_A - e_P) / (r_P - r_A)
+
+INTERPRETACIÓN OBLIGATORIA
+ - Si A pierde menos y reentrena menos, domina para todo c >= 0.
+ - Si A pierde más y reentrena más, esta dominada para todo c >= 0.
+ - Si A pierde menos y reentrena más, puede convenir a costos bajos.
+ - Si A pierde más y reentrena menos, puede convenir a costos altos.
+ - Si r_A = r_P, no hay cruce aislado (salvo indiferencia en todo c).
+ - Si c_star es negativo, no hay cruce en el dominio admisible.
+ - Si r_P - r_A es cercano a cero, el umbral puede ser inestable.
+ - Si la política cambia de acciones en función de c, las trayectorias deben
+   recalcularse: L_p deja de tener necesariamente pendiente constante.
+
+N2 = CONJUNTO de c >= 0 para el que Delta(c) < 0, más dominancia y casos de
+no identificación. Informar c_star solo cuando haya cruce positivo y estable.
+
+La estimación tiene incertidumbre en e_p y r_p. Dar bandas de Delta(c) en
+una malla no negativa de costos predefinida. No prometer un intervalo finito
+normal para c_star si el denominador es incierto o cercano a cero. No llamar
+"beneficio empresarial" a una mejor puntuacion bajo esta función simplificada:
+quedan fuera investigar datos, mantener la cobertura, demoras y otros riesgos.
+
+La eleccion de malla de c, referencia P1 y comparadores secundarios P2/P0 se
+fija con datos de desarrollo antes de mirar el conjunto confirmatorio.
+
+================================================================================
+12. N3: CUANDO PIERDE LA POLÍTICA ESPECIALIZADA
+================================================================================
+
+Criterio primario G3: pérdida ACUMULADA comparable en toda la trayectoria.
+
+Análisis secundario por período y costo:
+   N3(c) = #{t: ell_A,t + c*k_A,t > ell_P,t + c*k_P,t}
+           / #{t: ambas pérdidas y acciones son comparables}
+
+donde k_p,t indica si la política p reentreno en t. Publicar el número de
+períodos comparables y excluir de ambas políticas los mismos períodos cuando
+una etiqueta no pueda evaluarse. Examinar también la pérdida en esos períodos
+como magnitud, no solo la frecuencia.
+
+Un reentrenamiento anterior puede causar una mejora o deterioro muchas
+semanas después: N3 es DIAGNÓSTICO de períodos, no efecto causal local de la
+acción realizada en esa misma semana.
+
+No escoger la política ganadora con la cohorte confirmatoria y evaluar después
+esa misma "ganadora" contra los comparadores como si fuera selección previa.
+
+================================================================================
+13. CAPTURA REAL Y RESILIENCIA OPERATIVA PROPORCIONADA
+================================================================================
+
+Desde el comienzo, y en paralelo a G0, un trabajo batch versionado captura
+las nuevas publicaciones verificables mediante GitHub Actions; permitir
+también ejecucion manual. El horario se fija segun observaciones reales de la
+fuente y evitando picos conocidos de los workflows programados.
+
+CADA CORRIDA GUARDA
+ run_id, fecha/hora UTC, modo LIVE o replay, decision_as_of, source_report_date,
+ observed_at, upstream ids, SHA/hash del dato, commit propio, versión de entorno,
+ id del modelo, id de forecast, señales, recomendaciones, estado final y errores.
+
+MINIMOS OPERACIONALES
+ - Retries acotados con backoff para errores transitorios.
+ - Cache por versión e identificador; salidas atomicas, no archivos parciales.
+ - Idempotencia: una reejecucion del mismo identificador lógico no duplica
+   corridas válidas ni sobreescribe predicciones historicas.
+ - Conciliacion entre publicaciones esperadas y corridas efectivas.
+ - Deteccion de semanas faltantes y explicacion de recuperabilidad.
+ - Ausencia o error de datos genera estado fallido y no una falsa recomendación.
+ - Credenciales fuera de git y logs, con prueba de autenticación V5 sin revelar
+   la clave o su contenido.
+
+PRUEBAS DE FALLO (SOLO TRES)
+ A. Proveedor no responde -> FAIL, estado anterior válido intacto.
+ B. Un valor histórico cambia -> conservar forecast original y versión nueva.
+ C. Falta historia para decidir -> ABSTENERSE con evidencia de insuficiencia.
+
+GitHub advierte retrasos, trabajos descartados y desactivacion automatica de
+cron en repositorios publicos inactivos [R5]. Una publicación de fuente puede
+recuperarse si la historia se conserva; la evidencia de una corrida que NO
+ocurrio no puede fabricarse por replay.
+
+No crear sistema de incidentes, API online, registry, rollback o gestion de
+servicios distribuida. La ejecucion batch basta para el caso.
+
+================================================================================
+14. CONGELACIÓN PROSPECTIVA Y GARANTÍAS REALES
+================================================================================
+
+SEPARAR
+ DEVELOPMENT: decisiones metodologicas y pruebas sobre datos retrospectivos.
+ FROZEN: método publicado antes del período confirmatorio designado.
+ CONFIRMATORY: evaluación una sola vez en fechas futuras elegibles.
+
+EL ACTA DE CONGELACIÓN INCLUYE
+ - hash de especificación, código, parámetros y lista de fuentes.
+ - unidad nacional, calendario de cortes, horizonte y reglas de elegibilidad.
+ - procedimientos as-of, madurez, escala s_dev, monitor y 2x2.
+ - estimandos N1, metricas secundarias, acciones y regla de abstencion.
+ - compuerta a G3, políticas, malla c, incertidumbre y criterios de paro.
+ - máximo report_time conocido y SHA de un commit externo publicado.
+ - fecha y prueba de publicación externa del compromiso.
+
+MARCA TEMPORAL
+ Un commit local identifica el contenido; su fecha interna no es por si sola
+ prueba confiable del instante de publicación. Registrar un testigo externo
+ verificable (p. ej., publicación en GitHub con su evidencia de fecha).
+ Si se desea garantía criptografica adicional y no distrae del análisis,
+ solicitar un sello RFC 3161 del hash del acta y validar su firma/cadena;
+ conservar token y procedimiento de verificación. OpenTimestamps solo cuenta
+ como prueba final cuando la evidencia correspondiente es verificable, no
+ cuando apenas se ha enviado la solicitud.
+
+Una referencia a un commit externo anterior puede constituir una cota
+inferior del momento del acta solo cuando su identidad y publicación previa
+son comprobables; la publicación/sello del propio acta da una cota superior
+sobre su existencia. Ninguna prueba demuestra que el autor nunca vio otros
+datos: el aislamiento confirmatorio sigue siendo necesario.
+
+No bloquear código de desarrollo por coincidencias regex con nombres de
+archivos. Bloquear ACCESO y USO de resultados confirmatorios a traves de
+interfaces, cortes, separacion de datasets y pruebas.
+
+La captura semanal puede operar antes de congelar: eso NO convierte por si
+solo las predicciones capturadas en validacion confirmatoria.
+
+================================================================================
+15. UNA SOLA DECISIÓN ORGANIZACIONAL Y SU EVIDENCIA
+================================================================================
+
+Escenario de trabajo, derivado del análisis verdadero:
+"El monitor muestra deterioro; simultaneamente existen revisiones y cambios de
+cobertura. Hay que decidir si continuar, investigar, esperar madurez o evaluar
+un nuevo entrenamiento".
+
+PERSPECTIVAS FUNCIONALES PROPUESTAS, NO EQUIPOS EFECTIVAMENTE DIRIGIDOS
+ Data Steward: validez del dato, revisiones, cobertura, procedencia.
+ Data Scientist: pérdida, incertidumbre, contrafactuales de información,
+                 ventajas/desventajas de las políticas y recomendación.
+ Model Owner: criterio de riesgo, autorizacion de intervención y consecuencias.
+ Ingenieria: continuidad de captura y recuperación si falla el proceso.
+
+ÚNICO PRODUCTO DE GOBIERNO: SECCION DEL README
+ 1. Decisión observada realmente por el prototipo y fecha/versión.
+ 2. Evidencia disponible, desconocidos y posibles errores de interpretación.
+ 3. Alternativas y función de pérdida pertinente.
+ 4. Que autoridad funcional se requeriria en una organización.
+ 5. Como se cambiaria la recomendación ante evidencia adicional.
+ 6. Lo que se observo en replay o en una corrida real, sin mezclarlos.
+
+No incluir reuniones ficticias, RACI corporativo, aprobaciones simuladas,
+"impacto comercial" inventado o arquitectura multi-equipo no implementada.
+La evidencia demuestra preparacion para influir tecnicamente, no experiencia
+real de haber negociado con personas o administrado operaciones masivas.
+
+================================================================================
+16. PLAN DE EJECUCIÓN Y COMPUERTAS DE ACEPTACIÓN
+================================================================================
+
+PRECONDICION INMEDIATA: primer commit, remoto verificable y captura mínima
+manual/programada. No esperar a implementar todos los análisis para empezar
+la captura. No afirmar que una versión historica esta pérdida antes de G0.
+
+G0 - FACTIBILIDAD Y PROCEDENCIA
+ Hacer: consultas reales V5 y Git, reconstrucciones, retención de report_time,
+       cobertura y auth, calendario, comparabilidad y costos de consulta.
+ Aceptar: al menos un universo histórico confiable para decisiones as-of.
+ Reducir: universo más corto o solo una fuente, sin inventar historia.
+ Parar: la fuente no permite demostrar siquiera la reconstruccion fundamental.
+ Evidencia: JSON, consultas, ejemplos y tabla de discrepancias.
+
+G1 - CICLO OPERACIONAL COMPLETO
+ Hacer: contrato temporal, baseline/modelo elegido, forecast inmutable,
+       madurez, pérdida principal, señal, recomendación y manifiesto real.
+ Aceptar: una ejecucion reproducible con tests de no-lookahead y falla segura.
+ Parar: el pipeline no produce una predicción y decisión auditables.
+ Evidencia: artefactos y una figura de forecast fijo frente a versiones del
+           resultado; cobertura representada aparte sin atribución causal.
+
+G2 - SENSIBILIDAD DE DECISIONES (NUCLEO)
+ Hacer: matriz 2x2, N1 con abstenciones, cuatro contrastes simples, transiciones,
+       patrones, tasas de revisión, cambios de cobertura, incertidumbre honesta.
+ Aceptar: mediciones con universos fijos y salidas reproducibles.
+ G3: solo si soporte temporal, variacion informativa y trayectorias viables
+     justifican estimar consecuencias; reglas de paso declaradas antes de la
+     cohorte confirmatoria. No usar un número arbitrario de alarmas como prueba
+     de valor de una política.
+ Cerrar corto: N1 pequeño, faltantes dominantes o soporte insuficiente; explicar
+               por que no se justifica la especializacion.
+
+G3 - UTILIDAD CONDICIONAL, NO OBLIGATORIA
+ Hacer: P0-P3 con trayectorias completas, Delta(c), posibles dominancias,
+       región de costos, N3 y sensibilidad. Sin leakage.
+ Cerrar: política superior, dominada, empatada, inconclusa o no evaluable:
+         publicar cualquiera con la evidencia y alcance correctos.
+
+CONFIRMATORIA
+ Congelar lo decidido antes de semanas nuevas; informar cuando las etiquetas
+ esten maduras, separando claramente en curso/completa/no iniciada.
+
+NO FIJAR HORAS NI NÚMERO DE SESIONES A PRIORI: el progreso lo marca la
+validez de cada puerta. No ampliar el alcance para "salvar" una puerta negativa.
+
+================================================================================
+17. ARQUITECTURA MÍNIMA Y MIGRACIÓN DEL ÁRBOL ACTUAL
+================================================================================
+
+ESTRUCTURA OBJETIVO (EVOLUCION, NO REESCRITURA POR ESTILO)
+
+ src/revmon/
+   sources.py       V5 + adaptador Git; auth, cache, retries, procedencia.
+   temporal.py      as-of, madurez, validación de fechas y cortes.
+   panel.py         reconstruccion de estados y revisión, única interfaz.
+   forecasting.py   baseline/modelo, entrenamiento y forecast inmutable.
+   monitoring.py    señales, cinco acciones y 2x2 de información.
+   evaluation.py    N1/contrastes; G3 condicional con trayectorias y costos.
+   evidence.py      hashes, manifests, JSON atomicos y reproducibilidad.
+
+ scripts/
+   00_source_feasibility.py   G0.
+   01_vertical_slice.py      G1.
+   02_decision_sensitivity.py G2.
+   03_policy_value.py        G3, CREAR SOLO SI LA COMPUERTA ABRE.
+   weekly_capture.py         captura temprana/continua.
+   verify_results.py         cifras -> JSON -> clave -> README.
+
+ tests/
+   test_temporal.py          fixtures y propiedades Hypothesis.
+   test_revisions.py         cambios, republicaciones, altas y bajas.
+   test_forecasting.py       origen temporal de features/labels.
+   test_monitoring.py        matriz 2x2, abstencion, universos, transiciones.
+   test_evaluation.py        denominadores y G3 si existe.
+   test_operation.py         error seguro, hashes, idempotencia, inmutabilidad.
+
+ data/                      cache temporal y capturas, no secretos en git.
+ reports/results/           tablas/JSON/figuras generadas; evidencia versionada.
+ .github/workflows/         CI y captura programada.
+ README.md                  ÚNICO documento narrativo principal público.
+ referencias.md             verificación bibliografica y correcciones.
+ HANDOFF.md                 estado de desarrollo, no informe.
+
+TRATAMIENTO DEL ARBOL ACTUAL
+ - Reutilizar io.py/panel.py/clocks.py y pruebas donde sean correctos.
+ - Cambiar el adaptador V3 a V5 solo tras obtener contrato y datos de G0.
+ - Reemplazar el freeze_guard por controles as-of en el dato y pruebas.
+ - Mantener CI, uv.lock y verificador de cifras con contratos actualizados.
+ - Evitar segunda ruta paralela para leer data/ y segunda puerta HTTP.
+ - No multiplicar subagentes, skills, hooks ni carpetas de documentos.
+ - Unificar funciones duplicadas o sin consumidor de cache/fechas cuando
+   exista evidencia de que estorban la nueva implementacion.
+
+STACK
+ Python >=3.11, uv, pandas, numpy, scipy, scikit-learn si se usa Ridge,
+ pytest, Hypothesis, ruff, matplotlib, GitHub Actions. Docker opcional si
+ simplifica ejecutar batch; SQL/MLflow/registry fuera de V1.
+
+================================================================================
+18. PRESENTACIÓN PARA UN RECLUTADOR SENIOR
+================================================================================
+
+NOMBRE PÚBLICO
+ WHEN THE PAST MOVES
+ Revision-Aware ML Monitoring & Decision Reliability
+
+REGLA DE LOS PRIMEROS 60 SEGUNDOS
+ Un visitante debe entender qué problema real encontraste, que construiste,
+ que decisión pudo medirse, con qué evidencia y que NO puede concluirse.
+
+README EN INGLES, ORDEN SUGERIDO
+  1. Problema operativo y pregunta central en 4-6 líneas.
+  2. Resultado principal N1 con numerador, denominador y abstenciones, SOLO
+     cuando exista; mientras tanto indicar "Not evaluated yet".
+  3. Figura: pronóstico ORIGINAL inmutable, revisiones del objetivo y
+     cobertura publicada con eje y leyendas separados.
+  4. Arquitectura pequeña: as-of -> forecast -> monitor -> decisión -> evidence.
+  5. Hallazgo del 2x2: tabla de transiciones, patrones y límites inferenciales.
+  6. Consecuencias y frontera de costos SOLO si G3 se ejecuto; no prometer c*.
+  7. Una decisión organizacional propuesta, anclada en un caso real del piloto.
+  8. Donde falla: lag de etiquetas, dependencia temporal y datos faltantes.
+  9. Reproducir: comandos, versiones, hashes y accesos externos necesarios.
+ 10. Limitaciones honestas y referencias primarias.
+
+ENTREVISTA: TRES RESPUESTAS QUE EL CÓDIGO DEBE RESPALDAR
+ "La información adicional cambio esta recomendación, pero eso por si solo
+  no significa que la mejorara".
+ "No interprete cambios agregados de cobertura como admisiones causadas por
+  hospitales que no reportaron; no poseo esos datos por hospital".
+ "Una recomendación de reentrenar es distinta de actualizar automáticamente
+  un sistema productivo; aquí compare esas consecuencias mediante un replay
+  validado sin afirmar aprobaciones ni despliegues empresariales".
+
+El proyecto se presenta como dominio de oficio de DS con criterio de sistemas
+y decisiones. NO se vende como experiencia Staff ejercida a escala.
+
+================================================================================
+19. REGLA FINAL DE CIERRE Y ANTI-INFLACIÓN
+================================================================================
+
+El mínimo defendible es: G0 documentado, G1 ejecutado realmente, G2 con N1
+reproducible (o imposibilidad medida), incertidumbre proporcional, una
+recomendación organizacional basada en evidencia y README verificable.
+
+G3 solo se exige si la compuerta de G2 da soporte para evaluar trayectorias.
+La confirmatoria puede estar declaradamente en curso: nunca se presenta como
+terminada antes de contar con etiquetas maduras y métodos congelados.
+
+No hay beneficio monetario, aprobacion corporativa, causalidad epidemiologica,
+ni experiencia dirigiendo un equipo si no existe evidencia auténtica de ello.
+No agregar componentes para rescatar un resultado negativo; detener el diseño
+conceptual y pasar a medir.
+
+================================================================================
+20. REFERENCIAS PRIMARIAS Y NATURALEZA DE LA VERIFICACIÓN
+================================================================================
+
+[R1] Delphi Epidata V5: endpoints archive/snapshot, límites y autenticación.
+     https://cmu-delphi.github.io/delphi-epidata/api/v5.html
+[R2] Delphi NHSN V5: objetivo, cobertura, tasas aproximadas de revisión,
+     regimen de reporte y granularidad de fecha.
+     https://cmu-delphi.github.io/delphi-epidata/api/v5-signals/nhsn.html
+[R3] Delphi V5: parámetros de consultas y metadatos.
+     https://cmu-delphi.github.io/delphi-epidata/api/v5_api_queries.html
+[R4] CDC FluSight Forecast Hub: versiones por Git de objetivos.
+     https://github.com/cdcepi/FluSight-forecast-hub
+[R5] GitHub Actions: limitaciones del evento schedule.
+     https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows
+[R6] Regol et al. (ICML 2025): "When to retrain a machine learning model".
+     https://proceedings.mlr.press/v267/regol25a.html
+[R7] NIST AI RMF Playbook: Govern, Map, Measure y Manage.
+     https://airc.nist.gov/airmf-resources/playbook/
+[R8] AWS Well-Architected: Machine Learning Lens.
+     https://docs.aws.amazon.com/wellarchitected/latest/machine-learning-lens/
+[R9] RFC 3161: protocolo de prueba externa de existencia temporal.
+     https://www.rfc-editor.org/info/rfc3161/
+[R10] Delphi: API keys y modalidades de acceso.
+     https://cmu-delphi.github.io/delphi-epidata/api/api_keys.html
+
+VERIFICADO MEDIANTE DOCUMENTACION PÚBLICA:
+ existencia y semántica documentada de V5, señales NHSN y cobertura,
+ parámetros/límites de API, reglas publicadas de cron y marco de evaluación
+ de reentrenamiento. NINGUN resultado empírico de nuestro proyecto.
+
+PENDIENTE DE VERIFICACIÓN MEDIANTE CÓDIGO Y CONSULTAS REALES:
+ retención de report_time, reconstruccion exacta de estados, comparabilidad
+ V5/Git, cobertura y elegibilidad observadas, errores predictivos, N1,
+ Delta(c), N3 y capacidad real de captura programada.
+
+================================================================================
+SIGUIENTE ACCIÓN, SIN NUEVOS REDISENOS
+================================================================================
+
+1. Conservar esta V3.3 como guia; no producir una versión más ambiciosa.
+2. Publicar primer commit y realizar captura real mínima.
+3. Ejecutar G0 con respuestas V5 y Git conservadas para auditoria.
+4. Solo después resolver detalles que realmente dependen del dato.
+5. Construir G1; luego G2; G3 solamente si la compuerta lo permite.
+
+EL EXITO NO SE MIDE POR LA COMPLEJIDAD DEL REPOSITORIO. SE MIDE POR LA
+CAPACIDAD DE JUSTIFICAR UNA DECISIÓN BAJO INFORMACIÓN IMPERFECTA Y POR LA
+EVIDENCIA REPRODUCIBLE QUE RESPALDA ESA JUSTIFICACION.
+
+================================================================================
+FIN - ESPECIFICACIÓN EJECUTABLE V3.3
+================================================================================

@@ -1,0 +1,25 @@
+# El dato no se redistribuye: se descarga con scripts/00_download.py
+data/
+
+# Entorno virtual. Se reconstruye con: uv sync --locked --extra dev
+.venv/
+
+# Artefactos de Python y de las herramientas
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Registro local de MLflow, no forma parte del entregable
+mlruns/
+mlflow.db
+
+# Borradores de trabajo. El estado del proyecto vive en HANDOFF.md, versionado.
+_borradores/
+
+# Preferencias de máquina. El harness compartido es .claude/settings.json.
+.claude/settings.local.json
+
+# Secretos
+.env

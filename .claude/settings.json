@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "language": "spanish",
+  "permissions": {
+    "allow": [
+      "Bash(uv run *)",
+      "Bash(uv sync *)",
+      "Bash(uv lock*)",
+      "Bash(uv venv*)",
+      "Bash(uv pip *)",
+      "Bash(uv export *)",
+      "Bash(uv --version)",
+      "Bash(./.venv/Scripts/python.exe *)",
+      "Bash(.venv/Scripts/python.exe *)",
+      "Bash(.venv/bin/python *)",
+      "Bash(make *)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git show*)",
+      "Bash(git add *)",
+      "Bash(git branch*)",
+      "Bash(git remote*)",
+      "Bash(git rev-parse*)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(wc *)",
+      "Bash(mkdir -p *)",
+      "Read",
+      "WebSearch",
+      "Edit(src/**)",
+      "Edit(scripts/**)",
+      "Edit(tests/**)",
+      "Edit(.claude/**)",
+      "Edit(.github/**)",
+      "Edit(_borradores/**)",
+      "Edit(README.md)",
+      "Edit(CLAUDE.md)",
+      "Edit(HANDOFF.md)",
+      "Edit(referencias.md)",
+      "Edit(pyproject.toml)",
+      "Edit(Makefile)",
+      "Edit(Dockerfile)",
+      "WebFetch(domain:arxiv.org)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:api.delphi.cmu.edu)",
+      "WebFetch(domain:cmu-delphi.github.io)",
+      "WebFetch(domain:www.cdc.gov)",
+      "WebFetch(domain:proceedings.mlr.press)"
+    ],
+    "deny": [
+      "Edit(data/**)",
+      "Edit(reports/**)",
+      "Edit(uv.lock)",
+      "Edit(.env)",
+      "Read(.env)",
+      "Bash(git push --force*)",
+      "Bash(git push -f *)",
+      "Bash(git rebase*)",
+      "Bash(git commit --amend*)",
+      "Bash(git reset --hard*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PROJECT_DIR:-.}/.claude/hooks/estado_sesion.py\"",
+            "timeout": 20,
+            "statusMessage": "Leyendo el estado del proyecto"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PROJECT_DIR:-.}/.claude/hooks/venv_guard.py\"",
+            "timeout": 10,
+            "statusMessage": "Comprobando que se use el entorno virtual"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PROJECT_DIR:-.}/.claude/hooks/puerta_unica.py\"",
+            "timeout": 20,
+            "statusMessage": "Comprobando la puerta única al dato"
+          }
+        ]
+      }
+    ]
+  }
+}

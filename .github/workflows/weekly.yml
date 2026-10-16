@@ -1,0 +1,59 @@
+name: Weekly capture
+
+# This workflow is the project's operational evidence. Every run leaves a dated
+# artefact in reports/weekly/ and a public log, committed by github-actions[bot]
+# so the record carries its own provenance. Nothing here is simulated: if a run
+# did not happen, there is no file.
+#
+# THE SCHEDULE IS PROVISIONAL AND MARKED AS SUCH. It is not inferred from a
+# couple of observed commits any more: hospitals report to NHSN under a CMS
+# requirement with a Tuesday 23:59 PT deadline, so Wednesday mid-morning UTC is
+# after the publication window. The definitive time is fixed in G0 from measured
+# publication dates, not from this guess.
+#
+# Deliberately not on the hour: GitHub documents that scheduled runs are delayed
+# during periods of high load, that the start of every hour is one such period,
+# and that queued jobs may be dropped. It also disables schedules in public
+# repositories after 60 days without activity, which is why a missing week is
+# reconciled rather than assumed away.
+on:
+  schedule:
+    - cron: "17 11 * * 3"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Same environment as CI and as local development, from the same lockfile.
+      - name: Install uv
+        run: python -m pip install uv==0.11.19
+
+      - name: Install
+        run: uv sync --locked
+
+      # The key lifts the anonymous rate limit (60 requests/hour). The capture
+      # still runs without it against the hub channel, and the record states
+      # whether a key was configured, so a thinner run is visible rather than
+      # silently different.
+      - name: Capture this week's publications
+        env:
+          DELPHI_EPIDATA_KEY: ${{ secrets.DELPHI_EPIDATA_KEY }}
+        run: uv run python scripts/weekly_capture.py
+
+      - name: Commit the weekly record
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/weekly/
+          git diff --staged --quiet || git commit -m "Weekly capture $(date -u +%Y-%m-%d)"
+          git push
