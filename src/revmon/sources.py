@@ -16,15 +16,17 @@ Two channels, deliberately not merged:
    from NHSN, and it is not an independent epidemiological measurement. The two
    channels are compared, never fused.
 
-**An open contradiction, to be settled in G0 and not by assumption.** Delphi's
-V5 overview page describes `/archive/` as change records — *"Each row represents
-a 'diff' (when the value for a specific key changed)"* — while the installed
-client's own docstring for `epidata_archive` says *"Every version of each value
-is returned, one row per report_time"*. Those are different claims about the
-same endpoint, and the difference is exactly the denominator of the revision
-rate: if the endpoint omits unchanged republications, dividing by the rows it
-returns inflates the rate. G0.3/G0.4 resolve this against `/snapshot/` with real
-queries. Until then neither reading is assumed anywhere in this package.
+**What `/archive/` returns, measured in G0 rather than read.** The V5 overview
+page calls its rows diffs — *"Each row represents a 'diff'"* — while the client's
+docstring says *"Every version of each value is returned, one row per
+report_time"*. **Neither is what happens.** Over a window with both axes bounded,
+100 of 102 publications carried a row for the target signal, and a given event
+week appeared in 17 of them at the median (min 2, max 41). Unchanged
+republications are kept, and keys are absent from most publications: each release
+restates a trailing window of weeks. So the revision-rate denominator is
+publication pairs in which the key appeared on both sides — never "rows this
+endpoint returned". Reconstructing a snapshot from the archive reproduced the
+direct `/snapshot/` exactly at all three test cuts.
 """
 
 from __future__ import annotations
@@ -33,6 +35,7 @@ import json
 import os
 from dataclasses import dataclass
 from datetime import UTC, date, datetime
+from io import StringIO
 from pathlib import Path
 from typing import Any
 
@@ -59,10 +62,10 @@ TARGET_SIGNAL = "confirmed_admissions_flu_ew"
 #: turn a coverage change into an apparent epidemiological one.
 COVERAGE_COUNT_SIGNAL = "hosprep_confirmed_admissions_flu_ew"
 
-#: Percentage of active facilities submitting the metric. The `hosprep_pct_*`
-#: family is documented, but **this exact member is unconfirmed**: the source
-#: lists hundreds of indicators, and a pattern existing does not guarantee a
-#: member. G0.4 confirms it by name or the project uses the count signal alone.
+#: Percentage of active facilities submitting the metric. **Confirmed by name in
+#: G0** against the source's 319 signals — it was carried as unconfirmed until
+#: then, because the `hosprep_pct_*` family being documented does not guarantee
+#: this member.
 COVERAGE_PCT_SIGNAL = "hosprep_pct_confirmed_admissions_flu_ew"
 
 GEO_TYPE = "nation"
@@ -122,6 +125,48 @@ class Provenance:
 
 def _now() -> str:
     return datetime.now(UTC).isoformat()
+
+
+#: The CAST API base, which is where V5's metadata endpoints live. `epidatpy`
+#: wraps snapshot, archive, meta and aux, but **not** the publication calendar,
+#: so that one is reached directly from here — still inside the single door.
+CAST_BASE = "https://delphi.cmu.edu/epidata/v5/"
+
+
+def date_range(start: str | date, end: str | date) -> Any:
+    """An inclusive range for `reference_time`/`report_time` filters.
+
+    Exists so that callers never have to import the client themselves: the
+    single-door rule is about who may import a network client, not only about
+    who opens a socket.
+    """
+    from epidatpy import EpiRange
+
+    return EpiRange(start, end)
+
+
+def v5_report_times(source: str = V5_SOURCE) -> tuple[list[str], Provenance]:
+    """The source's publication calendar: every date it released data.
+
+    This is the denominator's only honest basis. The revision rate cannot be
+    computed over "rows `/archive/` returned", because if that endpoint omits
+    unchanged republications then dividing by its rows inflates the rate.
+
+    The key travels as HTTP basic auth rather than a query parameter, so the
+    `request_url` kept as provenance cannot carry the secret.
+    """
+    key = os.environ.get(API_KEY_ENV, "").strip()
+    response = requests.get(
+        f"{CAST_BASE}metadata/report_times/",
+        params={"source": source},
+        auth=("epidata", key) if key else None,
+        timeout=TIMEOUT,
+    )
+    response.raise_for_status()
+    payload = response.json()
+    return payload["report_times"], Provenance(
+        response.url, _now(), "delphi_v5_report_times"
+    )
 
 
 def v5_metadata(source: str | None = V5_SOURCE, *, ctx: EpiDataContext | None = None) -> Any:
@@ -234,6 +279,32 @@ def hub_versions(limit: int = 300) -> list[HubVersion]:
             )
         page += 1
     return versions[:limit]
+
+
+def hub_national_series(sha: str = HUB_BRANCH) -> tuple[Any, Provenance]:
+    """The hub's national weekly target values, as a tidy frame.
+
+    Parsing a channel's wire format belongs to the adapter that owns that
+    channel, not to a script: a script that parsed this CSV itself would be a
+    second route to the data, and the single-door hook reports it as one.
+
+    Returns columns `week` and `hub_value`. Locations are matched case
+    insensitively against the hub's national coding, and the frame is empty
+    rather than guessed if none matches.
+    """
+    import pandas as pd
+
+    text, provenance = hub_target_at(sha)
+    frame = pd.read_csv(StringIO(text), dtype={"location": str})
+    national = frame[frame["location"].str.upper().isin({"US", "NATION"})]
+    tidy = (
+        national.assign(week=pd.to_datetime(national["date"]).dt.date)[["week", "value"]]
+        .rename(columns={"value": "hub_value"})
+        .drop_duplicates("week")
+        .sort_values("week")
+        .reset_index(drop=True)
+    )
+    return tidy, provenance
 
 
 def hub_target_at(sha: str = HUB_BRANCH, *, use_cache: bool = True) -> tuple[str, Provenance]:

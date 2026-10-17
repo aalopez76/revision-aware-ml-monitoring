@@ -97,14 +97,24 @@ sesgaría la tasa de revisión hacia abajo.
 `/metadata/report_times/` da el calendario de publicaciones de la fuente; **no
 garantiza una fila por cada combinación de señal y geografía.**
 
-### Una contradicción abierta, que resuelve G0 y no una suposición
+### Lo que `/archive/` devuelve, medido en G0
 
-La página general de V5 describe `/archive/` como registros de cambio —*«Each row
-represents a "diff"»*— y el docstring del cliente instalado dice *«Every version
-of each value is returned, one row per report_time»*. Son afirmaciones distintas
-sobre el mismo endpoint, y la diferencia **es** el denominador. Se resuelve
-contra `/snapshot/` con consultas reales en G0.3/G0.4. Hasta entonces ninguna de
-las dos lecturas se supone en ninguna parte del paquete.
+La documentación se contradecía: la página general de V5 llamaba a sus filas
+diffs y el docstring del cliente decía que devuelve todas las versiones. **No es
+ninguna de las dos.** Medido con los dos ejes acotados (2025-09-01 a 2026-10-10):
+**100 de 102 publicaciones** llevaron fila para la señal objetivo, y una semana de
+evento dada aparece en **17 de ellas** (mediana; mín 2, máx 41).
+
+Es decir: las republicaciones sin cambio **sí** se conservan, y las claves **no**
+están en todas las publicaciones — cada release reexpresa una ventana final de
+semanas. Así que el denominador por pares elegibles de arriba no era una cautela:
+era la definición correcta, y ahora tiene medición detrás.
+
+Reconstruir un snapshot desde el archivo reprodujo el `/snapshot/` directo
+**exactamente en los tres cortes de prueba**, con cero discrepancias de valor y
+cero claves de un solo lado. Eso permite reconstruir desde una sola consulta de
+archivo en lugar de pagar un `/snapshot/` por corte, que es el endpoint que
+filtra en el cliente y por tanto el caro.
 
 ## El universo elegible
 
@@ -118,6 +128,19 @@ El universo se **declara en G0, antes de ver resultados**: por omisión
 `reference_time >= 2024-11-01`, y preferiblemente por cobertura medida
 (`flag_hosprep_*`) en lugar de un corte de calendario, para que el criterio sea
 observable. No se revisa después.
+
+**G0 lo resolvió casi solo:** el archivo de versiones empieza el **2024-11-19**,
+18 días después de que el mandato volviera. El periodo voluntario **no tiene
+historia de versiones**, así que el peor confusor disponible no tiene por dónde
+contaminar. La declaración describe lo que existe, no excluye algo.
+
+## La clave primaria la fija la fuente
+
+`key_columns` de V5, medido: `signal · report_time · geo_type · geo_value ·
+fill_method · reference_time`. **`fill_method` forma parte de la identidad**, así
+que el panel lo carga y el denominador lo cuenta: dos filas que difieren solo en
+ese campo no son una revisión una de otra. `extra_key_columns` está vacío y
+`value_columns` es solo `value`.
 
 ## Qué está prohibido
 

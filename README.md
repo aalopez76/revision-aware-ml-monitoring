@@ -162,11 +162,21 @@ between the lockfile and `pyproject.toml` fails the build rather than quietly
 resolving a different set of versions: a figure produced under other versions is
 not the same figure.
 
-**External access.** The Delphi V5 channel reads its key from
-`DELPHI_EPIDATA_KEY`. Anonymous access is capped at 60 requests per hour and
-allows multiple selections on at most two parameters; a free key lifts both. The
-hub channel needs no credentials. Source archives are not redistributed here, so
-the capture step comes first.
+**External access.** The Delphi V5 channel reads its key from the
+`DELPHI_EPIDATA_KEY` environment variable — the client picks it up from the
+environment, so it is never passed as an argument and cannot surface in a
+traceback or a provenance record. Put it in an untracked `.env` at the repository
+root and let `uv` load it:
+
+```bash
+echo 'DELPHI_EPIDATA_KEY=...' >> .env     # .env is gitignored
+export UV_ENV_FILE=.env                   # or: uv run --env-file .env ...
+```
+
+Anonymous access is capped at 60 requests per hour and allows multiple
+selections on at most two parameters; a free key lifts both and is obtained from
+Delphi's registration form. The hub channel needs no credentials. Source archives
+are not redistributed here, so the capture step comes first.
 
 *Processing is Python over flat files, so there are no SQL queries, entity
 relationship diagram or interactive dashboard to show. Development was carried
@@ -194,27 +204,55 @@ what was published when. A commit is evidence of what the hub put in its own
 repository; it is **not** the instant a value became available from NHSN, and not
 an independent epidemiological measurement. The two are compared, never fused.
 
-Three things recorded now rather than discovered later:
+### What G0 measured
 
-* **Data coverage is not version coverage.** The signal's `reference_time`
-  coverage starts 2020-08-08. That says nothing about how far back the
-  `report_time` history reaches, and the documentation does not say. Measuring it
-  is G0's first question — confusing the two is precisely the error this project
-  studies.
-* **An open contradiction about `/archive/`.** Delphi's V5 overview describes its
-  rows as diffs — *"Each row represents a 'diff' (when the value for a specific
-  key changed)"* — while the installed client's docstring says *"Every version of
-  each value is returned, one row per report_time"*. The difference **is** the
-  denominator of the revision rate: if unchanged republications are omitted,
-  dividing by the returned rows inflates it. Settled in G0 against `/snapshot/`,
-  not by assumption.
-* **A reporting-regime change sits inside the history.** Hospital reporting was
-  mandatory to 2024-04-30, **voluntary from 2024-05-01 to 2024-10-31** — a period
-  CDC flags as possibly not fully representative — and mandatory again from
-  2024-11-01 under a CMS requirement. A regime change moves coverage without
-  moving the phenomenon, so the eligible universe is **declared before looking at
-  results**: from the resumed mandate, and preferably by measured coverage rather
-  than a calendar cut.
+Run dated **2026-10-16**, verdict **PROCEED**, 13 requests. Every figure below is
+in [`reports/results/00_source_feasibility.json`](reports/results/00_source_feasibility.json)
+with the query that produced it, and has a row in `scripts/verify_results.py`.
+Three of them replace assumptions the framing had carried.
+
+**Data coverage is not version coverage, and the gap is a factor of three.**
+`reference_time` reaches back to **2020-08-08** — **322 weeks** of events — but
+the recoverable `report_time` history starts only at **2024-11-19**: **99 weeks**
+of versions. **223 event weeks have no version history at all.** Confusing the
+two is precisely the error this project studies, and it would have overstated the
+usable archive threefold.
+
+**The eligible universe is settled by that, not by a judgement call.** The
+archive begins 18 days after hospital reporting became mandatory again
+(2024-11-01, under a CMS requirement, after a voluntary period from 2024-05-01 to
+2024-10-31 that CDC flags as possibly not fully representative). So the worst
+available confounder — a regime change moving coverage without moving the
+phenomenon — **has no version history to contaminate**. The declared universe
+describes what exists rather than excluding something.
+
+**`/archive/` is neither of the two things its documentation says.** Delphi's V5
+overview calls its rows diffs; the client's docstring says every version of every
+value. Measured over a window with both axes bounded (2025-09-01 to 2026-10-10):
+**100 of the 102 publications in that window carried a row** for this signal, and
+a given event week appears in **17 of them** at the median — minimum 2, maximum
+41. So unchanged republications are *not* omitted, and keys are *not* present in
+every publication: **each release restates a trailing window of weeks.** The
+revision-rate denominator therefore has to be publication pairs in which the key
+appeared on both sides, which is what the rule already said and now has a
+measurement behind it. Reconstructing a snapshot from the archive reproduced the
+direct `/snapshot/` **exactly at all three test cuts** — zero value mismatches,
+zero one-sided keys.
+
+**Publication is not weekly.** The calendar holds **189 release dates**, a median
+of **2 per ISO week** and a median of 3 days apart. The previous design treated
+one hub commit as one publication; that proxy undercounts by roughly half, so the
+revision rate built on it was a looser lower bound than the framing claimed.
+
+**The two channels agree, on values.** The hub's national series and the V5
+snapshot overlap on **245 weeks and disagree on none**. That validates the value
+series; it says nothing about timing, which is a separate question and the reason
+`hub_commit_at` and `source_report_date` stay separate clocks.
+
+**And the ceiling is now known: 99 weekly national cuts.** That is the largest
+denominator N1 could have before maturity and label availability prune it. It is
+reported as a ceiling, never as an achieved sample size, and it is why the
+minimum support N1 needs is declared before G2 rather than judged after.
 
 **Maturity is declared, not inherited.** An earlier version of this project
 carried `MATURITY_DAYS = 45`, taken from Delphi's documented behaviour on a

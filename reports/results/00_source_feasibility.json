@@ -1,0 +1,423 @@
+{
+  "g0_1_2_metadata": {
+    "api_key_configured": true,
+    "extra_key_columns": [],
+    "geo_types": [
+      "census_division",
+      "census_region",
+      "hhs",
+      "nation",
+      "state"
+    ],
+    "key_columns": [
+      "signal",
+      "report_time",
+      "geo_type",
+      "geo_value",
+      "fill_method",
+      "reference_time"
+    ],
+    "reference_time_range": {
+      "first": "2020-08-08",
+      "latest": "2026-10-10"
+    },
+    "report_time_range": {
+      "first": "2024-11-19T00:00:00Z",
+      "latest": "2026-10-16T00:00:00Z"
+    },
+    "signals_present": {
+      "coverage_count": true,
+      "coverage_pct": true,
+      "target": true
+    },
+    "signals_total": 319,
+    "status": "ok",
+    "value_columns": [
+      "value"
+    ]
+  },
+  "g0_3_archive_semantics": {
+    "calendar_publications_in_window": 102,
+    "distinct_keys": 57,
+    "distinct_report_times_in_archive": 100,
+    "median_versions_per_key_vs_publications": 0.167,
+    "note": "A median of ~1 row per key means unchanged republications are absent, so the revision-rate denominator must come from the publication calendar and not from these rows.",
+    "provenance": {
+      "channel": "delphi_v5_archive",
+      "observed_at": "2026-10-17T01:30:07.790740+00:00",
+      "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2025-09-01%3A2026-10-10"
+    },
+    "rows": 1123,
+    "rows_per_key": {
+      "max": 41,
+      "median": 17.0,
+      "min": 2
+    },
+    "semantics_verdict": "multiple_versions_per_key",
+    "share_of_publications_present": 0.98,
+    "status": "ok",
+    "window": {
+      "from": "2025-09-01",
+      "to": "2026-10-10"
+    }
+  },
+  "g0_3_reconstruction": {
+    "all_cuts_reconstruct": true,
+    "cuts": [
+      {
+        "cut": "2025-02-05",
+        "keys_only_in_rebuilt": 0,
+        "keys_only_in_snapshot": 0,
+        "provenance": [
+          {
+            "channel": "delphi_v5_snapshot",
+            "observed_at": "2026-10-17T01:30:07.961485+00:00",
+            "request_url": "https://delphi.cmu.edu/epidata/v5/snapshot/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&snapshot_date=2025-02-05"
+          },
+          {
+            "channel": "delphi_v5_archive",
+            "observed_at": "2026-10-17T01:30:08.001325+00:00",
+            "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2025-02-05"
+          }
+        ],
+        "rebuilt_rows": 235,
+        "reconstructs_exactly": true,
+        "snapshot_rows": 235,
+        "value_mismatches": 0
+      },
+      {
+        "cut": "2025-10-15",
+        "keys_only_in_rebuilt": 0,
+        "keys_only_in_snapshot": 0,
+        "provenance": [
+          {
+            "channel": "delphi_v5_snapshot",
+            "observed_at": "2026-10-17T01:30:08.122415+00:00",
+            "request_url": "https://delphi.cmu.edu/epidata/v5/snapshot/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&snapshot_date=2025-10-15"
+          },
+          {
+            "channel": "delphi_v5_archive",
+            "observed_at": "2026-10-17T01:30:08.162213+00:00",
+            "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2025-10-15"
+          }
+        ],
+        "rebuilt_rows": 268,
+        "reconstructs_exactly": true,
+        "snapshot_rows": 268,
+        "value_mismatches": 0
+      },
+      {
+        "cut": "2026-06-10",
+        "keys_only_in_rebuilt": 0,
+        "keys_only_in_snapshot": 0,
+        "provenance": [
+          {
+            "channel": "delphi_v5_snapshot",
+            "observed_at": "2026-10-17T01:30:08.208138+00:00",
+            "request_url": "https://delphi.cmu.edu/epidata/v5/snapshot/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&snapshot_date=2026-06-10"
+          },
+          {
+            "channel": "delphi_v5_archive",
+            "observed_at": "2026-10-17T01:30:08.247238+00:00",
+            "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-06-10"
+          }
+        ],
+        "rebuilt_rows": 305,
+        "reconstructs_exactly": true,
+        "snapshot_rows": 305,
+        "value_mismatches": 0
+      }
+    ],
+    "status": "ok"
+  },
+  "g0_4_calendar": {
+    "dates": [
+      "2024-11-19",
+      "2024-11-20",
+      "2024-11-21",
+      "2024-11-22",
+      "2024-11-27",
+      "2024-11-29",
+      "2024-12-04",
+      "2024-12-06",
+      "2024-12-11",
+      "2024-12-13",
+      "2024-12-18",
+      "2024-12-19",
+      "2024-12-20",
+      "2024-12-26",
+      "2024-12-27",
+      "2025-01-02",
+      "2025-01-03",
+      "2025-01-08",
+      "2025-01-10",
+      "2025-01-15",
+      "2025-01-17",
+      "2025-01-24",
+      "2025-01-29",
+      "2025-01-31",
+      "2025-02-05",
+      "2025-02-07",
+      "2025-02-12",
+      "2025-02-15",
+      "2025-02-19",
+      "2025-02-20",
+      "2025-02-22",
+      "2025-02-26",
+      "2025-02-28",
+      "2025-03-05",
+      "2025-03-07",
+      "2025-03-12",
+      "2025-03-14",
+      "2025-03-19",
+      "2025-03-21",
+      "2025-03-26",
+      "2025-03-28",
+      "2025-04-02",
+      "2025-04-04",
+      "2025-04-09",
+      "2025-04-11",
+      "2025-04-16",
+      "2025-04-18",
+      "2025-04-23",
+      "2025-04-25",
+      "2025-04-30",
+      "2025-05-02",
+      "2025-05-07",
+      "2025-05-09",
+      "2025-05-14",
+      "2025-05-16",
+      "2025-05-21",
+      "2025-05-23",
+      "2025-05-28",
+      "2025-05-30",
+      "2025-06-04",
+      "2025-06-06",
+      "2025-06-11",
+      "2025-06-13",
+      "2025-06-18",
+      "2025-06-20",
+      "2025-06-25",
+      "2025-06-27",
+      "2025-07-02",
+      "2025-07-07",
+      "2025-07-09",
+      "2025-07-11",
+      "2025-07-16",
+      "2025-07-18",
+      "2025-07-23",
+      "2025-07-25",
+      "2025-07-30",
+      "2025-08-01",
+      "2025-08-06",
+      "2025-08-08",
+      "2025-08-13",
+      "2025-08-15",
+      "2025-08-20",
+      "2025-08-22",
+      "2025-08-27",
+      "2025-08-29",
+      "2025-09-03",
+      "2025-09-05",
+      "2025-09-10",
+      "2025-09-12",
+      "2025-09-17",
+      "2025-09-19",
+      "2025-09-24",
+      "2025-09-26",
+      "2025-11-14",
+      "2025-11-19",
+      "2025-11-21",
+      "2025-11-26",
+      "2025-12-01",
+      "2025-12-03",
+      "2025-12-05",
+      "2025-12-10",
+      "2025-12-12",
+      "2025-12-17",
+      "2025-12-19",
+      "2025-12-24",
+      "2025-12-30",
+      "2025-12-31",
+      "2026-01-05",
+      "2026-01-07",
+      "2026-01-09",
+      "2026-01-14",
+      "2026-01-16",
+      "2026-01-21",
+      "2026-01-23",
+      "2026-01-28",
+      "2026-01-30",
+      "2026-02-04",
+      "2026-02-06",
+      "2026-02-11",
+      "2026-02-17",
+      "2026-02-18",
+      "2026-02-20",
+      "2026-02-25",
+      "2026-02-27",
+      "2026-03-04",
+      "2026-03-06",
+      "2026-03-11",
+      "2026-03-13",
+      "2026-03-18",
+      "2026-03-20",
+      "2026-03-25",
+      "2026-03-27",
+      "2026-04-01",
+      "2026-04-03",
+      "2026-04-08",
+      "2026-04-10",
+      "2026-04-15",
+      "2026-04-17",
+      "2026-04-22",
+      "2026-04-24",
+      "2026-04-29",
+      "2026-05-01",
+      "2026-05-06",
+      "2026-05-08",
+      "2026-05-13",
+      "2026-05-15",
+      "2026-05-20",
+      "2026-05-22",
+      "2026-05-27",
+      "2026-06-03",
+      "2026-06-05",
+      "2026-06-10",
+      "2026-06-12",
+      "2026-06-17",
+      "2026-06-22",
+      "2026-06-24",
+      "2026-06-26",
+      "2026-07-01",
+      "2026-07-06",
+      "2026-07-08",
+      "2026-07-10",
+      "2026-07-15",
+      "2026-07-17",
+      "2026-07-22",
+      "2026-07-24",
+      "2026-07-29",
+      "2026-07-31",
+      "2026-08-05",
+      "2026-08-07",
+      "2026-08-12",
+      "2026-08-14",
+      "2026-08-19",
+      "2026-08-21",
+      "2026-08-26",
+      "2026-08-28",
+      "2026-09-02",
+      "2026-09-04",
+      "2026-09-09",
+      "2026-09-11",
+      "2026-09-16",
+      "2026-09-18",
+      "2026-09-23",
+      "2026-09-25",
+      "2026-09-30",
+      "2026-10-02",
+      "2026-10-07",
+      "2026-10-09",
+      "2026-10-14",
+      "2026-10-16"
+    ],
+    "days_between_publications": {
+      "max": 49,
+      "median": 2.5,
+      "min": 1
+    },
+    "first": "2024-11-19",
+    "iso_weeks_covered": 94,
+    "last": "2026-10-16",
+    "provenance": {
+      "channel": "delphi_v5_report_times",
+      "observed_at": "2026-10-17T01:30:04.448008+00:00",
+      "request_url": "https://delphi.cmu.edu/epidata/v5/metadata/report_times/?source=nhsn"
+    },
+    "publication_dates": 189,
+    "publications_per_iso_week": {
+      "max": 4,
+      "median": 2.0,
+      "min": 1
+    },
+    "status": "ok",
+    "weekly_cadence_assumption_holds": false
+  },
+  "g0_4_coverage_signals": {
+    "coverage_count": {
+      "first_reference_time": "2020-08-08",
+      "last_reference_time": "2026-10-10",
+      "nulls": 0,
+      "provenance": {
+        "channel": "delphi_v5_snapshot",
+        "observed_at": "2026-10-17T01:30:08.303678+00:00",
+        "request_url": "https://delphi.cmu.edu/epidata/v5/snapshot/?source=nhsn&signal=hosprep_confirmed_admissions_flu_ew&geo_type=nation"
+      },
+      "rows": 323,
+      "signal": "hosprep_confirmed_admissions_flu_ew"
+    },
+    "coverage_pct": {
+      "first_reference_time": "2020-08-08",
+      "last_reference_time": "2026-10-10",
+      "nulls": 0,
+      "provenance": {
+        "channel": "delphi_v5_snapshot",
+        "observed_at": "2026-10-17T01:30:08.341391+00:00",
+        "request_url": "https://delphi.cmu.edu/epidata/v5/snapshot/?source=nhsn&signal=hosprep_pct_confirmed_admissions_flu_ew&geo_type=nation"
+      },
+      "rows": 323,
+      "signal": "hosprep_pct_confirmed_admissions_flu_ew"
+    },
+    "status": "ok"
+  },
+  "g0_5_hub_alignment": {
+    "agreeing_weeks": 245,
+    "aligned": true,
+    "disagreeing_weeks": 0,
+    "example_disagreements": [],
+    "hub_national_rows": 245,
+    "note": "Two publication channels, not two independent measurements. A disagreement is reported, not corrected, and a hub commit is not the instant a value became available from NHSN.",
+    "overlapping_weeks": 245,
+    "provenance": [
+      {
+        "channel": "flusight_hub_tip",
+        "observed_at": "2026-10-17T01:30:09.250475+00:00",
+        "request_url": "https://raw.githubusercontent.com/cdcepi/FluSight-forecast-hub/main/target-data/target-hospital-admissions.csv"
+      },
+      {
+        "channel": "delphi_v5_snapshot",
+        "observed_at": "2026-10-17T01:30:09.370807+00:00",
+        "request_url": "https://delphi.cmu.edu/epidata/v5/snapshot/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation"
+      }
+    ],
+    "status": "ok",
+    "v5_national_rows": 323
+  },
+  "g0_6_support": {
+    "event_history_weeks": 322,
+    "event_weeks_without_version_history": 223,
+    "max_weekly_national_cuts": 99,
+    "note": "Data coverage is not version coverage. The eligible universe is bounded by the version history, not by how far the event series goes.",
+    "status": "ok",
+    "version_history_weeks": 99
+  },
+  "run": {
+    "budget": {
+      "requests_issued": 13,
+      "wall_seconds": 6.8
+    },
+    "spec": "When_the_Past_Moves_Especificacion_Ejecutable_V3_3_2026.txt",
+    "started_at": "2026-10-17T01:30:02.644390+00:00"
+  },
+  "verdict": {
+    "reasons": [
+      "all declared criteria met"
+    ],
+    "thresholds": {
+      "proceed_at": 60,
+      "reduce_at": 20
+    },
+    "verdict": "PROCEED"
+  }
+}

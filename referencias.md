@@ -281,15 +281,26 @@ four: the record of the correction is worth more than the claim it corrected.
    now emits a warning"*, which is why the ILINet/FluView path was retired rather
    than merely left unused.
 
-6. **An unresolved contradiction, recorded as such.** Delphi's V5 overview page
-   describes `/archive/` rows as change records — *"Each row represents a 'diff'
-   (when the value for a specific key changed)"* — while the installed client's
-   docstring for `epidata_archive` says *"Every version of each value is returned,
-   one row per report_time"*. Both are primary documentation and they disagree.
-   The difference is the denominator of the revision rate, so **neither reading is
-   used as a premise**; G0 settles it against `/snapshot/` with real queries. This
-   is the live example of the rule that *"verified in documentation"* and
-   *"measured in data"* are different states.
+6. **A contradiction in the primary documentation, now settled by measurement.**
+   Delphi's V5 overview page describes `/archive/` rows as change records — *"Each
+   row represents a 'diff' (when the value for a specific key changed)"* — while
+   the installed client's docstring for `epidata_archive` says *"Every version of
+   each value is returned, one row per report_time"*. Both are primary
+   documentation and they disagree.
+
+   **G0 measured it on 16 October 2026 and neither reading is right.** With both
+   axes bounded to 2025-09-01 … 2026-10-10, 100 of the 102 publications in that
+   window carried a row for `confirmed_admissions_flu_ew`, and a given event week
+   appeared in 17 of them at the median (minimum 2, maximum 41). Unchanged
+   republications are therefore kept — against the diffs reading — and keys are
+   absent from most publications — against the every-version reading. Each
+   release restates a trailing window of weeks. Reconstructing a snapshot from
+   the archive reproduced the direct `/snapshot/` exactly at three test cuts.
+
+   The claim is recorded here rather than replaced because **this is the whole
+   point of the rule that "verified in documentation" and "measured in data" are
+   different states**: two primary sources agreed with each other less than
+   either agreed with the data, and only a query could tell.
 
 ---
 
