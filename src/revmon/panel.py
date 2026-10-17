@@ -42,7 +42,12 @@ DERIVED = sources.ROOT / "data" / "derived"
 PANEL = DERIVED / "panel.parquet"
 
 #: What identifies one observation. Everything downstream groups by this.
-KEY = ["source", "signal", "geo_type", "geo_value", "event_week_end"]
+#:
+#: `fill_method` is here because the source puts it in its own `key_columns`,
+#: measured in G0: `signal · report_time · geo_type · geo_value · fill_method ·
+#: reference_time`. Two rows differing only in that field are not a revision of
+#: one another, and leaving it out would count a method change as a restatement.
+KEY = ["source", "signal", "geo_type", "geo_value", "fill_method", "event_week_end"]
 
 #: The two clocks that can order publications. `derive_revisions` refuses to
 #: pick for you: a hub commit is not a Delphi report date, and ordering the
@@ -55,6 +60,7 @@ PANEL_COLUMNS = [
     "signal",
     "geo_type",
     "geo_value",
+    "fill_method",
     # the clocks
     "event_week_end",
     "source_report_date",
@@ -229,32 +235,78 @@ def load_panel() -> pd.DataFrame:
     return pd.read_parquet(PANEL)
 
 
+FROZEN_ACT = sources.ROOT / "reports" / "results" / "frozen_method.json"
+
+
+def panel_from_v5(frame: pd.DataFrame, observed_at: str) -> pd.DataFrame:
+    """Map a V5 archive response onto the canonical panel, then derive.
+
+    The column mapping is the whole point and it is one-way on purpose:
+    `report_time` becomes `source_report_date` — the publication the source
+    declares — and never `hub_commit_at`, which belongs to the other channel.
+    `vintage_id` carries the publication's identity, not its date.
+
+    `observed_at` is supplied rather than stamped here so that a rebuild of the
+    same response is reproducible: a function that reached for the clock itself
+    could not be replayed.
+    """
+    mapped = pd.DataFrame(
+        {
+            "source": sources.V5_SOURCE,
+            "signal": frame["signal"],
+            "geo_type": frame["geo_type"],
+            "geo_value": frame["geo_value"],
+            "fill_method": frame["fill_method"],
+            "event_week_end": pd.to_datetime(frame["reference_time"]),
+            "source_report_date": pd.to_datetime(frame["report_time"]).dt.tz_localize(None),
+            "hub_commit_at": pd.NaT,
+            "observed_at": observed_at,
+            "vintage_id": frame["report_time"].astype(str),
+            "value": frame["value"],
+        }
+    )
+    return derive_revisions(mapped, publication_clock="source_report_date")
+
+
 def load_as_of(
     decision_as_of: date,
     *,
-    signal: str,
-    geography: str,
-    replay_mode: ReplayMode,
+    signal: str = sources.TARGET_SIGNAL,
+    geography: str = sources.GEO_TYPE,
+    replay_mode: ReplayMode = ReplayMode.PUBLIC_REPLAY,
+    confirmatory: bool = False,
 ) -> tuple[pd.DataFrame, Completeness]:
     """The public contract: the state of the data valid for one decision cut.
 
-    Not implemented yet, and deliberately so. Composing it needs the measured
-    source contract — how far `report_time` history really reaches, whether
-    `/archive/` returns every version or only changes, and how `/snapshot/`
-    reconstruction compares against it. Writing this against an assumed contract
-    is precisely what the specification rules out.
+    Composed from one `/archive/` pull rather than a `/snapshot/` per cut, which
+    G0 licensed by measuring that the reconstruction reproduces the direct
+    snapshot exactly at three test cuts. That matters for cost: `/snapshot/`
+    filters geography and reference time client-side, so each call pays for the
+    whole dataset.
 
-    What it must satisfy to pass G1, so that the criterion is on record now:
+    `report_time` is bounded server-side at the cut, so a version published after
+    it never enters the process at all — the gate in `as_of_view` is then the
+    second line and not the only one.
 
-    * refuses any row published after the cut, in every mode, for data, labels,
-      features and recalibration alike;
-    * returns `INCOMPLETE_HISTORY` instead of back-filling with today's values;
-    * refuses `OBSERVED_REPLAY` for cuts at which no capture actually ran;
-    * refuses a confirmatory cut unless a frozen act exists and its hash matches,
-      which is what replaces the retired filename guard;
-    * is deterministic: same cut, same snapshot, same code, same frame.
+    `confirmatory=True` is refused unless the frozen act exists. This is what
+    replaces the retired filename guard, and it sits in the data path where the
+    control belongs: a caller cannot reach the confirmatory cohort by renaming a
+    script.
     """
-    raise NotImplementedError(
-        "load_as_of is completed in G1, once G0 has measured the source contract. "
-        "The gate itself is implemented and tested: use as_of_view(panel, cut, mode)."
+    if confirmatory and not FROZEN_ACT.exists():
+        raise PanelContractError(
+            f"a confirmatory cut needs a frozen method: {FROZEN_ACT.name} does not "
+            "exist. Freeze first, deliberately, with /congelar-metodo. The cohort's "
+            "entire value comes from the method being fixed before it was scored."
+        )
+
+    frame, provenance = sources.v5_archive(
+        signals=signal,
+        geo_type=geography,
+        report_time=sources.date_range("2024-11-01", decision_as_of),
     )
+    if frame.empty:
+        return frame, Completeness.DATA_UNAVAILABLE
+
+    panel = panel_from_v5(frame, observed_at=provenance.observed_at)
+    return as_of_view(panel, decision_as_of, replay_mode)

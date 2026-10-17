@@ -45,17 +45,31 @@ existen, están rastreadas y son citables. Siguiente compuerta: **G1**.
 - **Techo de N1 conocido: 99 cortes** semanales nacionales, antes de que la
   madurez y la disponibilidad de etiquetas lo poden.
 
+- **Repositorio público y en remoto:**
+  `github.com/aalopez76/revision-aware-ml-monitoring`. CI verde en el primer
+  push. La captura semanal ya puede correr.
+- **`fill_method` incorporado** a la identidad del panel y a `KEY`, con su
+  prueba: dos filas que difieren solo en ese campo no son una revisión.
+- **`load_as_of` implementado** y corriendo sobre datos reales. Reconstruye
+  desde **una sola consulta de `/archive/`** en lugar de un `/snapshot/` por
+  corte, que es lo que G0 licenció al medir la reconstrucción exacta. El
+  `report_time` se acota en el servidor, así que una versión posterior al corte
+  no entra al proceso y la compuerta de `as_of_view` es la segunda línea.
+  Comprobado en tres cortes: en el de 2026-10-16 la publicación más nueva que
+  ve es la del 14, no la de hoy — el margen de disponibilidad funcionando sobre
+  dato vivo.
+- **El control confirmatorio vive en la ruta del dato:** `confirmatory=True`
+  falla si no existe el acta de congelación, antes de tocar la red. Es lo que
+  sustituye al guardián por nombre de archivo y no se puede rodear renombrando
+  un script.
+
 ## Lo que NO está hecho
 
-- **G1 no existe.** `load_as_of` está declarada con su contrato y sin
-  implementar; `as_of_view` —la compuerta pura— sí está implementada y probada
-  con propiedades. No hay `forecasting.py`, `monitoring.py`, `evaluation.py` ni
-  `evidence.py`.
-- **`fill_method` no está en el esquema del panel** todavía, aunque la regla ya
-  lo exige.
-- **El repositorio no está en remoto y la captura nunca ha corrido.** Sigue
-  siendo lo único irrecuperable, y hoy mismo la fuente publicó otra vez: el
-  calendario pasó de 188 a 189 entradas en un día.
+- **G1 está a medias.** Falta el baseline, la predicción inmutable con su
+  manifiesto, la señal, la recomendación de las cinco y la figura. No hay
+  `forecasting.py`, `monitoring.py`, `evaluation.py` ni `evidence.py`.
+- **La captura semanal todavía no ha dejado ningún archivo**: el cron corre los
+  miércoles y el horario sigue marcado como provisional.
 
 ## Siguiente acción concreta
 

@@ -16,11 +16,14 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from revmon.panel import (
+    FROZEN_ACT,
     PANEL_COLUMNS,
     PanelContractError,
     as_of_view,
     derive_revisions,
     eligible_labels,
+    load_as_of,
+    panel_from_v5,
 )
 from revmon.temporal import AVAILABILITY_MARGIN_DAYS, Completeness, MaturityPolicy, ReplayMode
 
@@ -35,6 +38,8 @@ def build(rows: list[dict], *, clock: str = "source_report_date") -> pd.DataFram
     frame["geo_type"] = frame.get("geo_type", "nation")
     if "geo_value" not in frame:
         frame["geo_value"] = "us"
+    if "fill_method" not in frame:
+        frame["fill_method"] = "source"
     if "vintage_id" not in frame:
         frame["vintage_id"] = frame[clock].astype(str)
     if "observed_at" not in frame:
@@ -95,6 +100,24 @@ def test_revisions_do_not_leak_across_geographies():
              "value": 10, "geo_value": "us"},
             {"event_week_end": "2026-10-10", "source_report_date": "2026-10-14",
              "value": 99, "geo_value": "ca"},
+        ]
+    )
+    assert panel["revised"].sum() == 0
+    assert set(panel["release_index"]) == {0}
+
+
+def test_fill_method_is_part_of_the_identity():
+    """Lo midio G0: la fuente pone `fill_method` en su propia clave primaria.
+
+    Dos filas que difieren solo en ese campo no son una revision una de otra, y
+    contarlas como tal convertiria un cambio de metodo en una reexpresion.
+    """
+    panel = build(
+        [
+            {"event_week_end": "2026-10-10", "source_report_date": "2026-10-14",
+             "value": 10, "fill_method": "source"},
+            {"event_week_end": "2026-10-10", "source_report_date": "2026-10-14",
+             "value": 99, "fill_method": "interpolated"},
         ]
     )
     assert panel["revised"].sum() == 0
@@ -246,3 +269,49 @@ def test_no_generated_history_ever_leaks_a_future_publication(offsets, weeks, cu
     assert (pd.to_datetime(visible["source_report_date"]) <= cutoff).all()
     # And exactly one row per key: a cut describes one state of the world.
     assert not visible.duplicated(subset=["geo_value", "event_week_end"]).any()
+
+
+# ---------------------------------------------------------------------------
+# load_as_of: el contrato publico
+# ---------------------------------------------------------------------------
+
+
+def test_panel_from_v5_maps_report_time_to_the_source_clock():
+    """El mapeo es de una sola direccion a proposito.
+
+    `report_time` es la publicacion que declara la fuente y se convierte en
+    `source_report_date`, nunca en `hub_commit_at`, que es del otro canal. Si
+    los dos relojes se mezclaran aqui, el resto del proyecto no podria
+    distinguirlos despues.
+    """
+    crudo = pd.DataFrame(
+        {
+            "signal": ["confirmed_admissions_flu_ew"] * 2,
+            "geo_type": ["nation"] * 2,
+            "geo_value": ["us"] * 2,
+            "fill_method": ["source"] * 2,
+            "reference_time": ["2026-10-03", "2026-10-03"],
+            "report_time": ["2026-10-07", "2026-10-14"],
+            "value": [100.0, 112.0],
+        }
+    )
+    panel = panel_from_v5(crudo, observed_at="2026-10-16T00:00:00+00:00")
+
+    assert list(panel.columns) == PANEL_COLUMNS
+    assert panel["source"].unique().tolist() == ["nhsn"]
+    assert panel["hub_commit_at"].isna().all()
+    assert str(panel.loc[0, "source_report_date"].date()) == "2026-10-07"
+    assert panel.loc[1, "revision"] == 12
+    assert list(panel["vintage_id"]) == ["2026-10-07", "2026-10-14"]
+
+
+def test_load_as_of_refuses_a_confirmatory_cut_without_a_frozen_act():
+    """Esto es lo que sustituye al guardian por nombre de archivo.
+
+    Vive en la ruta del dato, asi que no se puede rodear renombrando un script.
+    Falla antes de tocar la red, que es lo que permite probarlo sin ella.
+    """
+    if FROZEN_ACT.exists():
+        pytest.skip("el metodo ya esta congelado; este caso ya no aplica")
+    with pytest.raises(PanelContractError, match="frozen method"):
+        load_as_of(date(2026, 10, 16), confirmatory=True)
