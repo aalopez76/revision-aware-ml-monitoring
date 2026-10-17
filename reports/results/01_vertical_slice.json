@@ -1,0 +1,901 @@
+{
+  "figure": "reports\\figures\\01_forecast_vs_revisions.png",
+  "historical_replay": {
+    "action_counts": {
+      "ESPERAR_MADUREZ": 10,
+      "INVESTIGAR_DATO": 4
+    },
+    "cuts": [
+      {
+        "completeness": "complete",
+        "cut": "2026-05-16",
+        "modality": "historical_replay",
+        "prediction": {
+          "data_vintage_id": "2026-05-15 00:00:00+00:00",
+          "geo_type": "nation",
+          "horizon_weeks": 1,
+          "inputs_used": 301,
+          "issued_at": "2026-10-17T01:51:50.026991+00:00",
+          "issued_for_cut": "2026-05-16",
+          "last_eligible_week": "2026-05-09",
+          "modality": "historical_replay",
+          "model": "naive",
+          "prediction_id": "2026-05-16-9aba4e031a6d",
+          "signal": "confirmed_admissions_flu_ew",
+          "target_week": "2026-05-16",
+          "y_pred": 1431.0
+        },
+        "prediction_was_written_now": false,
+        "provenance": {
+          "channel": "delphi_v5_archive",
+          "observed_at": "2026-10-17T01:53:37.001242+00:00",
+          "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-05-16"
+        },
+        "recommendation": {
+          "action": "ESPERAR_MADUREZ",
+          "arm": "d_11",
+          "evidence": {
+            "completeness": "complete",
+            "coverage_drop": null,
+            "information": {
+              "coverage": true,
+              "revision": true
+            },
+            "loss": null,
+            "mature_labels": 0,
+            "revision_share": 1.0
+          },
+          "reason": "0 eligible labels, below the declared minimum of 4",
+          "signals": [
+            {
+              "detail": "100.0% of recent pairs revised",
+              "kind": "DATA_REVISION",
+              "value": 1.0
+            },
+            {
+              "detail": "not enough eligible labels",
+              "kind": "INSUFFICIENT_EVIDENCE",
+              "value": 0
+            }
+          ]
+        },
+        "state_weeks": 301
+      },
+      {
+        "completeness": "complete",
+        "cut": "2026-05-23",
+        "modality": "historical_replay",
+        "prediction": {
+          "data_vintage_id": "2026-05-22 00:00:00+00:00",
+          "geo_type": "nation",
+          "horizon_weeks": 1,
+          "inputs_used": 302,
+          "issued_at": "2026-10-17T01:51:51.193039+00:00",
+          "issued_for_cut": "2026-05-23",
+          "last_eligible_week": "2026-05-16",
+          "modality": "historical_replay",
+          "model": "naive",
+          "prediction_id": "2026-05-23-46540e173da4",
+          "signal": "confirmed_admissions_flu_ew",
+          "target_week": "2026-05-23",
+          "y_pred": 1236.0
+        },
+        "prediction_was_written_now": false,
+        "provenance": {
+          "channel": "delphi_v5_archive",
+          "observed_at": "2026-10-17T01:53:37.079506+00:00",
+          "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-05-23"
+        },
+        "recommendation": {
+          "action": "ESPERAR_MADUREZ",
+          "arm": "d_11",
+          "evidence": {
+            "completeness": "complete",
+            "coverage_drop": null,
+            "information": {
+              "coverage": true,
+              "revision": true
+            },
+            "loss": null,
+            "mature_labels": 0,
+            "revision_share": 1.0
+          },
+          "reason": "0 eligible labels, below the declared minimum of 4",
+          "signals": [
+            {
+              "detail": "100.0% of recent pairs revised",
+              "kind": "DATA_REVISION",
+              "value": 1.0
+            },
+            {
+              "detail": "not enough eligible labels",
+              "kind": "INSUFFICIENT_EVIDENCE",
+              "value": 0
+            }
+          ]
+        },
+        "state_weeks": 302
+      },
+      {
+        "completeness": "complete",
+        "cut": "2026-05-30",
+        "modality": "historical_replay",
+        "prediction": {
+          "data_vintage_id": "2026-05-27 00:00:00+00:00",
+          "geo_type": "nation",
+          "horizon_weeks": 1,
+          "inputs_used": 303,
+          "issued_at": "2026-10-17T01:52:07.553690+00:00",
+          "issued_for_cut": "2026-05-30",
+          "last_eligible_week": "2026-05-23",
+          "modality": "historical_replay",
+          "model": "naive",
+          "prediction_id": "2026-05-30-c1ced2f8dd51",
+          "signal": "confirmed_admissions_flu_ew",
+          "target_week": "2026-05-30",
+          "y_pred": 1088.0
+        },
+        "prediction_was_written_now": false,
+        "provenance": {
+          "channel": "delphi_v5_archive",
+          "observed_at": "2026-10-17T01:53:37.179048+00:00",
+          "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-05-30"
+        },
+        "recommendation": {
+          "action": "ESPERAR_MADUREZ",
+          "arm": "d_11",
+          "evidence": {
+            "completeness": "complete",
+            "coverage_drop": null,
+            "information": {
+              "coverage": true,
+              "revision": true
+            },
+            "loss": null,
+            "mature_labels": 0,
+            "revision_share": 1.0
+          },
+          "reason": "0 eligible labels, below the declared minimum of 4",
+          "signals": [
+            {
+              "detail": "100.0% of recent pairs revised",
+              "kind": "DATA_REVISION",
+              "value": 1.0
+            },
+            {
+              "detail": "not enough eligible labels",
+              "kind": "INSUFFICIENT_EVIDENCE",
+              "value": 0
+            }
+          ]
+        },
+        "state_weeks": 303
+      },
+      {
+        "completeness": "complete",
+        "cut": "2026-06-06",
+        "modality": "historical_replay",
+        "prediction": {
+          "data_vintage_id": "2026-06-05 00:00:00+00:00",
+          "geo_type": "nation",
+          "horizon_weeks": 1,
+          "inputs_used": 304,
+          "issued_at": "2026-10-17T01:52:08.663749+00:00",
+          "issued_for_cut": "2026-06-06",
+          "last_eligible_week": "2026-05-30",
+          "modality": "historical_replay",
+          "model": "naive",
+          "prediction_id": "2026-06-06-31293f08ca50",
+          "signal": "confirmed_admissions_flu_ew",
+          "target_week": "2026-06-06",
+          "y_pred": 997.0
+        },
+        "prediction_was_written_now": false,
+        "provenance": {
+          "channel": "delphi_v5_archive",
+          "observed_at": "2026-10-17T01:53:37.280234+00:00",
+          "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-06-06"
+        },
+        "recommendation": {
+          "action": "ESPERAR_MADUREZ",
+          "arm": "d_11",
+          "evidence": {
+            "completeness": "complete",
+            "coverage_drop": null,
+            "information": {
+              "coverage": true,
+              "revision": true
+            },
+            "loss": null,
+            "mature_labels": 0,
+            "revision_share": 1.0
+          },
+          "reason": "0 eligible labels, below the declared minimum of 4",
+          "signals": [
+            {
+              "detail": "100.0% of recent pairs revised",
+              "kind": "DATA_REVISION",
+              "value": 1.0
+            },
+            {
+              "detail": "not enough eligible labels",
+              "kind": "INSUFFICIENT_EVIDENCE",
+              "value": 0
+            }
+          ]
+        },
+        "state_weeks": 304
+      },
+      {
+        "completeness": "complete",
+        "cut": "2026-06-13",
+        "modality": "historical_replay",
+        "prediction": {
+          "data_vintage_id": "2026-06-12 00:00:00+00:00",
+          "geo_type": "nation",
+          "horizon_weeks": 1,
+          "inputs_used": 305,
+          "issued_at": "2026-10-17T01:52:09.861468+00:00",
+          "issued_for_cut": "2026-06-13",
+          "last_eligible_week": "2026-06-06",
+          "modality": "historical_replay",
+          "model": "naive",
+          "prediction_id": "2026-06-13-2515a267b379",
+          "signal": "confirmed_admissions_flu_ew",
+          "target_week": "2026-06-13",
+          "y_pred": 969.0
+        },
+        "prediction_was_written_now": false,
+        "provenance": {
+          "channel": "delphi_v5_archive",
+          "observed_at": "2026-10-17T01:53:37.379204+00:00",
+          "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-06-13"
+        },
+        "recommendation": {
+          "action": "ESPERAR_MADUREZ",
+          "arm": "d_11",
+          "evidence": {
+            "completeness": "complete",
+            "coverage_drop": null,
+            "information": {
+              "coverage": true,
+              "revision": true
+            },
+            "loss": null,
+            "mature_labels": 0,
+            "revision_share": 1.0
+          },
+          "reason": "0 eligible labels, below the declared minimum of 4",
+          "signals": [
+            {
+              "detail": "100.0% of recent pairs revised",
+              "kind": "DATA_REVISION",
+              "value": 1.0
+            },
+            {
+              "detail": "not enough eligible labels",
+              "kind": "INSUFFICIENT_EVIDENCE",
+              "value": 0
+            }
+          ]
+        },
+        "state_weeks": 305
+      },
+      {
+        "completeness": "complete",
+        "cut": "2026-06-20",
+        "modality": "historical_replay",
+        "prediction": {
+          "data_vintage_id": "2026-06-17 00:00:00+00:00",
+          "geo_type": "nation",
+          "horizon_weeks": 1,
+          "inputs_used": 306,
+          "issued_at": "2026-10-17T01:52:11.108155+00:00",
+          "issued_for_cut": "2026-06-20",
+          "last_eligible_week": "2026-06-13",
+          "modality": "historical_replay",
+          "model": "naive",
+          "prediction_id": "2026-06-20-e2a53ad02dce",
+          "signal": "confirmed_admissions_flu_ew",
+          "target_week": "2026-06-20",
+          "y_pred": 768.0
+        },
+        "prediction_was_written_now": false,
+        "provenance": {
+          "channel": "delphi_v5_archive",
+          "observed_at": "2026-10-17T01:53:37.485769+00:00",
+          "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-06-20"
+        },
+        "recommendation": {
+          "action": "ESPERAR_MADUREZ",
+          "arm": "d_11",
+          "evidence": {
+            "completeness": "complete",
+            "coverage_drop": null,
+            "information": {
+              "coverage": true,
+              "revision": true
+            },
+            "loss": null,
+            "mature_labels": 0,
+            "revision_share": 1.0
+          },
+          "reason": "0 eligible labels, below the declared minimum of 4",
+          "signals": [
+            {
+              "detail": "100.0% of recent pairs revised",
+              "kind": "DATA_REVISION",
+              "value": 1.0
+            },
+            {
+              "detail": "not enough eligible labels",
+              "kind": "INSUFFICIENT_EVIDENCE",
+              "value": 0
+            }
+          ]
+        },
+        "state_weeks": 306
+      },
+      {
+        "completeness": "complete",
+        "cut": "2026-06-27",
+        "modality": "historical_replay",
+        "prediction": {
+          "data_vintage_id": "2026-06-26 00:00:00+00:00",
+          "geo_type": "nation",
+          "horizon_weeks": 1,
+          "inputs_used": 307,
+          "issued_at": "2026-10-17T01:52:12.197657+00:00",
+          "issued_for_cut": "2026-06-27",
+          "last_eligible_week": "2026-06-20",
+          "modality": "historical_replay",
+          "model": "naive",
+          "prediction_id": "2026-06-27-64395f7125b1",
+          "signal": "confirmed_admissions_flu_ew",
+          "target_week": "2026-06-27",
+          "y_pred": 733.0
+        },
+        "prediction_was_written_now": false,
+        "provenance": {
+          "channel": "delphi_v5_archive",
+          "observed_at": "2026-10-17T01:53:37.604705+00:00",
+          "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-06-27"
+        },
+        "recommendation": {
+          "action": "ESPERAR_MADUREZ",
+          "arm": "d_11",
+          "evidence": {
+            "completeness": "complete",
+            "coverage_drop": null,
+            "information": {
+              "coverage": true,
+              "revision": true
+            },
+            "loss": null,
+            "mature_labels": 0,
+            "revision_share": 1.0
+          },
+          "reason": "0 eligible labels, below the declared minimum of 4",
+          "signals": [
+            {
+              "detail": "100.0% of recent pairs revised",
+              "kind": "DATA_REVISION",
+              "value": 1.0
+            },
+            {
+              "detail": "not enough eligible labels",
+              "kind": "INSUFFICIENT_EVIDENCE",
+              "value": 0
+            }
+          ]
+        },
+        "state_weeks": 307
+      },
+      {
+        "completeness": "complete",
+        "cut": "2026-07-04",
+        "modality": "historical_replay",
+        "prediction": {
+          "data_vintage_id": "2026-07-01 00:00:00+00:00",
+          "geo_type": "nation",
+          "horizon_weeks": 1,
+          "inputs_used": 308,
+          "issued_at": "2026-10-17T01:52:13.392827+00:00",
+          "issued_for_cut": "2026-07-04",
+          "last_eligible_week": "2026-06-27",
+          "modality": "historical_replay",
+          "model": "naive",
+          "prediction_id": "2026-07-04-bc2f471988c7",
+          "signal": "confirmed_admissions_flu_ew",
+          "target_week": "2026-07-04",
+          "y_pred": 729.0
+        },
+        "prediction_was_written_now": false,
+        "provenance": {
+          "channel": "delphi_v5_archive",
+          "observed_at": "2026-10-17T01:53:37.705599+00:00",
+          "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-07-04"
+        },
+        "recommendation": {
+          "action": "ESPERAR_MADUREZ",
+          "arm": "d_11",
+          "evidence": {
+            "completeness": "complete",
+            "coverage_drop": null,
+            "information": {
+              "coverage": true,
+              "revision": true
+            },
+            "loss": 0.02436,
+            "mature_labels": 1,
+            "revision_share": 1.0
+          },
+          "reason": "1 eligible labels, below the declared minimum of 4",
+          "signals": [
+            {
+              "detail": "100.0% of recent pairs revised",
+              "kind": "DATA_REVISION",
+              "value": 1.0
+            },
+            {
+              "detail": "mean scaled loss over 1 labels",
+              "kind": "PERFORMANCE",
+              "value": 0.02436
+            },
+            {
+              "detail": "not enough eligible labels",
+              "kind": "INSUFFICIENT_EVIDENCE",
+              "value": 1
+            }
+          ]
+        },
+        "state_weeks": 308
+      },
+      {
+        "completeness": "complete",
+        "cut": "2026-07-11",
+        "modality": "historical_replay",
+        "prediction": {
+          "data_vintage_id": "2026-07-10 00:00:00+00:00",
+          "geo_type": "nation",
+          "horizon_weeks": 1,
+          "inputs_used": 309,
+          "issued_at": "2026-10-17T01:52:14.864446+00:00",
+          "issued_for_cut": "2026-07-11",
+          "last_eligible_week": "2026-07-04",
+          "modality": "historical_replay",
+          "model": "naive",
+          "prediction_id": "2026-07-11-e0c316e60e2a",
+          "signal": "confirmed_admissions_flu_ew",
+          "target_week": "2026-07-11",
+          "y_pred": 695.0
+        },
+        "prediction_was_written_now": false,
+        "provenance": {
+          "channel": "delphi_v5_archive",
+          "observed_at": "2026-10-17T01:53:37.811672+00:00",
+          "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-07-11"
+        },
+        "recommendation": {
+          "action": "ESPERAR_MADUREZ",
+          "arm": "d_11",
+          "evidence": {
+            "completeness": "complete",
+            "coverage_drop": null,
+            "information": {
+              "coverage": true,
+              "revision": true
+            },
+            "loss": 0.01369,
+            "mature_labels": 2,
+            "revision_share": 1.0
+          },
+          "reason": "2 eligible labels, below the declared minimum of 4",
+          "signals": [
+            {
+              "detail": "100.0% of recent pairs revised",
+              "kind": "DATA_REVISION",
+              "value": 1.0
+            },
+            {
+              "detail": "mean scaled loss over 2 labels",
+              "kind": "PERFORMANCE",
+              "value": 0.01369
+            },
+            {
+              "detail": "not enough eligible labels",
+              "kind": "INSUFFICIENT_EVIDENCE",
+              "value": 2
+            }
+          ]
+        },
+        "state_weeks": 309
+      },
+      {
+        "completeness": "complete",
+        "cut": "2026-07-18",
+        "modality": "historical_replay",
+        "prediction": {
+          "data_vintage_id": "2026-07-17 00:00:00+00:00",
+          "geo_type": "nation",
+          "horizon_weeks": 1,
+          "inputs_used": 310,
+          "issued_at": "2026-10-17T01:52:16.123558+00:00",
+          "issued_for_cut": "2026-07-18",
+          "last_eligible_week": "2026-07-11",
+          "modality": "historical_replay",
+          "model": "naive",
+          "prediction_id": "2026-07-18-e416c88358f9",
+          "signal": "confirmed_admissions_flu_ew",
+          "target_week": "2026-07-18",
+          "y_pred": 660.0
+        },
+        "prediction_was_written_now": false,
+        "provenance": {
+          "channel": "delphi_v5_archive",
+          "observed_at": "2026-10-17T01:53:37.926975+00:00",
+          "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-07-18"
+        },
+        "recommendation": {
+          "action": "ESPERAR_MADUREZ",
+          "arm": "d_11",
+          "evidence": {
+            "completeness": "complete",
+            "coverage_drop": null,
+            "information": {
+              "coverage": true,
+              "revision": true
+            },
+            "loss": 0.010737,
+            "mature_labels": 3,
+            "revision_share": 1.0
+          },
+          "reason": "3 eligible labels, below the declared minimum of 4",
+          "signals": [
+            {
+              "detail": "100.0% of recent pairs revised",
+              "kind": "DATA_REVISION",
+              "value": 1.0
+            },
+            {
+              "detail": "mean scaled loss over 3 labels",
+              "kind": "PERFORMANCE",
+              "value": 0.010737
+            },
+            {
+              "detail": "not enough eligible labels",
+              "kind": "INSUFFICIENT_EVIDENCE",
+              "value": 3
+            }
+          ]
+        },
+        "state_weeks": 310
+      },
+      {
+        "completeness": "complete",
+        "cut": "2026-07-25",
+        "modality": "historical_replay",
+        "prediction": {
+          "data_vintage_id": "2026-07-24 00:00:00+00:00",
+          "geo_type": "nation",
+          "horizon_weeks": 1,
+          "inputs_used": 311,
+          "issued_at": "2026-10-17T01:52:17.517306+00:00",
+          "issued_for_cut": "2026-07-25",
+          "last_eligible_week": "2026-07-18",
+          "modality": "historical_replay",
+          "model": "naive",
+          "prediction_id": "2026-07-25-4a66ec239a86",
+          "signal": "confirmed_admissions_flu_ew",
+          "target_week": "2026-07-25",
+          "y_pred": 637.0
+        },
+        "prediction_was_written_now": false,
+        "provenance": {
+          "channel": "delphi_v5_archive",
+          "observed_at": "2026-10-17T01:53:38.049482+00:00",
+          "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-07-25"
+        },
+        "recommendation": {
+          "action": "INVESTIGAR_DATO",
+          "arm": "d_11",
+          "evidence": {
+            "completeness": "complete",
+            "coverage_drop": null,
+            "information": {
+              "coverage": true,
+              "revision": true
+            },
+            "loss": 0.010066,
+            "mature_labels": 4,
+            "revision_share": 1.0
+          },
+          "reason": "100.0% of recent comparable pairs were revised, above the declared 25%",
+          "signals": [
+            {
+              "detail": "100.0% of recent pairs revised",
+              "kind": "DATA_REVISION",
+              "value": 1.0
+            },
+            {
+              "detail": "mean scaled loss over 4 labels",
+              "kind": "PERFORMANCE",
+              "value": 0.010066
+            }
+          ]
+        },
+        "state_weeks": 311
+      },
+      {
+        "completeness": "complete",
+        "cut": "2026-08-01",
+        "modality": "historical_replay",
+        "prediction": {
+          "data_vintage_id": "2026-07-31 00:00:00+00:00",
+          "geo_type": "nation",
+          "horizon_weeks": 1,
+          "inputs_used": 312,
+          "issued_at": "2026-10-17T01:52:18.817155+00:00",
+          "issued_for_cut": "2026-08-01",
+          "last_eligible_week": "2026-07-25",
+          "modality": "historical_replay",
+          "model": "naive",
+          "prediction_id": "2026-08-01-e86b2ebf843c",
+          "signal": "confirmed_admissions_flu_ew",
+          "target_week": "2026-08-01",
+          "y_pred": 681.0
+        },
+        "prediction_was_written_now": false,
+        "provenance": {
+          "channel": "delphi_v5_archive",
+          "observed_at": "2026-10-17T01:53:38.175202+00:00",
+          "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-08-01"
+        },
+        "recommendation": {
+          "action": "INVESTIGAR_DATO",
+          "arm": "d_11",
+          "evidence": {
+            "completeness": "complete",
+            "coverage_drop": null,
+            "information": {
+              "coverage": true,
+              "revision": true
+            },
+            "loss": 0.01224,
+            "mature_labels": 5,
+            "revision_share": 1.0
+          },
+          "reason": "100.0% of recent comparable pairs were revised, above the declared 25%",
+          "signals": [
+            {
+              "detail": "100.0% of recent pairs revised",
+              "kind": "DATA_REVISION",
+              "value": 1.0
+            },
+            {
+              "detail": "mean scaled loss over 5 labels",
+              "kind": "PERFORMANCE",
+              "value": 0.01224
+            }
+          ]
+        },
+        "state_weeks": 312
+      },
+      {
+        "completeness": "complete",
+        "cut": "2026-08-08",
+        "modality": "historical_replay",
+        "prediction": {
+          "data_vintage_id": "2026-08-07 00:00:00+00:00",
+          "geo_type": "nation",
+          "horizon_weeks": 1,
+          "inputs_used": 313,
+          "issued_at": "2026-10-17T01:52:20.044164+00:00",
+          "issued_for_cut": "2026-08-08",
+          "last_eligible_week": "2026-08-01",
+          "modality": "historical_replay",
+          "model": "naive",
+          "prediction_id": "2026-08-08-0b5063fce662",
+          "signal": "confirmed_admissions_flu_ew",
+          "target_week": "2026-08-08",
+          "y_pred": 643.0
+        },
+        "prediction_was_written_now": false,
+        "provenance": {
+          "channel": "delphi_v5_archive",
+          "observed_at": "2026-10-17T01:53:38.288433+00:00",
+          "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-08-08"
+        },
+        "recommendation": {
+          "action": "INVESTIGAR_DATO",
+          "arm": "d_11",
+          "evidence": {
+            "completeness": "complete",
+            "coverage_drop": null,
+            "information": {
+              "coverage": true,
+              "revision": true
+            },
+            "loss": 0.010737,
+            "mature_labels": 6,
+            "revision_share": 1.0
+          },
+          "reason": "100.0% of recent comparable pairs were revised, above the declared 25%",
+          "signals": [
+            {
+              "detail": "100.0% of recent pairs revised",
+              "kind": "DATA_REVISION",
+              "value": 1.0
+            },
+            {
+              "detail": "mean scaled loss over 6 labels",
+              "kind": "PERFORMANCE",
+              "value": 0.010737
+            }
+          ]
+        },
+        "state_weeks": 313
+      },
+      {
+        "completeness": "complete",
+        "cut": "2026-08-15",
+        "modality": "historical_replay",
+        "prediction": {
+          "data_vintage_id": "2026-08-14 00:00:00+00:00",
+          "geo_type": "nation",
+          "horizon_weeks": 1,
+          "inputs_used": 314,
+          "issued_at": "2026-10-17T01:52:21.158757+00:00",
+          "issued_for_cut": "2026-08-15",
+          "last_eligible_week": "2026-08-08",
+          "modality": "historical_replay",
+          "model": "naive",
+          "prediction_id": "2026-08-15-fbb3eb31d21e",
+          "signal": "confirmed_admissions_flu_ew",
+          "target_week": "2026-08-15",
+          "y_pred": 610.0
+        },
+        "prediction_was_written_now": false,
+        "provenance": {
+          "channel": "delphi_v5_archive",
+          "observed_at": "2026-10-17T01:53:38.411223+00:00",
+          "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-08-15"
+        },
+        "recommendation": {
+          "action": "INVESTIGAR_DATO",
+          "arm": "d_11",
+          "evidence": {
+            "completeness": "complete",
+            "coverage_drop": null,
+            "information": {
+              "coverage": true,
+              "revision": true
+            },
+            "loss": 0.009721,
+            "mature_labels": 7,
+            "revision_share": 1.0
+          },
+          "reason": "100.0% of recent comparable pairs were revised, above the declared 25%",
+          "signals": [
+            {
+              "detail": "100.0% of recent pairs revised",
+              "kind": "DATA_REVISION",
+              "value": 1.0
+            },
+            {
+              "detail": "mean scaled loss over 7 labels",
+              "kind": "PERFORMANCE",
+              "value": 0.009721
+            }
+          ]
+        },
+        "state_weeks": 314
+      }
+    ],
+    "note": "Reconstructed today from versions the source declares were published at each cut. This is not evidence that the system ran on those dates."
+  },
+  "loss_scale": {
+    "method": "mean absolute week-over-week difference of eligible labels",
+    "pairs": 24,
+    "s_dev": 4967.25,
+    "window_from": "2024-11-19",
+    "window_to": "2025-06-30"
+  },
+  "manifest": {
+    "code_sha": "5a40663ee4af201e699feb3bd284875176119904",
+    "code_tree_sha256": "bd5390de9d060df94989023392f104f4499cc53aa4ac5c11714a1a5b8786b94c",
+    "config": {
+      "arm": "d_11",
+      "calibration_window": [
+        "2024-11-19",
+        "2025-06-30"
+      ],
+      "coverage_signal": "hosprep_pct_confirmed_admissions_flu_ew",
+      "geo_type": "nation",
+      "maturity_policy": {
+        "days": 45,
+        "declared_in": "G1 development run, 2026-10-16, before any confirmatory cohort exists",
+        "label_choice": "first_publication_at_or_after_eligibility"
+      },
+      "model": "naive",
+      "signal": "confirmed_admissions_flu_ew",
+      "thresholds": {
+        "coverage_drop_alarm": 2.0,
+        "declared_in": "G1 development run, 2026-10-16, before any confirmatory cohort exists",
+        "loss_alarm": 2.0,
+        "min_mature_labels": 4,
+        "revision_share_alarm": 0.25
+      }
+    },
+    "decision_as_of": "2026-10-17",
+    "errors": [],
+    "lock_sha256": "7ef21773ab27c92e0fe3e25aad5fa13853088b9360c55a10a4b2052cabfdeae0",
+    "modality": "observed_run",
+    "provenance": [],
+    "run_id": "20261017T015336Z-2026-10-17",
+    "runner": "local",
+    "spec_sha256": "5664b8889e618b03afeef4c05e3c2871013f87aad813e5cda70b1af0c25fdc91",
+    "started_at": "2026-10-17T01:53:36.674977+00:00",
+    "state": "completed"
+  },
+  "observed_run": {
+    "completeness": "complete",
+    "cut": "2026-10-17",
+    "modality": "observed_run",
+    "prediction": {
+      "data_vintage_id": "2026-10-16 00:00:00+00:00",
+      "geo_type": "nation",
+      "horizon_weeks": 1,
+      "inputs_used": 323,
+      "issued_at": "2026-10-17T01:52:22.461915+00:00",
+      "issued_for_cut": "2026-10-17",
+      "last_eligible_week": "2026-10-10",
+      "modality": "observed_run",
+      "model": "naive",
+      "prediction_id": "2026-10-17-80751a18ea2a",
+      "signal": "confirmed_admissions_flu_ew",
+      "target_week": "2026-10-17",
+      "y_pred": 3955.0
+    },
+    "prediction_was_written_now": false,
+    "provenance": {
+      "channel": "delphi_v5_archive",
+      "observed_at": "2026-10-17T01:53:38.507279+00:00",
+      "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-10-17"
+    },
+    "recommendation": {
+      "action": "INVESTIGAR_DATO",
+      "arm": "d_11",
+      "evidence": {
+        "completeness": "complete",
+        "coverage_drop": 4.5875,
+        "information": {
+          "coverage": true,
+          "revision": true
+        },
+        "loss": 0.008527,
+        "mature_labels": 14,
+        "revision_share": 1.0
+      },
+      "reason": "100.0% of recent comparable pairs were revised, above the declared 25%",
+      "signals": [
+        {
+          "detail": "100.0% of recent pairs revised",
+          "kind": "DATA_REVISION",
+          "value": 1.0
+        },
+        {
+          "detail": "+4.59 points against baseline",
+          "kind": "DATA_COVERAGE",
+          "value": 4.5875
+        },
+        {
+          "detail": "mean scaled loss over 14 labels",
+          "kind": "PERFORMANCE",
+          "value": 0.008527
+        }
+      ]
+    },
+    "state_weeks": 323
+  }
+}

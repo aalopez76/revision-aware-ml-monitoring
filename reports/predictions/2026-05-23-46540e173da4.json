@@ -1,0 +1,15 @@
+{
+  "data_vintage_id": "2026-05-22 00:00:00+00:00",
+  "geo_type": "nation",
+  "horizon_weeks": 1,
+  "inputs_used": 302,
+  "issued_at": "2026-10-17T01:51:51.193039+00:00",
+  "issued_for_cut": "2026-05-23",
+  "last_eligible_week": "2026-05-16",
+  "modality": "historical_replay",
+  "model": "naive",
+  "prediction_id": "2026-05-23-46540e173da4",
+  "signal": "confirmed_admissions_flu_ew",
+  "target_week": "2026-05-23",
+  "y_pred": 1236.0
+}

@@ -293,6 +293,28 @@ def load_as_of(
     control belongs: a caller cannot reach the confirmatory cohort by renaming a
     script.
     """
+    triangle, _ = fetch_triangle_as_of(
+        decision_as_of, signal=signal, geography=geography, confirmatory=confirmatory
+    )
+    if triangle.empty:
+        return triangle, Completeness.DATA_UNAVAILABLE
+    return as_of_view(triangle, decision_as_of, replay_mode)
+
+
+def fetch_triangle_as_of(
+    decision_as_of: date,
+    *,
+    signal: str = sources.TARGET_SIGNAL,
+    geography: str = sources.GEO_TYPE,
+    confirmatory: bool = False,
+) -> tuple[pd.DataFrame, sources.Provenance | None]:
+    """The whole revision triangle that was visible at a cut.
+
+    `load_as_of` collapses this to one row per key, which is what a forecast
+    consumes. A monitor needs the triangle itself — it is what makes a
+    restatement observable at all — so both are exposed rather than having a
+    caller rebuild one from the other and get the clock wrong.
+    """
     if confirmatory and not FROZEN_ACT.exists():
         raise PanelContractError(
             f"a confirmatory cut needs a frozen method: {FROZEN_ACT.name} does not "
@@ -306,7 +328,5 @@ def load_as_of(
         report_time=sources.date_range("2024-11-01", decision_as_of),
     )
     if frame.empty:
-        return frame, Completeness.DATA_UNAVAILABLE
-
-    panel = panel_from_v5(frame, observed_at=provenance.observed_at)
-    return as_of_view(panel, decision_as_of, replay_mode)
+        return frame, provenance
+    return panel_from_v5(frame, observed_at=provenance.observed_at), provenance
