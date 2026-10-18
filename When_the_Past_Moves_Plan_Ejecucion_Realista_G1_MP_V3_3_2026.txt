@@ -1,0 +1,451 @@
+================================================================================
+WHEN THE PAST MOVES | REVISION-AWARE ML MONITORING & DECISION RELIABILITY
+PLAN EJECUTABLE Y ENMIENDA FINAL DE G1-MP | 17-OCT-2026
+SENIOR DATA SCIENTIST / APPLIED SCIENTIST | REALISTA, REPRODUCIBLE, ACOTADO
+================================================================================
+
+ESTADO: propuesta de ejecucion; NO es un informe de resultados.
+AL ADOPTARSE, DOCUMENTOS VIGENTES:
+  1. When_the_Past_Moves_Especificacion_Ejecutable_V3_3_2026.txt (marco G0-G3).
+  2. ESTE archivo (sustituye las enmiendas G1-MP previas y contiene el plan).
+No generar V4, otro blueprint, ADRs individuales ni otra capa de agentes.
+
+0. VEREDICTO Y CONTRATO DE ALCANCE
+--------------------------------------------------------------------------------
+DICTAMEN: APROBAR CON ENMIENDAS LOCALES Y EJECUTAR.
+- G1-core: cadena real de datos -> forecast -> monitor -> recomendacion ->
+  evidencia; debe quedar auditada antes de hacer afirmaciones publicas.
+- G1-MP: trabajo ADITIVO, no bloqueante; demuestra construccion, comparacion,
+  seleccion y monitoreo profesional de modelos sin sustituir el objetivo G2.
+- M0 naive es Champion PROVISIONAL, no ganador estadistico preestablecido.
+- Candidatos maximos: M0 naive; M1 Ridge; M2 LightGBM condicional; M3a
+  AutoGluon acotado; M3b un solo TSFM Chronos-2 Small zero-shot condicional.
+- UNA serie nacional, UNA recomendacion por corte semanal. No multiplicar
+  observaciones independientes con estados o distintas versiones de un dato.
+- R (revisiones) y C (cobertura) NO son features nuevas del predictor de G2.
+  Las ramas 00/10/01/11 reciben la MISMA secuencia de forecasts del Champion.
+- N1 de G2 mide discordancia de recomendaciones, con ABSTENERSE; nunca se
+  anuncia como incremento de utilidad o efecto causal.
+- G3 sigue sujeto a viabilidad de politicas de REENTRENAMIENTO de parametros;
+  refrescar contexto de M0 o TSFM zero-shot NO equivale a reentrenar.
+
+VEREDICTOS LEGITIMOS:
+ A. Un modelo entrenable consigue mejora material robusta y se promueve.
+ B. M0 permanece: ninguna mejora material defendible; G2 continua.
+ C. Recursos/soporte insuficientes: benchmark parcial o NOT_RUN justificado.
+ D. G3 NOT_APPLICABLE_RETRAINING, NO_EVALUABLE o condicionalmente ejecutable.
+El proyecto NO fracasa si termina responsablemente en G0+G1+G2.
+
+1. EVIDENCIA DISPONIBLE VS HECHOS PENDIENTES
+--------------------------------------------------------------------------------
+LA AUDITORIA ENTREGADA POR EL AUTOR REPORTA (NO VERIFICADO AQUI EN CODIGO):
+ - reports/results/00_source_feasibility.json: version_history_weeks=99,
+   max_weekly_national_cuts=99 y event_weeks_without_version_history=223.
+ - reports/results/01_vertical_slice.json: 14 historical_replay, 1 observed_run.
+ - reports/predictions/*.json: forecasts individuales supuestamente inmutables.
+ - RunManifest.start() hashea la V3.3, no la enmienda G1-MP, segun auditoria.
+ - issued_at=2026-10-17T01:52:22Z, target_week_end=2026-10-17 en el ejemplo.
+NO convertir estas referencias en afirmaciones auditadas sin abrir codigo/JSON.
+NO repetir '40-60 folds': no existe un conteo de origenes elegibles medido.
+
+PRIMERA COMPROBACION EN EL REPOSITORIO REAL:
+ - Ejecutar: uv run python scripts/verify_results.py
+ - Leer las claves reales de G0 y G1-core y verificar vinculos con scripts.
+ - Revisar hashes, observed_at, issued_at, target_week y modo de prediccion.
+ - Revisar test suite e invariante de idempotencia: una prediccion ya escrita
+   no se marca falsamente como emitida por una reejecucion.
+ - Producir UN dictamen corto PASS / FIX / NOT_VERIFIABLE por cada punto.
+Si faltan ficheros o el verificador falla, NO empezar el benchmark por inercia.
+
+2. CORRECCION DE LOS RELOJES Y DE LA PROSPECTIVIDAD
+--------------------------------------------------------------------------------
+RELOJ A: DATOS. reference_time, report_time, observed_at y decision_as_of.
+RELOJ B: MODELO. fecha de disponibilidad del checkpoint/revision y posible
+         informacion absorbida durante su preentrenamiento.
+RELOJ C: EMISION VS SEMANA OBJETIVO (necesario para no exagerar evidencia).
+
+Delphi NHSN representa reference_time mediante la semana que termina SABADO.
+Definir target_start y target_end_exclusive en UNA zona horaria especificada,
+conservarlos en UTC, y documentar la convencion elegida.
+
+CLASIFICACION DE UNA PREDICCION REALMENTE EMITIDA:
+ - PRE_WEEK_FORECAST: issued_at < target_start; toda la semana era futura.
+   Registrar lead_time_hours; esto NO prueba por si solo un lead de 7 dias.
+ - INTRA_WEEK_NOWCAST: target_start <= issued_at < target_end_exclusive;
+   parte de la semana ya transcurrio. No llamarla 'una semana completa ahead'.
+ - POST_EVENT: issued_at >= target_end_exclusive; no es prospectiva del evento.
+ - HISTORICAL_REPLAY: forecast reconstruido hoy para un corte pasado, aunque
+   su evaluacion temporal as-of sea correcta; no es corrida historica real.
+
+ESTA CLASIFICACION ES DIFERENTE DE observed_run / replay y de horizonte de
+indice (+1 respecto a ultima semana historica elegible). Una corrida LIVE es
+real; por si sola NO asegura PRE_WEEK_FORECAST. El criterio 'issued_at antes
+que el FIN de la semana' NO basta para acreditar horizonte semanal completo.
+Modificar registro/verificador y agregar fixtures en limites domingo/sabado,
+zona horaria y cruce de fechas. No reetiquetar corridas antiguas sin evidencia.
+
+3. PARCHE DE TRAZABILIDAD ANTES DE COMPARAR MODELOS
+--------------------------------------------------------------------------------
+NO REESCRIBIR evidence.py; ampliar RunManifest/start con campos compatibles:
+  spec_v3_3_sha256
+  g1_mp_plan_sha256              (hash del TXT FINAL, bytes exactos)
+  model_selection_config_sha256 (JSON/YAML canonico: parametros de decision)
+  code_commit, uv_lock_sha256, dataset/vintage hashes, generated_at_utc.
+Mantener anteriores manifiestos SIN ALTERAR. Nuevas corridas llevan los
+campos adicionales; validar su version de esquema en tests.
+
+Extender scripts/verify_results.py para que el dato publicado encuentre:
+  resultado -> prediccion canonica -> datos as-of -> config -> codigo ->
+  V3.3 + plan G1-MP. La exportacion CSV/Parquet sera DERIVADA de los JSON;
+  nunca segunda fuente editable de predicciones.
+
+Antes de ver los resultados de la cohorte de SELECCION, publicar externamente
+el compromiso versionado (SHA de texto/config/codigo). Un hash sin evidencia
+de fecha solo da IDENTIDAD; no prueba preregistro. Si ya se examinaron esos
+resultados, etiquetar EXPERIMENTAL/EXPLORATORY; la confirmacion requerira
+nuevos periodos aun no inspeccionados. No fabricar un sello retrospectivo.
+
+4. G1-A/G1-B: SOPORTE EMPIRICO Y FEATURE ENGINEERING
+--------------------------------------------------------------------------------
+Crear o actualizar reports/results/01_modeling_support.json con:
+ - report_times realmente reconstruibles y fechas de decision nacionales;
+ - filas/senales faltantes, cambios de cobertura y madurez de etiquetas;
+ - numero de origenes elegibles POR MODELO tras train, horizonte y madurez;
+ - ventanas disponibles para desarrollo, seleccion y futuro prospectivo;
+ - razones de EXCLUSION por origen: no basta contar 99 vintages.
+Si datos de seleccion no pueden aislarse, el benchmark es EXPLORATORIO.
+
+Feature engineering en Ridge, SOLO dos propuestas:
+ F0: lags/fecha/calendario permitidos en cada as-of.
+ F1: F0 + pocas medias/tendencias calculadas retroactivamente sin futuro.
+Fijar primero la receta en desarrollo; no usar lag 52 si no hay historia
+comparable. Probar que una revision futura NO cambia features de t pasado.
+Distinguir las observaciones provisionales conocidas (CONTEXTO) de las
+etiquetas MADURAS permitidas para entrenar supervisadamente y evaluar.
+
+5. G1-C: MODELOS Y AUTOGLUON SIN AMBIGUEDADES
+--------------------------------------------------------------------------------
+ORDEN DE IMPLEMENTACION:
+ M0: baseline naive ya operativo; comprobar su receta y predecir as-of.
+ M1: Ridge + Pipeline; tuning minimo solo en desarrollo, si hay etiquetas.
+ M2: LightGBM acotado; NO OBLIGATORIO, requiere soporte y smoke test CPU.
+ M3a: AutoGluon TimeSeries con un pequeno conjunto de modelos y ensemble;
+      NO es el score de su leaderboard interno, sino forecast externo as-of.
+ M3b: UN Chronos-2 Small ZERO-SHOT con resultado propio, si se ejecuto.
+
+NO USAR medium_quality: su docstring afirma que incluye los preentrenados
+Chronos-2 Small Y Toto-2 4m, asi que el preset ya corre un segundo TSFM,
+que la seccion 11 excluye. Usar SIEMPRE una lista EXPLICITA de
+hyperparameters con pocos modelos estadisticos/tabulares y Chronos2
+(M3a y M3b en un mismo fit).
+Razon de preferir allowlist y no denylist: los nombres registrados son el
+de clase sin sufijo (DeepARModel -> "DeepAR") y NO esta confirmado que un
+nombre inexistente produzca error en vez de ignorarse. Un allowlist no
+puede fallar abierto; un denylist mal escrito si. Si pese a ello se usa un
+preset, excluir de forma explicita y VERIFICAR el resultado:
+  excluded_model_types=["Toto2"]   # cinturon redundante, no control
+PROHIBIDO utilizar presets="chronos2_ensemble": esa opcion mezcla modelo
+base zero-shot con un Chronos-2 Small fine-tuned y rompe el alcance.
+
+PARA Chronos2 fijar explicitamente (verificar API INSTALADA mediante smoke):
+  model_path="autogluon/chronos-2-small"
+  revision="<SHA_FULL_VERIFICADO_DE_HUGGING_FACE>"
+  device="cpu"
+  fine_tune=False
+  cross_learning=False   (una sola serie; no hay otras series del batch)
+  batch_size=1          (fijar para reproducir, no prometer mejora de score)
+  context_length        (default None -> 8192 del modelo, que nunca limita
+                         con ~323 semanas: se registra, no se ajusta)
+  seed del fit/predict, longitud de contexto, estadistico puntual, versiones.
+El default de la clase Chronos2 es autogluon/chronos-2 (~120 M), NO Small.
+chronos2_small es un PRESET del fit y no el valor de model_path; ambos caminos
+son distintos. El preset chronos2_small sirve para smoke zero-shot individual;
+la lista explicita sirve para M3a + M3b sin obligar a un segundo TSFM.
+
+Tras fit(): verificar realmente model_names(), lista de componentes del
+ensemble, ausencia de Toto2/fine-tuning y presencia de Chronos2 Small si se
+reporta M3b. Usar predict(model=nombre_real) para extraer M3b individual.
+Una ejecucion AutoGluon NO implica que M3b haya completado el benchmark.
+Si la combinacion no funciona, marcar M3a o M3b NOT_RUN: no aumentar la
+infraestructura ni sustituir modelos tras mirar las perdidas.
+
+PESOS: descargar/checkpoint pinado por SHA completo, cache verificada offline,
+checksum de archivos, licencia y model card. Nunca subir pesos a Git.
+No confundir el lockfile de Python con la version del checkpoint remoto.
+En un panel de UNA serie, batch_size y cross_learning no aportan aprendizaje
+entre series; pueden influir en implementacion/recursos, no justifican buscar
+configuraciones que ganen post hoc. Chronos admite forecasting univariado:
+resultado local NO juzga toda la familia de modelos fundacionales.
+
+6. VIABILIDAD REAL EN HARDWARE LOCAL Y TRATO DE AutoML
+--------------------------------------------------------------------------------
+Sin GPU dedicada, ejecutar primero UN smoke test de M3b y del stack (instalar,
+cargar peso, predecir +1, liberar memoria). Presupuesto INICIAL PROPUESTO:
+ - smoke individual: maximo 15 min y aprox. 8 GB RAM de proceso;
+ - DISCO: medirlo en el propio smoke. autogluon.timeseries arrastra torch
+   y en Windows es el costo dominante, antes que la RAM. No se escribe una
+   cifra de disco sin haberla medido;
+ - piloto AutoGluon: 1-3 origenes verificables, maximo 10 min por origen;
+ - comparacion total G1-MP: tope de 4 horas de computo activo local;
+ - no entrenamiento profundo, Ray/HPO o jobs recurrentes para benchmark.
+Son limites de EJECUCION del proyecto, NO cifras verificadas de rendimiento.
+Si excede el presupuesto, NOT_RUN y seguir G2. Separar las dependencias
+opcionales del entorno core para que CI y captura funcionen sin ellas.
+
+UN PROBLEMA DE VALIDEZ EXTRA (RIESGO A PROBAR EN P3, NO RESULTADO):
+La validacion interna de AutoGluon es una sola ventana con los ultimos
+prediction_length pasos de cada serie (num_val_windows=1) [S14], asi que
+con el marco as-of completo su seleccion de modelo y los pesos del ensemble
+se puntuarian sobre las semanas provisionales del borde. No seria
+look-ahead: esos valores ya estaban publicados en t. Y NO esta demostrado
+que ocurra en nuestro benchmark: se verifica por ejecucion antes de
+declarar nada.
+Dato que acota la prueba: la documentacion no garantiza que el pronostico
+arranque tras el final del marco pasado a predict(), y declara que "all
+local models will be fit from scratch for the new time series" [S14]. Los
+componentes locales del ensemble se reajustarian sobre la cola provisional,
+asi que la separacion fit-maduro / contexto-provisional es formulable para
+M3b (global, zero-shot) y NO limpiamente para M3a.
+AutoGluon TimeSeries trata target del train
+como serie para ajustar/validar componentes. Verificar que el fit de M3a
+no consuma como LABELS DE ENTRENAMIENTO los valores provisionales que el
+contrato de V3.3 reserva solamente como contexto. Si no puede separar train
+maduro de contexto provisional y predecir la semana objetivo sin cambiar
+horizonte/semantica, M3a NO es elegible para promocion. Puede reportarse como
+exploracion transparente, nunca como comparador operativo equivalente.
+M3b zero-shot no reajusta parametros y si puede utilizar como contexto
+observaciones provisionales ya publicadas en t, sujeto al reloj de datos.
+
+7. G1-D: COMPARACION Y PROMOCION SIN FALSA PRECISION
+--------------------------------------------------------------------------------
+TODOS los modelos reciben cortes/semana objetivo/label madura IDENTICOS
+para comparacion principal. Registrar n comun Y n individual; fallos y
+faltantes fuera del universo comun no se esconden.
+DESARROLLO: ajustes, features, tuning, escala s_dev y receta de baseline.
+SELECCION: orígenes posteriores, sin redisenar reglas viendo sus resultados.
+CONFIRMATORIA: solo semanas nuevas tras compromiso externo y madurez.
+Score principal: ell_j(t)=abs(y_mature_t - yhat_j_t)/s_dev, s_dev FIJA.
+Si s_dev no es positiva o no puede fijarse en desarrollo, MAE absoluto por
+fallback PREDECLARADO, no para favorecer un modelo. No usar WIS por moda:
+esta comparacion es puntual; mediana 0.5 para modelo probabilistico si esta
+presente, predeclarada como estimador puntual para perdida absoluta.
+
+Para candidato j frente a M0, en el mismo T:
+ d_j(t)=ell_M0(t)-ell_j(t)
+ gain_j=sum_T d_j(t)/sum_T ell_M0(t), si denominador>0.
+La media de diferencias emparejadas y gain comparten numerador: NO son dos
+pruebas independientes ni solucionan la influencia de picos.
+
+CRITERIO LOCAL DE PROMOCION A COMPROMETER ANTES DE SELECCION:
+ A) Ningun leakage; misma definicion temporal y datos comparables.
+ B) n>=12 origenes comunes; si no, INSUFFICIENT_SUPPORT, sin promocion.
+ C) gain_j >= 0.05 (5% de mejora practica local; NO estandar industrial).
+ D) Dividir calendario de seleccion en bloques DISJUNTOS y consecutivos de
+    4 semanas calendario, anclados a la primera semana objetivo; permitir
+    faltantes pero registrar su distribucion; >=3 bloques no vacios.
+    Al RETIRAR CADA BLOQUE, gain_j del resto debe ser >0; si no, NO promover.
+    No considerar 'cuatro filas' de fechas dispersas un bloque de 4 semanas.
+ E) Presupuesto, licencia, repetibilidad, fecha de disponibilidad y politica
+    de entrenamiento compatibles con la operacion que se afirma simular.
+Si la perdida M0 suma 0, o las diferencias no son estimables, no promover.
+
+DIAGNOSTICOS PUBLICOS OBLIGATORIOS (no nuevos umbrales a posteriori):
+ - mediana d_j(t), numero y proporcion con d_j(t)>0, =0 y <0;
+ - ganancia y perdida por temporada si el horizonte de vintages lo permite;
+ - perdida en semanas con picos epidemiologicos, sin excluirlas por incomodas;
+ - bloque cuya exclusion mas altera gain y su rango de sensibilidad;
+ - incertidumbre cualitativa o por bloques solo cuando hay soporte real.
+No afirmar significacion/equivalencia basandose en 12 observaciones semanales
+correlacionadas. La politica es un gate de INGENIERIA conservador, no un test.
+
+Si ningun candidato cumple -> conservar M0 y cerrar G1-MP con resultado valido.
+Si M0 sigue en G2, el Champion se fija ahi. Una seleccion posterior NO puede
+reescribir G2 como si otra receta hubiera estado seleccionada historicamente.
+
+8. SKORE, MLFLOW Y EL EXCESO DE INSTRUMENTACION
+--------------------------------------------------------------------------------
+skore: OPCIONAL y solo si genera diagnosticos realmente usados. Tanto
+CrossValidationReport(KFold sin shuffle para regresion) como evaluate() (80/20
+con shuffle en split float) son inapropiados POR DEFECTO: para G1 debe usarse
+la validacion externa construida por load_as_of en cada origen o diagnosticos
+sobre predicciones ya validadas. No asumir que un splitter temporal cualquiera
+reconstruye report_time de cada muestra.
+
+MLflow Tracking: OPCIONAL incluso con decenas/cientos de ejecuciones. Integrar
+solo si realmente facilita buscar runs/params/artefactos y no duplica la
+fuente canonica reports/predictions/*.json + JSON de comparaciones.
+Sin registry, servidor empresarial, bases externas ni 'promotion gates'.
+Si se activa: demostrar una consulta o comparacion concreta reproducible;
+versionar export ligero y no subir mlruns pesado al repositorio.
+
+Ninguna herramienta nueva es por si sola un entregable profesional.
+
+9. PLAN DE TRABAJO: FASES, PRUEBAS Y SALIDAS
+--------------------------------------------------------------------------------
+P0 | AUDITORIA DEL ESTADO REAL (primero, no repetir G0 a ciegas)
+  Comprobar G0, G1-core, 99 semanas reportadas, 15 predicciones, versions,
+  codigo de verificador y fecha/semantica de emision real.
+  SALIDA: dictamen PASS/FIX/NOT_VERIFIABLE y soporte medido por candidato.
+  STOP: si G0/G1-core no son reproducibles, arreglarlo antes de benchmark.
+
+P1 | PARCHE DE VALIDEZ/PROVENANCE (sin reescritura)
+  Hash V3.3 + plan G1-MP + config; verificador; origen de JSON prediccion;
+  test de full-week-ahead/nowcast/post-event/historical-replay.
+  SALIDA: tests verdes, manifests nuevos; antiguos intactos.
+  STOP: sin trazabilidad, ninguna comparacion es 'confirmatoria'.
+
+P2 | MODELADO CONVENCIONAL (nucleo profesional de DS)
+  EDA minima, M0, Ridge F0/F1, comparacion rolling as-of con misma etiqueta;
+  LightGBM si soporte y recursos lo justifican. Fijar s_dev y calendario.
+  SALIDA: tabla de perdidas por origen, fechas, fallos, figuras discretas.
+  STOP: si n/cobertura son insuficientes, cerrar exploratorio y pasar G2.
+
+P3 | BENCHMARK DE VANGUARDIA (OPCIONAL y acotado)
+  Smoke AutoGluon/Chronos2 Small, verificar checkpoint/revision/cpu/offline,
+  sin Toto2/fine-tuning; M3a/M3b si validez temporal y presupuesto lo permiten.
+  SALIDA: config efectiva, modelos REALMENTE ejecutados, consumos y score
+          comparable; o NOT_RUN documentado por motivo preciso.
+  STOP: si falla compatibilidad de labels/contexto o hay recursos insuficientes.
+
+P4 | SELECCION Y COMPROMISO
+  Prepublicar config ANTES de ver score de seleccion no observado; ejecutar
+  politica 5%, bloques disjuntos 4 sem, n>=12, estabilidades y costos.
+  SALIDA: reports/results/01_model_selection.json con veredicto M0/movido/
+          inconcluso, evidencia por run y error de inferencia interpretado.
+  STOP: no elegir 'ganador' por tener alertas mas interesantes.
+
+P5 | G2 COMO META PRINCIPAL
+  Congelar Champion y los cuatro brazos 00/10/01/11; medir N1 discordancia
+  con abstenciones, comparadores descriptivos, revisiones, cobertura, limites
+  y caso de decision organizacional derivado de resultados REALES.
+  G1-MP no bloquea el desarrollo de G2 con M0; no reescribir resultados
+  confirmatorios de G2 despues de un cambio de modelo.
+
+P6 | G3 CONDICIONAL Y CIERRE
+  Si Champion Ridge/LightGBM entrenable y G2 lo justifica, evaluar politicas
+  P0-P3 en trayectorias completas. Con M0 o TSFM zero-shot sin actualizacion
+  de parametros: G3=NOT_APPLICABLE_RETRAINING, no costes ficticios.
+  SALIDA: frontera de coste SOLO si verdaderamente se ejecuto y es valida.
+
+10. CAMBIOS MINIMOS EN REPOSITORIO
+--------------------------------------------------------------------------------
+REUSAR: src/revmon/{sources,temporal,panel,forecasting,monitoring,
+         evidence}.py y scripts de G0/G1-core existentes.
+NO existe src/revmon/evaluation.py y no se crea: la perdida escalada ya
+esta en forecasting.scaled_loss y la agregacion por etiquetas elegibles
+en monitoring.recent_loss. Reutilizar solo si cumplen el contrato.
+CAMBIAR SOLO DONDE HAY CONSUMIDOR:
+ - evidence.py: hashes del contrato de G1-MP + configuracion, sin borrar viejo.
+ - verify_results.py: auditoria de SHA / fuentes / score / clasificacion temporal.
+ - forecast emission/validation: target_start/end y clase de prospectividad.
+ - script comparacion G1-MP (uno, sin orquestador), tests de backtesting.
+ - optional benchmark dependency group, solo si pasa smoke; no afectar CI core.
+
+ARTIFACTOS CANONICOS:
+ - reports/predictions/*.json (una prediccion inmutable por ID).
+ - reports/results/01_modeling_support.json (universos reales).
+ - reports/results/01_model_comparison.json (pares, fallos, tiempo, memoria).
+ - reports/results/01_model_selection.json (regla, aprobaciones, veredicto).
+ - reports/results/01_checkpoint_manifest.json SOLO si Chronos-2 se ejecuto.
+No duplicar con CSV que se mantiene a mano, 5 reportes narrativos ni tablero.
+
+TESTS QUE IMPORTAN MAS QUE OTRO TOOL:
+ [ ] Cambiar un report_time futuro NO cambia features, forecast o monitor de t.
+ [ ] No usar labels inmaduras para supervisar un ajuste.
+ [ ] Autosplits de skore NO sustituyen el backtest por origen as-of.
+ [ ] Chronos2 real = repo SHA full + device cpu + fine_tune false; no Toto2.
+ [ ] M3a no mezcla labels provisionales para fit con horizonte mal definido.
+ [ ] Emision dentro de target week = NOWCAST, no PRE_WEEK_FORECAST.
+ [ ] Prediccion historica inmutable; runs fallidos no se cuentan validos.
+ [ ] Mismo target maduro y misma semana en ambos lados de cada diferencia.
+ [ ] Cambiar enmienda/config rompe verificador de manifiesto nuevo.
+ [ ] G2 mantiene forecast identico entre 00,10,01,11 y ABSTENERSE explicito.
+
+11. CRITERIOS DE REALISMO Y PORTAFOLIO (NO INFLAR)
+--------------------------------------------------------------------------------
+Un reclutador debe verificar en los primeros 60 SEGUNDOS que fija
+alcance.md (no dos minutos):
+ 1. Que problema resuelve y por que los datos cambian retroactivamente.
+ 2. Una prediccion realmente emitida, su ventana temporal y su rastro as-of.
+ 3. Una comparacion justa M0 vs candidato viable, o ausencia justificada.
+ 4. Por que se eligio/no eligio el Champion, incluyendo picos y costo de CPU.
+ 5. El factor 2x2 de DECISIONES de G2, con denominadores y abstenciones.
+ 6. LIMITES: DOS RELOJES (dato vs checkpoint), nowcast vs full-week-ahead,
+    baja potencia temporal, rol organizacional hipotetico y G3 condicional.
+
+NO ES NECESARIO:
+ - Prometer que AutoML/foundation models superan M0.
+ - Multiplicar estados/modelos para fabricar muestra.
+ - Fine-tune, Chronos base 120M obligatorio, Toto2, Deep Learning desde cero.
+ - Kubernetes, Databricks, MLflow registry, servidores, rollout/rollback.
+ - Dashboard, agente investigador, seis casos RACI ni plataforma enterprise.
+ - Afirmar ahorro en dolares/pesos o despliegue clinico real.
+
+UN PROYECTO CERRADO Y REALISTA PUEDE TENER: G0 + G1-core + benchmark honesto
++ G2, aun con M0 ganador provisional y G3 no aplicable. No modificar el
+modelo para 'salvar' la historia de reentrenamiento. Si existen muchos fallos
+de fuente o escaso soporte, convertirlos en limitaciones auditadas, no datos.
+
+12. PRIMERAS ACCIONES PARA CLAUDE CODE (NO HACER TODO DE GOLPE)
+--------------------------------------------------------------------------------
+ENCARGO 1: 'Audita, sin modificar codigo, los JSON de G0/G1, el verificador,
+los manifests y los tests. Confirma o refuta 99/223, 14+1, issued_at frente
+al inicio/fin de la semana objetivo; entrega tabla evidencia+path+clave.'
+ENCARGO 2: 'Corrige solo los campos y pruebas de trazabilidad/prospectividad
+P1. No alteres predicciones historicas ni cambies contratos de G2.'
+ENCARGO 3: 'Calcula el numero REAL de origenes elegibles por candidato,
+respetando la madurez; haz baseline M0 y Ridge, no AutoGluon todavia.'
+ENCARGO 4: 'Solo si P2 supera sus gates, ejecuta UN smoke Chronos2 Small
+zero-shot CPU con pesos versionados; antes de ampliar, reporta tiempo/RAM.'
+ENCARGO 5: 'Congela reglas metodologicas antes de cohortes no vistas,
+compara y selecciona si hay evidencia; en caso contrario, conserva M0.'
+ENCARGO 6: 'Continua G2 con cuatro ramas identicas de forecasting y publica
+las limitaciones inferenciales. Ejecuta G3 solo si su gate se abre.'
+
+13. VERIFICACION DOCUMENTAL EN FUENTES PRIMARIAS (17-OCT-2026)
+--------------------------------------------------------------------------------
+[S1] AutoGluon TimeSeriesPredictor.fit: presets medium_quality (Chronos2
+Small y Toto2 4m), chronos2_small, chronos2_ensemble con fine-tuning,
+excluded_model_types:
+https://auto.gluon.ai/stable/api/autogluon.timeseries.TimeSeriesPredictor.fit.html
+[S14] AutoGluon in-depth: ventana de validacion interna (ultimos
+prediction_length pasos), num_val_windows, y refit de modelos locales ante
+una serie nueva. Es la fuente del riesgo de validez de M3a:
+https://auto.gluon.ai/stable/tutorials/timeseries/forecasting-indepth.html
+[S2] Clase Chronos2: model_path default base, revision, device, batch_size,
+cross_learning y fine_tune:
+https://auto.gluon.ai/stable/_modules/autogluon/timeseries/models/chronos/chronos2.html
+[S3] Checkpoint Small 28M:
+https://huggingface.co/autogluon/chronos-2-small
+[S4] Chronos2 training data documentados; no garantia de no contaminacion:
+https://huggingface.co/autogluon/chronos-2
+[S5] Hugging Face revision pin, cache, hash completo:
+https://huggingface.co/docs/huggingface_hub/en/guides/download
+[S6] skore CrossValidationReport KFold sin shuffle en regresion:
+https://docs.skore.probabl.ai/stable/reference/api/skore.CrossValidationReport.html
+[S7] skore.evaluate division float barajada 80/20 por defecto:
+https://docs.skore.probabl.ai/stable/reference/api/skore.evaluate.html
+[S8] scikit-learn Pipeline evita filtracion de PREPROCESAMIENTO; la fuga
+TEMPORAL requiere contrato as-of externo:
+https://scikit-learn.org/stable/common_pitfalls.html
+[S9] Rolling-origin forecasting validation:
+https://otexts.com/fpp3/tscv.html
+[S10] MLflow tracking local no exige infraestructura empresarial:
+https://mlflow.org/docs/latest/tracking/
+[S11] Delphi NHSN reference_time etiquetada por semana terminada sabado:
+https://cmu-delphi.github.io/delphi-epidata/api/v5-signals/nhsn.html
+[S12] Decision de reentrenar con trade-off de costos (contexto academico;
+no se reclama replicar el algoritmo del paper):
+https://proceedings.mlr.press/v267/regol25a.html
+[S13] Ejemplo de version publicada AutoGluon TimeSeries 1.6.3 en PyPI;
+la VERSION INSTALADA es la que debe guardarse tras un smoke real:
+https://pypi.org/project/autogluon.timeseries/1.6.3/
+
+REGLA FINAL: VERIFICADO EN LA WEB = CAPACIDAD DE LIBRERIA Y DEFINICION DE
+FUENTE. NO VERIFICADO = RESULTADOS LOCALES, n DE FOLDS, CPU/RAM REALES,
+CHAMPION GANADOR, FECHAS DE EMISION, IMPACTO ECONOMICO U ORGANIZACIONAL.
+Esas afirmaciones solo pueden nacer de artefactos, codigo y corridas propias.
+
+================================================================================
+FIN | PLAN G1-MP REALISTA. EJECUTAR, NO REDISENAR.
+================================================================================

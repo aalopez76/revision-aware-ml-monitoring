@@ -95,6 +95,29 @@ corto, solo el estado actual, no un historial. Lo reescribe `/handoff`.
 Si parece necesario un documento de gobierno nuevo, **es una señal de alarma, no
 una tarea.**
 
+### La excepción, declarada: dos documentos rectores versionados
+
+Los únicos `.txt` versionados son
+`When_the_Past_Moves_Especificacion_Ejecutable_V3_3_2026.txt` (el marco G0–G3) y
+`When_the_Past_Moves_Plan_Ejecucion_Realista_G1_MP_V3_3_2026.txt` (el contrato de
+G1-MP: candidatos, regla de promoción, presupuesto). `git ls-files '*.txt'` debe
+devolver exactamente esos dos.
+
+El segundo es, literalmente, lo que esta regla llama una alarma. Está versionado
+por una razón concreta y no por conveniencia: **`RunManifest` lo sella por
+SHA-256, y el hash de un fichero no versionado no es reproducible por un tercero
+desde el repositorio.** Un sello que nadie puede comprobar no es evidencia. La
+V3.3 está versionada por exactamente el mismo motivo.
+
+Las versiones superadas —V1, V2, V3.1, V3.2 y las tres enmiendas G1-MP previas—
+viven en `_borradores/especificaciones/`, fuera del repositorio. No las recupera
+git porque nunca las tuvo; se conservan como ficheros, igual que sus
+predecesoras. Y se declara aquí en lugar de dejarlo en silencio, por la misma
+razón que se declaró el hueco del `freeze_guard` retirado.
+
+**Un tercer documento rector sigue siendo una alarma.** Si hiciera falta,
+primero se pregunta qué deja de cubrir el plan G1-MP.
+
 ## El harness no es gobierno
 
 `CLAUDE.md` y `.claude/` están versionados por una razón práctica: un harness
