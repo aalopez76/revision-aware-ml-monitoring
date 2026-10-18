@@ -1,0 +1,15 @@
+{
+  "data_vintage_id": "2026-08-14 00:00:00+00:00",
+  "geo_type": "nation",
+  "horizon_weeks": 1,
+  "inputs_used": 314,
+  "issued_at": "2026-10-18T06:24:48.590766+00:00",
+  "issued_for_cut": "2026-08-16",
+  "last_eligible_week": "2026-08-08",
+  "modality": "historical_replay",
+  "model": "naive",
+  "prediction_id": "2026-08-16-5f9bee1644db",
+  "signal": "confirmed_admissions_flu_ew",
+  "target_week": "2026-08-15",
+  "y_pred": 610.0
+}

@@ -22,6 +22,7 @@ Exit code is non-zero when any claim fails.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 from dataclasses import dataclass
@@ -90,6 +91,8 @@ class ExactClaim:
 # ---------------------------------------------------------------------------
 
 G0 = "00_source_feasibility.json"
+G1 = "01_vertical_slice.json"
+G1A = "01_modeling_support.json"
 
 CLAIMS: list[Claim] = [
     Claim(
@@ -190,6 +193,60 @@ CLAIMS: list[Claim] = [
         expected=13,
         tolerance=0,
     ),
+    # G1-A support. These are the figures that replace an earlier review's
+    # unmeasured guess of "40-60 folds"; the real count is nearly double, which
+    # is exactly why the guess was never allowed into a document.
+    Claim(
+        label="candidate scheduled cuts",
+        source=G1A,
+        path=("temporally_eligible_origins", "candidate_scheduled_cuts"),
+        expected=100,
+        tolerance=0,
+    ),
+    Claim(
+        label="eligible origins, declared 45-day policy",
+        source=G1A,
+        path=("temporally_eligible_origins", "declared_policy_origins"),
+        expected=93,
+        tolerance=0,
+    ),
+    Claim(
+        label="eligible origins, 90-day sensitivity",
+        source=G1A,
+        path=("temporally_eligible_origins", "by_maturity_days", "90", "origins"),
+        expected=87,
+        tolerance=0,
+    ),
+    Claim(
+        label="publication lag, max days",
+        source=G1A,
+        path=("publication_lag_days", "max"),
+        expected=49,
+        tolerance=0,
+    ),
+    Claim(
+        label="publication lag, median days",
+        source=G1A,
+        path=("publication_lag_days", "median"),
+        expected=7,
+        tolerance=0,
+    ),
+    # Zero by construction at horizon +1. If this ever stops being zero, the
+    # word "nowcast" in the README is wrong and this row says so.
+    Claim(
+        label="pre-week forecasts on disk",
+        source=G1,
+        path=("emission_audit", "pre_week_forecasts"),
+        expected=0,
+        tolerance=0,
+    ),
+    Claim(
+        label="predictions with unverifiable emission",
+        source=G1,
+        path=("emission_audit", "not_verifiable"),
+        expected=0,
+        tolerance=0,
+    ),
 ]
 
 EXACT_CLAIMS: list[ExactClaim] = [
@@ -217,7 +274,106 @@ EXACT_CLAIMS: list[ExactClaim] = [
         path=("verdict", "verdict"),
         expected="PROCEED",
     ),
+    # The claim the project now makes about what it emits. If a future run ever
+    # produced a pre-week forecast this row would fail, which is the point: the
+    # word "nowcast" in the README would then be wrong.
+    ExactClaim(
+        label="observed run emission class",
+        source=G1,
+        path=("observed_run", "emission_class"),
+        expected="intra_week_nowcast",
+    ),
 ]
+
+# --- claims about the manifest, checked per schema version ------------------
+#
+# Separate from the rows above because the question is different: not "does the
+# published figure still match the artefact", but "does this run name the
+# documents that governed it". And it is version-aware on purpose. A run written
+# last week must not be required to match a document edited after it, or every
+# past result would turn red the moment a typo is fixed. Older schemas are
+# verified under the contract they were written with, and the absence of a newer
+# field is never a failure.
+
+SEALED_DOCUMENTS = {
+    "spec_sha256": "When_the_Past_Moves_Especificacion_Ejecutable_V3_3_2026.txt",
+    "g1_mp_plan_sha256": "When_the_Past_Moves_Plan_Ejecucion_Realista_G1_MP_V3_3_2026.txt",
+}
+
+#: Which sealed documents each manifest schema is required to carry.
+SCHEMA_REQUIREMENTS: dict[int, tuple[str, ...]] = {
+    1: ("spec_sha256",),
+    2: ("spec_sha256", "g1_mp_plan_sha256"),
+}
+
+MANIFEST_SOURCES = (G1, G1A)
+
+
+def sha256_file(path: Path) -> str | None:
+    try:
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+    except OSError:
+        return None
+
+
+def check_manifests(root: Path | None = None) -> list[tuple[str, str]]:
+    """Each manifest names its governing documents, and the hashes still match.
+
+    A matching hash proves **identity of content, not date of predeclaration**.
+    It says the plan has not been edited since the run; it says nothing about
+    whether the plan existed before the selection cohort was scored. That needs
+    the two external bounds in `.claude/rules/metodo.md`, and it is P4's job.
+
+    `root` exists so the rejection can be tested on a **copy**: proving that a
+    changed document fails must not require editing the sealed one.
+    """
+    base = root or ROOT
+    results = base / "reports" / "results"
+    failures: list[tuple[str, str]] = []
+    live = {field: sha256_file(base / name) for field, name in SEALED_DOCUMENTS.items()}
+
+    print(f"\n{'manifest seal':42}{'schema':>10}{'document':>30}{'state':>12}")
+    for source in MANIFEST_SOURCES:
+        path = results / source
+        if not path.exists():
+            print(f"{source:42}{'-':>10}{'-':>30}{'ABSENT':>12}")
+            continue
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        manifest = payload.get("manifest", {})
+        schema = int(manifest.get("schema_version", 1))
+        required = SCHEMA_REQUIREMENTS.get(schema)
+        if required is None:
+            failures.append((source, f"unknown manifest schema_version {schema}"))
+            print(f"{source:42}{schema:>10}{'-':>30}{'UNKNOWN':>12}")
+            continue
+
+        for field in required:
+            stored = manifest.get(field)
+            document = SEALED_DOCUMENTS[field]
+            label = f"{source} :: {field}"
+            if stored is None:
+                failures.append((label, f"schema {schema} requires {field}, absent"))
+                state = "MISSING"
+            elif live[field] is None:
+                failures.append((label, f"{document} is not on disk"))
+                state = "NO FILE"
+            elif stored != live[field]:
+                failures.append((
+                    label,
+                    f"{document} changed since the run (stored {stored[:12]}..., "
+                    f"on disk {live[field][:12]}...)",
+                ))
+                state = "CHANGED"
+            else:
+                state = "ok"
+            print(f"{label:42}{schema:>10}{document[-29:]:>30}{state:>12}")
+
+        # Fields the schema does not require are reported, never demanded.
+        for field in SEALED_DOCUMENTS:
+            if field not in required and manifest.get(field) is not None:
+                print(f"{source + ' :: ' + field:42}{schema:>10}"
+                      f"{'(beyond schema)':>30}{'noted':>12}")
+    return failures
 
 
 def main() -> int:
@@ -256,6 +412,11 @@ def main() -> int:
 
     total = len(CLAIMS) + len(EXACT_CLAIMS)
     print(f"\n{total - len(failures)}/{total} tracked claims verified")
+
+    seal_failures = check_manifests()
+    failures.extend(seal_failures)
+    print(f"\nmanifest seals: {'ok' if not seal_failures else 'FAILED'}")
+
     if failures:
         print("\nfailed:")
         for label, detail in failures:

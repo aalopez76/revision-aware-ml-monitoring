@@ -20,6 +20,15 @@ Everything declared here is declared *here*, in code, before the confirmatory
 cohort exists: the maturity policy, the calibration window, the thresholds and
 the model. They are written into the run's config so that what produced a
 recommendation can never be in doubt.
+
+**What this chain emits is a nowcast, not a week-ahead forecast.** `modality`
+already said whether a run was real; it could not say whether the week being
+forecast was still in the future. It was not: with `W` the last visible event
+week and a publication lag of at least a day, the target `W+7` has already
+opened by the time the cut arrives, so `pre_week_forecast` is unreachable at
+horizon +1. `emission_audit` records that as a count instead of leaving it to
+prose, and estimating a week that has elapsed but not yet been published is what
+nowcasting *is* — the honest name, not a smaller claim.
 """
 
 from __future__ import annotations
@@ -41,7 +50,15 @@ from revmon.monitoring import (
     revision_share,
 )
 from revmon.panel import as_of_view, fetch_triangle_as_of
-from revmon.temporal import Completeness, MaturityPolicy, ReplayMode
+from revmon.temporal import (
+    Completeness,
+    MaturityPolicy,
+    ReplayMode,
+    TemporalContractError,
+    classify_emission,
+    parse_week_end,
+    scheduled_cut,
+)
 
 DECLARED_IN = "G1 development run, 2026-10-16, before any confirmatory cohort exists"
 
@@ -130,6 +147,15 @@ def run_cut(
         # False means this cut had already issued a forecast and it was kept.
         # That is invariant I4 holding, not a no-op.
         record["prediction_was_written_now"] = written
+        # Derived from the stored record and never written back into it: a
+        # prediction is immutable, and the class is a function of two fields it
+        # already carries. `modality` says the run was real; this says whether
+        # the week it forecast had already happened. Both, always.
+        emission, lead_hours = classify_emission(
+            stored["issued_at"], parse_week_end(stored["target_week"])
+        )
+        record["emission_class"] = emission.value
+        record["lead_time_hours"] = round(lead_hours, 3)
     except ForecastError as exc:
         record["forecast_error"] = str(exc)
         record["recommendation"] = recommend(
@@ -177,6 +203,75 @@ def load_predictions() -> list[dict]:
         json.loads(p.read_text(encoding="utf-8"))
         for p in sorted(evidence.PREDICTIONS.glob("*.json"))
     ]
+
+
+def emission_audit(predictions: list[dict]) -> dict:
+    """Every stored prediction, classified by emission clock. Writes nothing.
+
+    Two axes, kept apart and crossed: `modality` says how a record came to
+    exist, `emission_class` says whether the week it is about had already
+    happened when it was issued. The cross-tab is the artefact that stops a
+    replay reading as an operation.
+
+    `pre_week_forecast` is expected to be **empty by construction** under this
+    project's +1 recipe: with `W` the last visible week and a publication lag of
+    at least a day, the target week `W+7` has already opened by the time the cut
+    arrives. So the product is a nowcast, and the count records that rather than
+    leaving it to prose.
+    """
+    counts: dict[str, int] = {}
+    cross: dict[str, int] = {}
+    leads: list[float] = []
+    calendars: dict[str, int] = {}
+    unverifiable = 0
+    for stored in predictions:
+        # Which weekday each cut fell on. Recorded because on 2026-10-18 the cut
+        # calendar was still derived from `datetime.now()`, so running on a
+        # Sunday issued a second, parallel set of origins. `scheduled_cut` fixed
+        # the anchor; this count is what makes a future drift visible instead of
+        # silent, and the predictions already issued are kept, not deleted.
+        issued_for = stored.get("issued_for_cut")
+        if issued_for:
+            weekday = date.fromisoformat(issued_for).strftime("%A")
+            calendars[weekday] = calendars.get(weekday, 0) + 1
+        try:
+            emission, lead = classify_emission(
+                stored["issued_at"], parse_week_end(stored["target_week"])
+            )
+        except (KeyError, TemporalContractError):
+            # Ambiguous provenance is reported, never guessed into a class.
+            unverifiable += 1
+            continue
+        counts[emission.value] = counts.get(emission.value, 0) + 1
+        key = f"{stored.get('modality', 'unknown')}|{emission.value}"
+        cross[key] = cross.get(key, 0) + 1
+        leads.append(lead)
+
+    return {
+        "by_class": counts,
+        "by_modality_and_class": cross,
+        "pre_week_forecasts": counts.get("pre_week_forecast", 0),
+        "not_verifiable": unverifiable,
+        "total": len(predictions),
+        "median_lead_time_hours": (
+            round(float(pd.Series(leads).median()), 3) if leads else None
+        ),
+        "cut_weekdays": calendars,
+        "cut_calendars": len(calendars),
+        "note": (
+            "pre_week_forecasts is 0 by construction at horizon +1: the target week "
+            "has already opened once the publication lag is applied, so every "
+            "emission is a nowcast or later. The product is a nowcast."
+        ),
+        "calendar_correction": (
+            "cut_calendars > 1 records a defect found on 2026-10-18: the origin "
+            "calendar was derived from datetime.now(), so a run on a different "
+            "weekday issued a parallel set of cuts. scheduled_cut now anchors "
+            "every cut to the source's Saturday boundary. The predictions already "
+            "issued under the drifting calendar are kept, because a prediction is "
+            "immutable and a correction is recorded rather than erased."
+        ),
+    }
 
 
 def build_figure(triangle, coverage_state, predictions: list[dict], recent_weeks: int = 8):
@@ -267,7 +362,11 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    today = datetime.now(UTC).date()
+    # The real instant, kept only for the manifest's own clock. Every cut is
+    # derived from the SCHEDULED weekly boundary instead, so the origin
+    # calendar does not move with the weekday the job happens to fire on.
+    ran_at = datetime.now(UTC).date()
+    today = scheduled_cut(ran_at)
     manifest = RunManifest.start(
         decision_as_of=str(today),
         modality=Modality.OBSERVED_RUN,
@@ -298,7 +397,7 @@ def main() -> int:
     )
     print(f"  s_dev = {scale.s_dev} over {scale.pairs} pairs", flush=True)
 
-    # Coverage, as of today. Its own signal, on its own axis.
+    # Coverage, as of the scheduled cut. Its own signal, on its own axis.
     print("fetching reporting coverage ...", flush=True)
     coverage_triangle, _ = fetch_triangle_as_of(today, signal=sources.COVERAGE_PCT_SIGNAL)
     coverage_state = (
@@ -315,8 +414,9 @@ def main() -> int:
         print(f"replay {cut} ...", flush=True)
         replayed.append(run_cut(cut, modality=Modality.HISTORICAL_REPLAY, scale=scale))
 
-    # The live cut. This is the run that actually happened.
-    print(f"observed run {today} ...", flush=True)
+    # The live cut: the scheduled one, not the calendar day. The manifest's
+    # started_at still records when this actually ran.
+    print(f"observed run {today} (ran {ran_at}) ...", flush=True)
     live = run_cut(
         today, modality=Modality.OBSERVED_RUN, scale=scale, coverage_state=coverage_state
     )
@@ -327,6 +427,7 @@ def main() -> int:
     payload = {
         "manifest": manifest.as_dict(),
         "loss_scale": scale.as_dict(),
+        "emission_audit": emission_audit(load_predictions()),
         "observed_run": live,
         "historical_replay": {
             "cuts": replayed,
@@ -355,6 +456,10 @@ def main() -> int:
     for action, count in actions.value_counts().items():
         print(f"  {action:20} {count}")
     print(f"predictions on disk    : {len(load_predictions())}")
+    print(f"emission class         : {live['emission_class']} "
+          f"(lead {live['lead_time_hours']:+.1f} h)")
+    for key, count in sorted(payload["emission_audit"]["by_modality_and_class"].items()):
+        print(f"  {key:44} {count}")
     print("=" * 72)
     print(f"wrote {path.relative_to(sources.ROOT)}")
     return 0
