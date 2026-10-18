@@ -20,6 +20,11 @@ dependencies = [
     "scipy>=1.12",
     "matplotlib>=3.8",
     "pyarrow>=15.0",
+    # Entra en P2, con consumidor: M1 es un Ridge dentro de un Pipeline, y el
+    # Pipeline es justamente lo que impide que el escalado se ajuste con datos
+    # fuera del training de cada origen. La fuga TEMPORAL no la resuelve
+    # scikit-learn: la resuelve el contrato as-of de panel.load_as_of.
+    "scikit-learn>=1.5",
 ]
 
 [project.optional-dependencies]
