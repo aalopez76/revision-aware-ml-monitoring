@@ -1,8 +1,8 @@
 {
   "limits": "These are origins eligible by date, maturity and visible history only. Whether any candidate can be fitted on them is not measured here and is decided in P2. No folds figure is estimated or implied.",
   "manifest": {
-    "code_sha": "c2232757bb93671c8a3bb395ceb091ad0d1e99d8",
-    "code_tree_sha256": "5278ef4bb7030726e4b8b45b30df025efd7c8dea82540645a2a2eb8881c72da3",
+    "code_sha": "ab633ef7e7da3184e386c68f62dcb20e2c4a6a60",
+    "code_tree_sha256": "0e2c689f4a5599588d33a1a237ae550d03ca49d4cba2cfe0ebd247b290922935",
     "config": {
       "declared_in": "G1-A support measurement, P0 of the G1-MP plan, 2026-10-18",
       "maturity_grid_days": [
@@ -16,20 +16,20 @@
     "decision_as_of": "2026-10-17",
     "errors": [],
     "g1_mp_plan_sha256": "ce46d23dda58e5a4964314b210f17d1a01ba4aef20432cd52da00e313bc94da4",
-    "lock_sha256": "7ef21773ab27c92e0fe3e25aad5fa13853088b9360c55a10a4b2052cabfdeae0",
+    "lock_sha256": "0935e1c33fca3ff013e3f4da93b8582f704dd76e0e507cdde141bf3a770f12d2",
     "modality": "historical_replay",
     "provenance": [],
-    "run_id": "20261018T071752Z-2026-10-17",
+    "run_id": "20261018T073607Z-2026-10-17",
     "runner": "local",
     "schema_version": 2,
     "selection_config_sha256": null,
     "spec_sha256": "5664b8889e618b03afeef4c05e3c2871013f87aad813e5cda70b1af0c25fdc91",
-    "started_at": "2026-10-18T07:17:52.629742+00:00",
+    "started_at": "2026-10-18T07:36:07.669497+00:00",
     "state": "started"
   },
   "provenance": {
     "channel": "delphi_v5_archive",
-    "observed_at": "2026-10-18T07:17:52.700013+00:00",
+    "observed_at": "2026-10-18T07:36:07.732073+00:00",
     "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-10-17"
   },
   "publication_lag_days": {
@@ -67,11 +67,11 @@
     "min_visible_weeks": 8
   },
   "training_feasibility_per_candidate": {
-    "M0": "pending_P2",
-    "M1": "pending_P2",
-    "M2": "pending_P2",
-    "M3a": "pending_P2",
-    "M3b": "pending_P2"
+    "M0": "not measurable here; see 01_model_comparison.json",
+    "M1": "not measurable here; see 01_model_comparison.json",
+    "M2": "not measurable here; see 01_model_comparison.json",
+    "M3a": "not measurable here; see 01_model_comparison.json",
+    "M3b": "not measurable here; see 01_model_comparison.json"
   },
   "universe": {
     "archive_begins": "2024-11-19",

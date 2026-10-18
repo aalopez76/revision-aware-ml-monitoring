@@ -1,0 +1,3153 @@
+{
+  "alpha_caveat": "Alpha was chosen on development origins from the declared grid, and the chosen value sits at the grid's edge, which usually means the grid is misplaced. It is reported as a limit rather than widened: extending the grid now would be choosing it after seeing these results. A wider grid has to be declared before a future run, not after this one.",
+  "alpha_selection": {
+    "F0": {
+      "chosen_alpha": 10.0,
+      "chosen_on": "development origins only",
+      "grid": {
+        "0.1": {
+          "mean_scaled_loss": 2.403011,
+          "n": 3
+        },
+        "1.0": {
+          "mean_scaled_loss": 2.54101,
+          "n": 3
+        },
+        "10.0": {
+          "mean_scaled_loss": 1.579075,
+          "n": 3
+        }
+      }
+    },
+    "F1": {
+      "chosen_alpha": 10.0,
+      "chosen_on": "development origins only",
+      "grid": {
+        "0.1": {
+          "mean_scaled_loss": 1.818786,
+          "n": 3
+        },
+        "1.0": {
+          "mean_scaled_loss": 1.482293,
+          "n": 3
+        },
+        "10.0": {
+          "mean_scaled_loss": 0.594107,
+          "n": 3
+        }
+      }
+    }
+  },
+  "by_publication_lag": {
+    "delayed_publication": {
+      "distinct_target_weeks": 1,
+      "origins": 6,
+      "scores": {
+        "naive": {
+          "mean_absolute_error": 183.0,
+          "mean_scaled_loss": 0.036841,
+          "n": 6
+        },
+        "ridge_F0": {
+          "mean_absolute_error": 2436.51,
+          "mean_scaled_loss": 0.490515,
+          "n": 6
+        },
+        "ridge_F1": {
+          "mean_absolute_error": 740.31,
+          "mean_scaled_loss": 0.149038,
+          "n": 6
+        }
+      }
+    },
+    "nominal_lag_7d": {
+      "distinct_target_weeks": 55,
+      "origins": 55,
+      "scores": {
+        "naive": {
+          "mean_absolute_error": 1562.818,
+          "mean_scaled_loss": 0.314624,
+          "n": 55
+        },
+        "ridge_F0": {
+          "mean_absolute_error": 2994.902,
+          "mean_scaled_loss": 0.60293,
+          "n": 55
+        },
+        "ridge_F1": {
+          "mean_absolute_error": 1878.32,
+          "mean_scaled_loss": 0.378141,
+          "n": 55
+        }
+      }
+    }
+  },
+  "limits": "A comparison, not a selection. The promotion rule (delta_min, disjoint four-week blocks, n >= 12) is P4 and is not applied here; M0 remains the provisional Champion. These weeks are correlated, so the counts are descriptive and support no significance or equivalence claim.",
+  "loss_scale": {
+    "method": "mean absolute week-over-week difference of eligible labels",
+    "pairs": 24,
+    "s_dev": 4967.25,
+    "window_from": "2024-11-19",
+    "window_to": "2025-06-30"
+  },
+  "manifest": {
+    "code_sha": "ab633ef7e7da3184e386c68f62dcb20e2c4a6a60",
+    "code_tree_sha256": "0e2c689f4a5599588d33a1a237ae550d03ca49d4cba2cfe0ebd247b290922935",
+    "config": {
+      "alpha_grid": [
+        0.1,
+        1.0,
+        10.0
+      ],
+      "calibration_window": [
+        "2024-11-19",
+        "2025-06-30"
+      ],
+      "candidates": [
+        "naive",
+        "ridge_F0",
+        "ridge_F1"
+      ],
+      "declared_in": "P2 model comparison, declared 2026-10-18 before any candidate was scored",
+      "development_through": "2025-06-30",
+      "maturity_days": 45,
+      "min_train_rows": 26,
+      "nominal_lag_days": 7,
+      "promotion_rule": "not applied here; selection is P4",
+      "train_from": "2024-11-01"
+    },
+    "decision_as_of": "2026-10-17",
+    "errors": [],
+    "g1_mp_plan_sha256": "ce46d23dda58e5a4964314b210f17d1a01ba4aef20432cd52da00e313bc94da4",
+    "lock_sha256": "0935e1c33fca3ff013e3f4da93b8582f704dd76e0e507cdde141bf3a770f12d2",
+    "modality": "historical_replay",
+    "provenance": [],
+    "run_id": "20261018T073420Z-2026-10-17",
+    "runner": "local",
+    "schema_version": 2,
+    "selection_config_sha256": null,
+    "spec_sha256": "5664b8889e618b03afeef4c05e3c2871013f87aad813e5cda70b1af0c25fdc91",
+    "started_at": "2026-10-18T07:34:20.741462+00:00",
+    "state": "started"
+  },
+  "on_common_origins_undeduplicated": {
+    "naive": {
+      "mean_absolute_error": 1427.098,
+      "mean_scaled_loss": 0.287301,
+      "n": 61
+    },
+    "ridge_F0": {
+      "mean_absolute_error": 2939.979,
+      "mean_scaled_loss": 0.591872,
+      "n": 61
+    },
+    "ridge_F1": {
+      "mean_absolute_error": 1766.385,
+      "mean_scaled_loss": 0.355606,
+      "n": 61
+    }
+  },
+  "on_distinct_target_weeks": {
+    "naive": {
+      "mean_absolute_error": 1562.818,
+      "mean_scaled_loss": 0.314624,
+      "n": 55
+    },
+    "ridge_F0": {
+      "mean_absolute_error": 2994.902,
+      "mean_scaled_loss": 0.60293,
+      "n": 55
+    },
+    "ridge_F1": {
+      "mean_absolute_error": 1878.32,
+      "mean_scaled_loss": 0.378141,
+      "n": 55
+    }
+  },
+  "origins": [
+    {
+      "abs_error": {
+        "naive": 25.0,
+        "ridge_F0": 5698.502,
+        "ridge_F1": 2695.831
+      },
+      "completeness": "complete",
+      "cut": "2025-07-05",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 256,
+          "issued_for_cut": "2025-07-05",
+          "last_eligible_week": "2025-06-28",
+          "model": "naive",
+          "target_week": "2025-07-05",
+          "y_pred": 976.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 29,
+          "issued_for_cut": "2025-07-05",
+          "last_eligible_week": "2025-06-28",
+          "model": "ridge_F0",
+          "target_week": "2025-07-05",
+          "y_pred": -4697.50247
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 29,
+          "issued_for_cut": "2025-07-05",
+          "last_eligible_week": "2025-06-28",
+          "model": "ridge_F1",
+          "target_week": "2025-07-05",
+          "y_pred": -1694.830592
+        }
+      },
+      "last_visible_week": "2025-06-28",
+      "loss": {
+        "naive": 0.005033,
+        "ridge_F0": 1.147215,
+        "ridge_F1": 0.542721
+      },
+      "publication_lag_days": 7,
+      "target_week": "2025-07-05",
+      "y_mature": 1001.0
+    },
+    {
+      "abs_error": {
+        "naive": 55.0,
+        "ridge_F0": 4820.628,
+        "ridge_F1": 2410.806
+      },
+      "completeness": "complete",
+      "cut": "2025-07-12",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 257,
+          "issued_for_cut": "2025-07-12",
+          "last_eligible_week": "2025-07-05",
+          "model": "naive",
+          "target_week": "2025-07-12",
+          "y_pred": 915.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 30,
+          "issued_for_cut": "2025-07-12",
+          "last_eligible_week": "2025-07-05",
+          "model": "ridge_F0",
+          "target_week": "2025-07-12",
+          "y_pred": -3850.628355
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 30,
+          "issued_for_cut": "2025-07-12",
+          "last_eligible_week": "2025-07-05",
+          "model": "ridge_F1",
+          "target_week": "2025-07-12",
+          "y_pred": -1440.805825
+        }
+      },
+      "last_visible_week": "2025-07-05",
+      "loss": {
+        "naive": 0.011073,
+        "ridge_F0": 0.970482,
+        "ridge_F1": 0.48534
+      },
+      "publication_lag_days": 7,
+      "target_week": "2025-07-12",
+      "y_mature": 970.0
+    },
+    {
+      "abs_error": {
+        "naive": 120.0,
+        "ridge_F0": 3790.653,
+        "ridge_F1": 1982.337
+      },
+      "completeness": "complete",
+      "cut": "2025-07-19",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 258,
+          "issued_for_cut": "2025-07-19",
+          "last_eligible_week": "2025-07-12",
+          "model": "naive",
+          "target_week": "2025-07-19",
+          "y_pred": 982.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 31,
+          "issued_for_cut": "2025-07-19",
+          "last_eligible_week": "2025-07-12",
+          "model": "ridge_F0",
+          "target_week": "2025-07-19",
+          "y_pred": -2928.652899
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 31,
+          "issued_for_cut": "2025-07-19",
+          "last_eligible_week": "2025-07-12",
+          "model": "ridge_F1",
+          "target_week": "2025-07-19",
+          "y_pred": -1120.336603
+        }
+      },
+      "last_visible_week": "2025-07-12",
+      "loss": {
+        "naive": 0.024158,
+        "ridge_F0": 0.763129,
+        "ridge_F1": 0.399081
+      },
+      "publication_lag_days": 7,
+      "target_week": "2025-07-19",
+      "y_mature": 862.0
+    },
+    {
+      "abs_error": {
+        "naive": 99.0,
+        "ridge_F0": 3070.702,
+        "ridge_F1": 2145.029
+      },
+      "completeness": "complete",
+      "cut": "2025-07-26",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 259,
+          "issued_for_cut": "2025-07-26",
+          "last_eligible_week": "2025-07-19",
+          "model": "naive",
+          "target_week": "2025-07-26",
+          "y_pred": 793.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 32,
+          "issued_for_cut": "2025-07-26",
+          "last_eligible_week": "2025-07-19",
+          "model": "ridge_F0",
+          "target_week": "2025-07-26",
+          "y_pred": -2178.701904
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 32,
+          "issued_for_cut": "2025-07-26",
+          "last_eligible_week": "2025-07-19",
+          "model": "ridge_F1",
+          "target_week": "2025-07-26",
+          "y_pred": -1253.028766
+        }
+      },
+      "last_visible_week": "2025-07-19",
+      "loss": {
+        "naive": 0.019931,
+        "ridge_F0": 0.61819,
+        "ridge_F1": 0.431834
+      },
+      "publication_lag_days": 7,
+      "target_week": "2025-07-26",
+      "y_mature": 892.0
+    },
+    {
+      "abs_error": {
+        "naive": 29.0,
+        "ridge_F0": 2187.722,
+        "ridge_F1": 1608.474
+      },
+      "completeness": "complete",
+      "cut": "2025-08-02",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 260,
+          "issued_for_cut": "2025-08-02",
+          "last_eligible_week": "2025-07-26",
+          "model": "naive",
+          "target_week": "2025-08-02",
+          "y_pred": 827.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 33,
+          "issued_for_cut": "2025-08-02",
+          "last_eligible_week": "2025-07-26",
+          "model": "ridge_F0",
+          "target_week": "2025-08-02",
+          "y_pred": -1389.722089
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 33,
+          "issued_for_cut": "2025-08-02",
+          "last_eligible_week": "2025-07-26",
+          "model": "ridge_F1",
+          "target_week": "2025-08-02",
+          "y_pred": -810.474383
+        }
+      },
+      "last_visible_week": "2025-07-26",
+      "loss": {
+        "naive": 0.005838,
+        "ridge_F0": 0.440429,
+        "ridge_F1": 0.323816
+      },
+      "publication_lag_days": 7,
+      "target_week": "2025-08-02",
+      "y_mature": 798.0
+    },
+    {
+      "abs_error": {
+        "naive": 21.0,
+        "ridge_F0": 1432.662,
+        "ridge_F1": 1446.89
+      },
+      "completeness": "complete",
+      "cut": "2025-08-09",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 261,
+          "issued_for_cut": "2025-08-09",
+          "last_eligible_week": "2025-08-02",
+          "model": "naive",
+          "target_week": "2025-08-09",
+          "y_pred": 741.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 34,
+          "issued_for_cut": "2025-08-09",
+          "last_eligible_week": "2025-08-02",
+          "model": "ridge_F0",
+          "target_week": "2025-08-09",
+          "y_pred": -670.661945
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 34,
+          "issued_for_cut": "2025-08-09",
+          "last_eligible_week": "2025-08-02",
+          "model": "ridge_F1",
+          "target_week": "2025-08-09",
+          "y_pred": -684.890456
+        }
+      },
+      "last_visible_week": "2025-08-02",
+      "loss": {
+        "naive": 0.004228,
+        "ridge_F0": 0.288422,
+        "ridge_F1": 0.291286
+      },
+      "publication_lag_days": 7,
+      "target_week": "2025-08-09",
+      "y_mature": 762.0
+    },
+    {
+      "abs_error": {
+        "naive": 61.0,
+        "ridge_F0": 750.212,
+        "ridge_F1": 1233.153
+      },
+      "completeness": "complete",
+      "cut": "2025-08-16",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 262,
+          "issued_for_cut": "2025-08-16",
+          "last_eligible_week": "2025-08-09",
+          "model": "naive",
+          "target_week": "2025-08-16",
+          "y_pred": 710.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 35,
+          "issued_for_cut": "2025-08-16",
+          "last_eligible_week": "2025-08-09",
+          "model": "ridge_F0",
+          "target_week": "2025-08-16",
+          "y_pred": 20.787674
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 35,
+          "issued_for_cut": "2025-08-16",
+          "last_eligible_week": "2025-08-09",
+          "model": "ridge_F1",
+          "target_week": "2025-08-16",
+          "y_pred": -462.152694
+        }
+      },
+      "last_visible_week": "2025-08-09",
+      "loss": {
+        "naive": 0.01228,
+        "ridge_F0": 0.151032,
+        "ridge_F1": 0.248257
+      },
+      "publication_lag_days": 7,
+      "target_week": "2025-08-16",
+      "y_mature": 771.0
+    },
+    {
+      "abs_error": {
+        "naive": 67.0,
+        "ridge_F0": 100.056,
+        "ridge_F1": 868.263
+      },
+      "completeness": "complete",
+      "cut": "2025-08-23",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 263,
+          "issued_for_cut": "2025-08-23",
+          "last_eligible_week": "2025-08-16",
+          "model": "naive",
+          "target_week": "2025-08-23",
+          "y_pred": 734.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 36,
+          "issued_for_cut": "2025-08-23",
+          "last_eligible_week": "2025-08-16",
+          "model": "ridge_F0",
+          "target_week": "2025-08-23",
+          "y_pred": 700.94367
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 36,
+          "issued_for_cut": "2025-08-23",
+          "last_eligible_week": "2025-08-16",
+          "model": "ridge_F1",
+          "target_week": "2025-08-23",
+          "y_pred": -67.263136
+        }
+      },
+      "last_visible_week": "2025-08-16",
+      "loss": {
+        "naive": 0.013488,
+        "ridge_F0": 0.020143,
+        "ridge_F1": 0.174798
+      },
+      "publication_lag_days": 7,
+      "target_week": "2025-08-23",
+      "y_mature": 801.0
+    },
+    {
+      "abs_error": {
+        "naive": 172.0,
+        "ridge_F0": 467.255,
+        "ridge_F1": 672.83
+      },
+      "completeness": "complete",
+      "cut": "2025-08-30",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 264,
+          "issued_for_cut": "2025-08-30",
+          "last_eligible_week": "2025-08-23",
+          "model": "naive",
+          "target_week": "2025-08-30",
+          "y_pred": 739.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 37,
+          "issued_for_cut": "2025-08-30",
+          "last_eligible_week": "2025-08-23",
+          "model": "ridge_F0",
+          "target_week": "2025-08-30",
+          "y_pred": 1378.254754
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 37,
+          "issued_for_cut": "2025-08-30",
+          "last_eligible_week": "2025-08-23",
+          "model": "ridge_F1",
+          "target_week": "2025-08-30",
+          "y_pred": 238.169544
+        }
+      },
+      "last_visible_week": "2025-08-23",
+      "loss": {
+        "naive": 0.034627,
+        "ridge_F0": 0.094067,
+        "ridge_F1": 0.135453
+      },
+      "publication_lag_days": 7,
+      "target_week": "2025-08-30",
+      "y_mature": 911.0
+    },
+    {
+      "abs_error": {
+        "naive": 164.0,
+        "ridge_F0": 1041.19,
+        "ridge_F1": 318.007
+      },
+      "completeness": "complete",
+      "cut": "2025-09-06",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 265,
+          "issued_for_cut": "2025-09-06",
+          "last_eligible_week": "2025-08-30",
+          "model": "naive",
+          "target_week": "2025-09-06",
+          "y_pred": 815.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 38,
+          "issued_for_cut": "2025-09-06",
+          "last_eligible_week": "2025-08-30",
+          "model": "ridge_F0",
+          "target_week": "2025-09-06",
+          "y_pred": 2020.190039
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 38,
+          "issued_for_cut": "2025-09-06",
+          "last_eligible_week": "2025-08-30",
+          "model": "ridge_F1",
+          "target_week": "2025-09-06",
+          "y_pred": 660.992624
+        }
+      },
+      "last_visible_week": "2025-08-30",
+      "loss": {
+        "naive": 0.033016,
+        "ridge_F0": 0.209611,
+        "ridge_F1": 0.064021
+      },
+      "publication_lag_days": 7,
+      "target_week": "2025-09-06",
+      "y_mature": 979.0
+    },
+    {
+      "abs_error": {
+        "naive": 86.0,
+        "ridge_F0": 1653.105,
+        "ridge_F1": 124.245
+      },
+      "completeness": "complete",
+      "cut": "2025-09-13",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 266,
+          "issued_for_cut": "2025-09-13",
+          "last_eligible_week": "2025-09-06",
+          "model": "naive",
+          "target_week": "2025-09-13",
+          "y_pred": 926.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 39,
+          "issued_for_cut": "2025-09-13",
+          "last_eligible_week": "2025-09-06",
+          "model": "ridge_F0",
+          "target_week": "2025-09-13",
+          "y_pred": 2665.105292
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 39,
+          "issued_for_cut": "2025-09-13",
+          "last_eligible_week": "2025-09-06",
+          "model": "ridge_F1",
+          "target_week": "2025-09-13",
+          "y_pred": 1136.244607
+        }
+      },
+      "last_visible_week": "2025-09-06",
+      "loss": {
+        "naive": 0.017313,
+        "ridge_F0": 0.332801,
+        "ridge_F1": 0.025013
+      },
+      "publication_lag_days": 7,
+      "target_week": "2025-09-13",
+      "y_mature": 1012.0
+    },
+    {
+      "abs_error": {
+        "naive": 29.0,
+        "ridge_F0": 2318.091,
+        "ridge_F1": 551.259
+      },
+      "completeness": "complete",
+      "cut": "2025-09-20",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 267,
+          "issued_for_cut": "2025-09-20",
+          "last_eligible_week": "2025-09-13",
+          "model": "naive",
+          "target_week": "2025-09-20",
+          "y_pred": 933.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 40,
+          "issued_for_cut": "2025-09-20",
+          "last_eligible_week": "2025-09-13",
+          "model": "ridge_F0",
+          "target_week": "2025-09-20",
+          "y_pred": 3222.09073
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 40,
+          "issued_for_cut": "2025-09-20",
+          "last_eligible_week": "2025-09-13",
+          "model": "ridge_F1",
+          "target_week": "2025-09-20",
+          "y_pred": 1455.259092
+        }
+      },
+      "last_visible_week": "2025-09-13",
+      "loss": {
+        "naive": 0.005838,
+        "ridge_F0": 0.466675,
+        "ridge_F1": 0.110979
+      },
+      "publication_lag_days": 7,
+      "target_week": "2025-09-20",
+      "y_mature": 904.0
+    },
+    {
+      "abs_error": {
+        "naive": 183.0,
+        "ridge_F0": 2659.806,
+        "ridge_F1": 674.797
+      },
+      "completeness": "complete",
+      "cut": "2025-09-27",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 268,
+          "issued_for_cut": "2025-09-27",
+          "last_eligible_week": "2025-09-20",
+          "model": "naive",
+          "target_week": "2025-09-27",
+          "y_pred": 841.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 41,
+          "issued_for_cut": "2025-09-27",
+          "last_eligible_week": "2025-09-20",
+          "model": "ridge_F0",
+          "target_week": "2025-09-27",
+          "y_pred": 3683.80616
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 41,
+          "issued_for_cut": "2025-09-27",
+          "last_eligible_week": "2025-09-20",
+          "model": "ridge_F1",
+          "target_week": "2025-09-27",
+          "y_pred": 1698.797427
+        }
+      },
+      "last_visible_week": "2025-09-20",
+      "loss": {
+        "naive": 0.036841,
+        "ridge_F0": 0.535469,
+        "ridge_F1": 0.135849
+      },
+      "publication_lag_days": 7,
+      "target_week": "2025-09-27",
+      "y_mature": 1024.0
+    },
+    {
+      "abs_error": {
+        "naive": 183.0,
+        "ridge_F0": 2637.83,
+        "ridge_F1": 725.614
+      },
+      "completeness": "complete",
+      "cut": "2025-10-04",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 268,
+          "issued_for_cut": "2025-10-04",
+          "last_eligible_week": "2025-09-20",
+          "model": "naive",
+          "target_week": "2025-09-27",
+          "y_pred": 841.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 42,
+          "issued_for_cut": "2025-10-04",
+          "last_eligible_week": "2025-09-20",
+          "model": "ridge_F0",
+          "target_week": "2025-09-27",
+          "y_pred": 3661.829894
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 42,
+          "issued_for_cut": "2025-10-04",
+          "last_eligible_week": "2025-09-20",
+          "model": "ridge_F1",
+          "target_week": "2025-09-27",
+          "y_pred": 1749.613762
+        }
+      },
+      "last_visible_week": "2025-09-20",
+      "loss": {
+        "naive": 0.036841,
+        "ridge_F0": 0.531044,
+        "ridge_F1": 0.14608
+      },
+      "publication_lag_days": 14,
+      "target_week": "2025-09-27",
+      "y_mature": 1024.0
+    },
+    {
+      "abs_error": {
+        "naive": 183.0,
+        "ridge_F0": 2585.873,
+        "ridge_F1": 750.827
+      },
+      "completeness": "complete",
+      "cut": "2025-10-11",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 268,
+          "issued_for_cut": "2025-10-11",
+          "last_eligible_week": "2025-09-20",
+          "model": "naive",
+          "target_week": "2025-09-27",
+          "y_pred": 841.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 43,
+          "issued_for_cut": "2025-10-11",
+          "last_eligible_week": "2025-09-20",
+          "model": "ridge_F0",
+          "target_week": "2025-09-27",
+          "y_pred": 3609.872517
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 43,
+          "issued_for_cut": "2025-10-11",
+          "last_eligible_week": "2025-09-20",
+          "model": "ridge_F1",
+          "target_week": "2025-09-27",
+          "y_pred": 1774.826697
+        }
+      },
+      "last_visible_week": "2025-09-20",
+      "loss": {
+        "naive": 0.036841,
+        "ridge_F0": 0.520584,
+        "ridge_F1": 0.151155
+      },
+      "publication_lag_days": 21,
+      "target_week": "2025-09-27",
+      "y_mature": 1024.0
+    },
+    {
+      "abs_error": {
+        "naive": 183.0,
+        "ridge_F0": 2513.895,
+        "ridge_F1": 769.256
+      },
+      "completeness": "complete",
+      "cut": "2025-10-18",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 268,
+          "issued_for_cut": "2025-10-18",
+          "last_eligible_week": "2025-09-20",
+          "model": "naive",
+          "target_week": "2025-09-27",
+          "y_pred": 841.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 44,
+          "issued_for_cut": "2025-10-18",
+          "last_eligible_week": "2025-09-20",
+          "model": "ridge_F0",
+          "target_week": "2025-09-27",
+          "y_pred": 3537.894876
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 44,
+          "issued_for_cut": "2025-10-18",
+          "last_eligible_week": "2025-09-20",
+          "model": "ridge_F1",
+          "target_week": "2025-09-27",
+          "y_pred": 1793.25632
+        }
+      },
+      "last_visible_week": "2025-09-20",
+      "loss": {
+        "naive": 0.036841,
+        "ridge_F0": 0.506094,
+        "ridge_F1": 0.154866
+      },
+      "publication_lag_days": 28,
+      "target_week": "2025-09-27",
+      "y_mature": 1024.0
+    },
+    {
+      "abs_error": {
+        "naive": 183.0,
+        "ridge_F0": 2420.11,
+        "ridge_F1": 764.843
+      },
+      "completeness": "complete",
+      "cut": "2025-10-25",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 268,
+          "issued_for_cut": "2025-10-25",
+          "last_eligible_week": "2025-09-20",
+          "model": "naive",
+          "target_week": "2025-09-27",
+          "y_pred": 841.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 45,
+          "issued_for_cut": "2025-10-25",
+          "last_eligible_week": "2025-09-20",
+          "model": "ridge_F0",
+          "target_week": "2025-09-27",
+          "y_pred": 3444.110489
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 45,
+          "issued_for_cut": "2025-10-25",
+          "last_eligible_week": "2025-09-20",
+          "model": "ridge_F1",
+          "target_week": "2025-09-27",
+          "y_pred": 1788.842697
+        }
+      },
+      "last_visible_week": "2025-09-20",
+      "loss": {
+        "naive": 0.036841,
+        "ridge_F0": 0.487213,
+        "ridge_F1": 0.153977
+      },
+      "publication_lag_days": 35,
+      "target_week": "2025-09-27",
+      "y_mature": 1024.0
+    },
+    {
+      "abs_error": {
+        "naive": 183.0,
+        "ridge_F0": 2303.753,
+        "ridge_F1": 740.864
+      },
+      "completeness": "complete",
+      "cut": "2025-11-01",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 268,
+          "issued_for_cut": "2025-11-01",
+          "last_eligible_week": "2025-09-20",
+          "model": "naive",
+          "target_week": "2025-09-27",
+          "y_pred": 841.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 46,
+          "issued_for_cut": "2025-11-01",
+          "last_eligible_week": "2025-09-20",
+          "model": "ridge_F0",
+          "target_week": "2025-09-27",
+          "y_pred": 3327.753303
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 46,
+          "issued_for_cut": "2025-11-01",
+          "last_eligible_week": "2025-09-20",
+          "model": "ridge_F1",
+          "target_week": "2025-09-27",
+          "y_pred": 1764.864022
+        }
+      },
+      "last_visible_week": "2025-09-20",
+      "loss": {
+        "naive": 0.036841,
+        "ridge_F0": 0.463788,
+        "ridge_F1": 0.14915
+      },
+      "publication_lag_days": 42,
+      "target_week": "2025-09-27",
+      "y_mature": 1024.0
+    },
+    {
+      "abs_error": {
+        "naive": 183.0,
+        "ridge_F0": 2157.598,
+        "ridge_F1": 690.455
+      },
+      "completeness": "complete",
+      "cut": "2025-11-08",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 268,
+          "issued_for_cut": "2025-11-08",
+          "last_eligible_week": "2025-09-20",
+          "model": "naive",
+          "target_week": "2025-09-27",
+          "y_pred": 841.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 47,
+          "issued_for_cut": "2025-11-08",
+          "last_eligible_week": "2025-09-20",
+          "model": "ridge_F0",
+          "target_week": "2025-09-27",
+          "y_pred": 3181.598256
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 47,
+          "issued_for_cut": "2025-11-08",
+          "last_eligible_week": "2025-09-20",
+          "model": "ridge_F1",
+          "target_week": "2025-09-27",
+          "y_pred": 1714.454822
+        }
+      },
+      "last_visible_week": "2025-09-20",
+      "loss": {
+        "naive": 0.036841,
+        "ridge_F0": 0.434365,
+        "ridge_F1": 0.139001
+      },
+      "publication_lag_days": 49,
+      "target_week": "2025-09-27",
+      "y_mature": 1024.0
+    },
+    {
+      "abs_error": {
+        "naive": 866.0,
+        "ridge_F0": 4507.769,
+        "ridge_F1": 2391.773
+      },
+      "completeness": "complete",
+      "cut": "2025-11-15",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 275,
+          "issued_for_cut": "2025-11-15",
+          "last_eligible_week": "2025-11-08",
+          "model": "naive",
+          "target_week": "2025-11-15",
+          "y_pred": 1618.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 48,
+          "issued_for_cut": "2025-11-15",
+          "last_eligible_week": "2025-11-08",
+          "model": "ridge_F0",
+          "target_week": "2025-11-15",
+          "y_pred": 6991.768833
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 48,
+          "issued_for_cut": "2025-11-15",
+          "last_eligible_week": "2025-11-08",
+          "model": "ridge_F1",
+          "target_week": "2025-11-15",
+          "y_pred": 4875.772706
+        }
+      },
+      "last_visible_week": "2025-11-08",
+      "loss": {
+        "naive": 0.174342,
+        "ridge_F0": 0.907498,
+        "ridge_F1": 0.481508
+      },
+      "publication_lag_days": 7,
+      "target_week": "2025-11-15",
+      "y_mature": 2484.0
+    },
+    {
+      "abs_error": {
+        "naive": 1288.0,
+        "ridge_F0": 4103.309,
+        "ridge_F1": 2188.96
+      },
+      "completeness": "complete",
+      "cut": "2025-11-22",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 276,
+          "issued_for_cut": "2025-11-22",
+          "last_eligible_week": "2025-11-15",
+          "model": "naive",
+          "target_week": "2025-11-22",
+          "y_pred": 2293.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 49,
+          "issued_for_cut": "2025-11-22",
+          "last_eligible_week": "2025-11-15",
+          "model": "ridge_F0",
+          "target_week": "2025-11-22",
+          "y_pred": 7684.309389
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 49,
+          "issued_for_cut": "2025-11-22",
+          "last_eligible_week": "2025-11-15",
+          "model": "ridge_F1",
+          "target_week": "2025-11-22",
+          "y_pred": 5769.960325
+        }
+      },
+      "last_visible_week": "2025-11-15",
+      "loss": {
+        "naive": 0.259298,
+        "ridge_F0": 0.826073,
+        "ridge_F1": 0.440679
+      },
+      "publication_lag_days": 7,
+      "target_week": "2025-11-22",
+      "y_mature": 3581.0
+    },
+    {
+      "abs_error": {
+        "naive": 1957.0,
+        "ridge_F0": 3311.758,
+        "ridge_F1": 1714.022
+      },
+      "completeness": "complete",
+      "cut": "2025-11-29",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 277,
+          "issued_for_cut": "2025-11-29",
+          "last_eligible_week": "2025-11-22",
+          "model": "naive",
+          "target_week": "2025-11-29",
+          "y_pred": 3264.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 50,
+          "issued_for_cut": "2025-11-29",
+          "last_eligible_week": "2025-11-22",
+          "model": "ridge_F0",
+          "target_week": "2025-11-29",
+          "y_pred": 8532.758213
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 50,
+          "issued_for_cut": "2025-11-29",
+          "last_eligible_week": "2025-11-22",
+          "model": "ridge_F1",
+          "target_week": "2025-11-29",
+          "y_pred": 6935.022459
+        }
+      },
+      "last_visible_week": "2025-11-22",
+      "loss": {
+        "naive": 0.393981,
+        "ridge_F0": 0.666719,
+        "ridge_F1": 0.345065
+      },
+      "publication_lag_days": 7,
+      "target_week": "2025-11-29",
+      "y_mature": 5221.0
+    },
+    {
+      "abs_error": {
+        "naive": 2595.0,
+        "ridge_F0": 2289.82,
+        "ridge_F1": 1241.533
+      },
+      "completeness": "complete",
+      "cut": "2025-12-06",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 278,
+          "issued_for_cut": "2025-12-06",
+          "last_eligible_week": "2025-11-29",
+          "model": "naive",
+          "target_week": "2025-12-06",
+          "y_pred": 4855.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 51,
+          "issued_for_cut": "2025-12-06",
+          "last_eligible_week": "2025-11-29",
+          "model": "ridge_F0",
+          "target_week": "2025-12-06",
+          "y_pred": 9739.82012
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 51,
+          "issued_for_cut": "2025-12-06",
+          "last_eligible_week": "2025-11-29",
+          "model": "ridge_F1",
+          "target_week": "2025-12-06",
+          "y_pred": 8691.532941
+        }
+      },
+      "last_visible_week": "2025-11-29",
+      "loss": {
+        "naive": 0.522422,
+        "ridge_F0": 0.460983,
+        "ridge_F1": 0.249944
+      },
+      "publication_lag_days": 7,
+      "target_week": "2025-12-06",
+      "y_mature": 7450.0
+    },
+    {
+      "abs_error": {
+        "naive": 4216.0,
+        "ridge_F0": 130.135,
+        "ridge_F1": 384.268
+      },
+      "completeness": "complete",
+      "cut": "2025-12-13",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 279,
+          "issued_for_cut": "2025-12-13",
+          "last_eligible_week": "2025-12-06",
+          "model": "naive",
+          "target_week": "2025-12-13",
+          "y_pred": 6919.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 52,
+          "issued_for_cut": "2025-12-13",
+          "last_eligible_week": "2025-12-06",
+          "model": "ridge_F0",
+          "target_week": "2025-12-13",
+          "y_pred": 11265.135414
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 52,
+          "issued_for_cut": "2025-12-13",
+          "last_eligible_week": "2025-12-06",
+          "model": "ridge_F1",
+          "target_week": "2025-12-13",
+          "y_pred": 10750.73158
+        }
+      },
+      "last_visible_week": "2025-12-06",
+      "loss": {
+        "naive": 0.848759,
+        "ridge_F0": 0.026199,
+        "ridge_F1": 0.07736
+      },
+      "publication_lag_days": 7,
+      "target_week": "2025-12-13",
+      "y_mature": 11135.0
+    },
+    {
+      "abs_error": {
+        "naive": 11058.0,
+        "ridge_F0": 7668.005,
+        "ridge_F1": 7130.321
+      },
+      "completeness": "complete",
+      "cut": "2025-12-20",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 280,
+          "issued_for_cut": "2025-12-20",
+          "last_eligible_week": "2025-12-13",
+          "model": "naive",
+          "target_week": "2025-12-20",
+          "y_pred": 9999.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 53,
+          "issued_for_cut": "2025-12-20",
+          "last_eligible_week": "2025-12-13",
+          "model": "ridge_F0",
+          "target_week": "2025-12-20",
+          "y_pred": 13388.994989
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 53,
+          "issued_for_cut": "2025-12-20",
+          "last_eligible_week": "2025-12-13",
+          "model": "ridge_F1",
+          "target_week": "2025-12-20",
+          "y_pred": 13926.678502
+        }
+      },
+      "last_visible_week": "2025-12-13",
+      "loss": {
+        "naive": 2.226181,
+        "ridge_F0": 1.543712,
+        "ridge_F1": 1.435467
+      },
+      "publication_lag_days": 7,
+      "target_week": "2025-12-20",
+      "y_mature": 21057.0
+    },
+    {
+      "abs_error": {
+        "naive": 18956.0,
+        "ridge_F0": 18828.737,
+        "ridge_F1": 13893.291
+      },
+      "completeness": "complete",
+      "cut": "2025-12-27",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 281,
+          "issued_for_cut": "2025-12-27",
+          "last_eligible_week": "2025-12-20",
+          "model": "naive",
+          "target_week": "2025-12-27",
+          "y_pred": 18546.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 54,
+          "issued_for_cut": "2025-12-27",
+          "last_eligible_week": "2025-12-20",
+          "model": "ridge_F0",
+          "target_week": "2025-12-27",
+          "y_pred": 18673.262609
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 54,
+          "issued_for_cut": "2025-12-27",
+          "last_eligible_week": "2025-12-20",
+          "model": "ridge_F1",
+          "target_week": "2025-12-27",
+          "y_pred": 23608.709238
+        }
+      },
+      "last_visible_week": "2025-12-20",
+      "loss": {
+        "naive": 3.816196,
+        "ridge_F0": 3.790576,
+        "ridge_F1": 2.796978
+      },
+      "publication_lag_days": 7,
+      "target_week": "2025-12-27",
+      "y_mature": 37502.0
+    },
+    {
+      "abs_error": {
+        "naive": 9006.0,
+        "ridge_F0": 13752.42,
+        "ridge_F1": 4341.297
+      },
+      "completeness": "complete",
+      "cut": "2026-01-03",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 282,
+          "issued_for_cut": "2026-01-03",
+          "last_eligible_week": "2025-12-27",
+          "model": "naive",
+          "target_week": "2026-01-03",
+          "y_pred": 33494.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 55,
+          "issued_for_cut": "2026-01-03",
+          "last_eligible_week": "2025-12-27",
+          "model": "ridge_F0",
+          "target_week": "2026-01-03",
+          "y_pred": 28747.579586
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 55,
+          "issued_for_cut": "2026-01-03",
+          "last_eligible_week": "2025-12-27",
+          "model": "ridge_F1",
+          "target_week": "2026-01-03",
+          "y_pred": 38158.703243
+        }
+      },
+      "last_visible_week": "2025-12-27",
+      "loss": {
+        "naive": 1.813076,
+        "ridge_F0": 2.768619,
+        "ridge_F1": 0.873984
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-01-03",
+      "y_mature": 42500.0
+    },
+    {
+      "abs_error": {
+        "naive": 10331.0,
+        "ridge_F0": 6372.732,
+        "ridge_F1": 8442.624
+      },
+      "completeness": "complete",
+      "cut": "2026-01-10",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 283,
+          "issued_for_cut": "2026-01-10",
+          "last_eligible_week": "2026-01-03",
+          "model": "naive",
+          "target_week": "2026-01-10",
+          "y_pred": 40240.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 56,
+          "issued_for_cut": "2026-01-10",
+          "last_eligible_week": "2026-01-03",
+          "model": "ridge_F0",
+          "target_week": "2026-01-10",
+          "y_pred": 36281.732182
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 56,
+          "issued_for_cut": "2026-01-10",
+          "last_eligible_week": "2026-01-03",
+          "model": "ridge_F1",
+          "target_week": "2026-01-10",
+          "y_pred": 38351.624237
+        }
+      },
+      "last_visible_week": "2026-01-03",
+      "loss": {
+        "naive": 2.079823,
+        "ridge_F0": 1.28295,
+        "ridge_F1": 1.699658
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-01-10",
+      "y_mature": 29909.0
+    },
+    {
+      "abs_error": {
+        "naive": 8509.0,
+        "ridge_F0": 11300.607,
+        "ridge_F1": 3097.318
+      },
+      "completeness": "complete",
+      "cut": "2026-01-17",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 284,
+          "issued_for_cut": "2026-01-17",
+          "last_eligible_week": "2026-01-10",
+          "model": "naive",
+          "target_week": "2026-01-17",
+          "y_pred": 28240.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 57,
+          "issued_for_cut": "2026-01-17",
+          "last_eligible_week": "2026-01-10",
+          "model": "ridge_F0",
+          "target_week": "2026-01-17",
+          "y_pred": 31031.607222
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 57,
+          "issued_for_cut": "2026-01-17",
+          "last_eligible_week": "2026-01-10",
+          "model": "ridge_F1",
+          "target_week": "2026-01-17",
+          "y_pred": 22828.318106
+        }
+      },
+      "last_visible_week": "2026-01-10",
+      "loss": {
+        "naive": 1.71302,
+        "ridge_F0": 2.275023,
+        "ridge_F1": 0.623548
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-01-17",
+      "y_mature": 19731.0
+    },
+    {
+      "abs_error": {
+        "naive": 1383.0,
+        "ridge_F0": 5503.717,
+        "ridge_F1": 1550.122
+      },
+      "completeness": "complete",
+      "cut": "2026-01-24",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 285,
+          "issued_for_cut": "2026-01-24",
+          "last_eligible_week": "2026-01-17",
+          "model": "naive",
+          "target_week": "2026-01-24",
+          "y_pred": 18199.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 58,
+          "issued_for_cut": "2026-01-24",
+          "last_eligible_week": "2026-01-17",
+          "model": "ridge_F0",
+          "target_week": "2026-01-24",
+          "y_pred": 22319.716684
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 58,
+          "issued_for_cut": "2026-01-24",
+          "last_eligible_week": "2026-01-17",
+          "model": "ridge_F1",
+          "target_week": "2026-01-24",
+          "y_pred": 18366.121549
+        }
+      },
+      "last_visible_week": "2026-01-17",
+      "loss": {
+        "naive": 0.278424,
+        "ridge_F0": 1.108001,
+        "ridge_F1": 0.312068
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-01-24",
+      "y_mature": 16816.0
+    },
+    {
+      "abs_error": {
+        "naive": 390.0,
+        "ridge_F0": 1862.204,
+        "ridge_F1": 403.913
+      },
+      "completeness": "complete",
+      "cut": "2026-01-31",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 286,
+          "issued_for_cut": "2026-01-31",
+          "last_eligible_week": "2026-01-24",
+          "model": "naive",
+          "target_week": "2026-01-31",
+          "y_pred": 15350.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 59,
+          "issued_for_cut": "2026-01-31",
+          "last_eligible_week": "2026-01-24",
+          "model": "ridge_F0",
+          "target_week": "2026-01-31",
+          "y_pred": 17602.203857
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 59,
+          "issued_for_cut": "2026-01-31",
+          "last_eligible_week": "2026-01-24",
+          "model": "ridge_F1",
+          "target_week": "2026-01-31",
+          "y_pred": 16143.91273
+        }
+      },
+      "last_visible_week": "2026-01-24",
+      "loss": {
+        "naive": 0.078514,
+        "ridge_F0": 0.374896,
+        "ridge_F1": 0.081315
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-01-31",
+      "y_mature": 15740.0
+    },
+    {
+      "abs_error": {
+        "naive": 1378.0,
+        "ridge_F0": 800.611,
+        "ridge_F1": 3946.896
+      },
+      "completeness": "complete",
+      "cut": "2026-02-07",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 287,
+          "issued_for_cut": "2026-02-07",
+          "last_eligible_week": "2026-01-31",
+          "model": "naive",
+          "target_week": "2026-02-07",
+          "y_pred": 14750.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 60,
+          "issued_for_cut": "2026-02-07",
+          "last_eligible_week": "2026-01-31",
+          "model": "ridge_F0",
+          "target_week": "2026-02-07",
+          "y_pred": 16928.611268
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 60,
+          "issued_for_cut": "2026-02-07",
+          "last_eligible_week": "2026-01-31",
+          "model": "ridge_F1",
+          "target_week": "2026-02-07",
+          "y_pred": 12181.103655
+        }
+      },
+      "last_visible_week": "2026-01-31",
+      "loss": {
+        "naive": 0.277417,
+        "ridge_F0": 0.161178,
+        "ridge_F1": 0.794584
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-02-07",
+      "y_mature": 16128.0
+    },
+    {
+      "abs_error": {
+        "naive": 2339.0,
+        "ridge_F0": 639.118,
+        "ridge_F1": 3355.712
+      },
+      "completeness": "complete",
+      "cut": "2026-02-14",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 288,
+          "issued_for_cut": "2026-02-14",
+          "last_eligible_week": "2026-02-07",
+          "model": "naive",
+          "target_week": "2026-02-14",
+          "y_pred": 14134.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 61,
+          "issued_for_cut": "2026-02-14",
+          "last_eligible_week": "2026-02-07",
+          "model": "ridge_F0",
+          "target_week": "2026-02-14",
+          "y_pred": 17112.117861
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 61,
+          "issued_for_cut": "2026-02-14",
+          "last_eligible_week": "2026-02-07",
+          "model": "ridge_F1",
+          "target_week": "2026-02-14",
+          "y_pred": 13117.287511
+        }
+      },
+      "last_visible_week": "2026-02-07",
+      "loss": {
+        "naive": 0.470884,
+        "ridge_F0": 0.128666,
+        "ridge_F1": 0.675567
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-02-14",
+      "y_mature": 16473.0
+    },
+    {
+      "abs_error": {
+        "naive": 202.0,
+        "ridge_F0": 3072.191,
+        "ridge_F1": 1089.599
+      },
+      "completeness": "complete",
+      "cut": "2026-02-21",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 289,
+          "issued_for_cut": "2026-02-21",
+          "last_eligible_week": "2026-02-14",
+          "model": "naive",
+          "target_week": "2026-02-21",
+          "y_pred": 14940.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 62,
+          "issued_for_cut": "2026-02-21",
+          "last_eligible_week": "2026-02-14",
+          "model": "ridge_F0",
+          "target_week": "2026-02-21",
+          "y_pred": 17810.191228
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 62,
+          "issued_for_cut": "2026-02-21",
+          "last_eligible_week": "2026-02-14",
+          "model": "ridge_F1",
+          "target_week": "2026-02-21",
+          "y_pred": 15827.599493
+        }
+      },
+      "last_visible_week": "2026-02-14",
+      "loss": {
+        "naive": 0.040666,
+        "ridge_F0": 0.618489,
+        "ridge_F1": 0.219357
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-02-21",
+      "y_mature": 14738.0
+    },
+    {
+      "abs_error": {
+        "naive": 2606.0,
+        "ridge_F0": 5639.132,
+        "ridge_F1": 3071.964
+      },
+      "completeness": "complete",
+      "cut": "2026-02-28",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 290,
+          "issued_for_cut": "2026-02-28",
+          "last_eligible_week": "2026-02-21",
+          "model": "naive",
+          "target_week": "2026-02-28",
+          "y_pred": 13785.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 63,
+          "issued_for_cut": "2026-02-28",
+          "last_eligible_week": "2026-02-21",
+          "model": "ridge_F0",
+          "target_week": "2026-02-28",
+          "y_pred": 16818.131536
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 63,
+          "issued_for_cut": "2026-02-28",
+          "last_eligible_week": "2026-02-21",
+          "model": "ridge_F1",
+          "target_week": "2026-02-28",
+          "y_pred": 14250.963709
+        }
+      },
+      "last_visible_week": "2026-02-21",
+      "loss": {
+        "naive": 0.524636,
+        "ridge_F0": 1.135262,
+        "ridge_F1": 0.618444
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-02-28",
+      "y_mature": 11179.0
+    },
+    {
+      "abs_error": {
+        "naive": 1069.0,
+        "ridge_F0": 4463.071,
+        "ridge_F1": 1518.101
+      },
+      "completeness": "complete",
+      "cut": "2026-03-07",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 291,
+          "issued_for_cut": "2026-03-07",
+          "last_eligible_week": "2026-02-28",
+          "model": "naive",
+          "target_week": "2026-03-07",
+          "y_pred": 10673.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 64,
+          "issued_for_cut": "2026-03-07",
+          "last_eligible_week": "2026-02-28",
+          "model": "ridge_F0",
+          "target_week": "2026-03-07",
+          "y_pred": 14067.071487
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 64,
+          "issued_for_cut": "2026-03-07",
+          "last_eligible_week": "2026-02-28",
+          "model": "ridge_F1",
+          "target_week": "2026-03-07",
+          "y_pred": 11122.101287
+        }
+      },
+      "last_visible_week": "2026-02-28",
+      "loss": {
+        "naive": 0.21521,
+        "ridge_F0": 0.898499,
+        "ridge_F1": 0.305622
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-03-07",
+      "y_mature": 9604.0
+    },
+    {
+      "abs_error": {
+        "naive": 1328.0,
+        "ridge_F0": 4246.146,
+        "ridge_F1": 3286.581
+      },
+      "completeness": "complete",
+      "cut": "2026-03-14",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 292,
+          "issued_for_cut": "2026-03-14",
+          "last_eligible_week": "2026-03-07",
+          "model": "naive",
+          "target_week": "2026-03-14",
+          "y_pred": 9130.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 65,
+          "issued_for_cut": "2026-03-14",
+          "last_eligible_week": "2026-03-07",
+          "model": "ridge_F0",
+          "target_week": "2026-03-14",
+          "y_pred": 12048.146164
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 65,
+          "issued_for_cut": "2026-03-14",
+          "last_eligible_week": "2026-03-07",
+          "model": "ridge_F1",
+          "target_week": "2026-03-14",
+          "y_pred": 11088.580714
+        }
+      },
+      "last_visible_week": "2026-03-07",
+      "loss": {
+        "naive": 0.267351,
+        "ridge_F0": 0.854828,
+        "ridge_F1": 0.66165
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-03-14",
+      "y_mature": 7802.0
+    },
+    {
+      "abs_error": {
+        "naive": 1254.0,
+        "ridge_F0": 4205.815,
+        "ridge_F1": 2420.07
+      },
+      "completeness": "complete",
+      "cut": "2026-03-21",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 293,
+          "issued_for_cut": "2026-03-21",
+          "last_eligible_week": "2026-03-14",
+          "model": "naive",
+          "target_week": "2026-03-21",
+          "y_pred": 7348.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 66,
+          "issued_for_cut": "2026-03-21",
+          "last_eligible_week": "2026-03-14",
+          "model": "ridge_F0",
+          "target_week": "2026-03-21",
+          "y_pred": 10299.815173
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 66,
+          "issued_for_cut": "2026-03-21",
+          "last_eligible_week": "2026-03-14",
+          "model": "ridge_F1",
+          "target_week": "2026-03-21",
+          "y_pred": 8514.069808
+        }
+      },
+      "last_visible_week": "2026-03-14",
+      "loss": {
+        "naive": 0.252454,
+        "ridge_F0": 0.846709,
+        "ridge_F1": 0.487205
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-03-21",
+      "y_mature": 6094.0
+    },
+    {
+      "abs_error": {
+        "naive": 2301.0,
+        "ridge_F0": 5274.129,
+        "ridge_F1": 3432.811
+      },
+      "completeness": "complete",
+      "cut": "2026-03-28",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 294,
+          "issued_for_cut": "2026-03-28",
+          "last_eligible_week": "2026-03-21",
+          "model": "naive",
+          "target_week": "2026-03-28",
+          "y_pred": 5640.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 67,
+          "issued_for_cut": "2026-03-28",
+          "last_eligible_week": "2026-03-21",
+          "model": "ridge_F0",
+          "target_week": "2026-03-28",
+          "y_pred": 8613.128628
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 67,
+          "issued_for_cut": "2026-03-28",
+          "last_eligible_week": "2026-03-21",
+          "model": "ridge_F1",
+          "target_week": "2026-03-28",
+          "y_pred": 6771.810865
+        }
+      },
+      "last_visible_week": "2026-03-21",
+      "loss": {
+        "naive": 0.463234,
+        "ridge_F0": 1.06178,
+        "ridge_F1": 0.691089
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-03-28",
+      "y_mature": 3339.0
+    },
+    {
+      "abs_error": {
+        "naive": 138.0,
+        "ridge_F0": 3359.165,
+        "ridge_F1": 1362.143
+      },
+      "completeness": "complete",
+      "cut": "2026-04-04",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 295,
+          "issued_for_cut": "2026-04-04",
+          "last_eligible_week": "2026-03-28",
+          "model": "naive",
+          "target_week": "2026-04-04",
+          "y_pred": 3050.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 68,
+          "issued_for_cut": "2026-04-04",
+          "last_eligible_week": "2026-03-28",
+          "model": "ridge_F0",
+          "target_week": "2026-04-04",
+          "y_pred": 6271.164682
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 68,
+          "issued_for_cut": "2026-04-04",
+          "last_eligible_week": "2026-03-28",
+          "model": "ridge_F1",
+          "target_week": "2026-04-04",
+          "y_pred": 4274.143011
+        }
+      },
+      "last_visible_week": "2026-03-28",
+      "loss": {
+        "naive": 0.027782,
+        "ridge_F0": 0.676262,
+        "ridge_F1": 0.274225
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-04-04",
+      "y_mature": 2912.0
+    },
+    {
+      "abs_error": {
+        "naive": 347.0,
+        "ridge_F0": 2775.407,
+        "ridge_F1": 2837.79
+      },
+      "completeness": "complete",
+      "cut": "2026-04-11",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 296,
+          "issued_for_cut": "2026-04-11",
+          "last_eligible_week": "2026-04-04",
+          "model": "naive",
+          "target_week": "2026-04-11",
+          "y_pred": 2589.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 69,
+          "issued_for_cut": "2026-04-11",
+          "last_eligible_week": "2026-04-04",
+          "model": "ridge_F0",
+          "target_week": "2026-04-11",
+          "y_pred": 5017.407095
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 69,
+          "issued_for_cut": "2026-04-11",
+          "last_eligible_week": "2026-04-04",
+          "model": "ridge_F1",
+          "target_week": "2026-04-11",
+          "y_pred": 5079.789504
+        }
+      },
+      "last_visible_week": "2026-04-04",
+      "loss": {
+        "naive": 0.069858,
+        "ridge_F0": 0.558741,
+        "ridge_F1": 0.5713
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-04-11",
+      "y_mature": 2242.0
+    },
+    {
+      "abs_error": {
+        "naive": 56.0,
+        "ridge_F0": 1899.556,
+        "ridge_F1": 1543.52
+      },
+      "completeness": "complete",
+      "cut": "2026-04-18",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 297,
+          "issued_for_cut": "2026-04-18",
+          "last_eligible_week": "2026-04-11",
+          "model": "naive",
+          "target_week": "2026-04-18",
+          "y_pred": 1893.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 70,
+          "issued_for_cut": "2026-04-18",
+          "last_eligible_week": "2026-04-11",
+          "model": "ridge_F0",
+          "target_week": "2026-04-18",
+          "y_pred": 3848.555603
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 70,
+          "issued_for_cut": "2026-04-18",
+          "last_eligible_week": "2026-04-11",
+          "model": "ridge_F1",
+          "target_week": "2026-04-18",
+          "y_pred": 3492.519737
+        }
+      },
+      "last_visible_week": "2026-04-11",
+      "loss": {
+        "naive": 0.011274,
+        "ridge_F0": 0.382416,
+        "ridge_F1": 0.310739
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-04-18",
+      "y_mature": 1949.0
+    },
+    {
+      "abs_error": {
+        "naive": 222.0,
+        "ridge_F0": 1169.413,
+        "ridge_F1": 1168.742
+      },
+      "completeness": "complete",
+      "cut": "2026-04-25",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 298,
+          "issued_for_cut": "2026-04-25",
+          "last_eligible_week": "2026-04-18",
+          "model": "naive",
+          "target_week": "2026-04-25",
+          "y_pred": 1662.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 71,
+          "issued_for_cut": "2026-04-25",
+          "last_eligible_week": "2026-04-18",
+          "model": "ridge_F0",
+          "target_week": "2026-04-25",
+          "y_pred": 3053.412668
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 71,
+          "issued_for_cut": "2026-04-25",
+          "last_eligible_week": "2026-04-18",
+          "model": "ridge_F1",
+          "target_week": "2026-04-25",
+          "y_pred": 3052.74249
+        }
+      },
+      "last_visible_week": "2026-04-18",
+      "loss": {
+        "naive": 0.044693,
+        "ridge_F0": 0.235425,
+        "ridge_F1": 0.23529
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-04-25",
+      "y_mature": 1884.0
+    },
+    {
+      "abs_error": {
+        "naive": 61.0,
+        "ridge_F0": 822.194,
+        "ridge_F1": 1411.34
+      },
+      "completeness": "complete",
+      "cut": "2026-05-02",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 299,
+          "issued_for_cut": "2026-05-02",
+          "last_eligible_week": "2026-04-25",
+          "model": "naive",
+          "target_week": "2026-05-02",
+          "y_pred": 1711.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 72,
+          "issued_for_cut": "2026-05-02",
+          "last_eligible_week": "2026-04-25",
+          "model": "ridge_F0",
+          "target_week": "2026-05-02",
+          "y_pred": 2472.194077
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 72,
+          "issued_for_cut": "2026-05-02",
+          "last_eligible_week": "2026-04-25",
+          "model": "ridge_F1",
+          "target_week": "2026-05-02",
+          "y_pred": 3061.340015
+        }
+      },
+      "last_visible_week": "2026-04-25",
+      "loss": {
+        "naive": 0.01228,
+        "ridge_F0": 0.165523,
+        "ridge_F1": 0.284129
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-05-02",
+      "y_mature": 1650.0
+    },
+    {
+      "abs_error": {
+        "naive": 90.0,
+        "ridge_F0": 324.721,
+        "ridge_F1": 978.63
+      },
+      "completeness": "complete",
+      "cut": "2026-05-09",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 300,
+          "issued_for_cut": "2026-05-09",
+          "last_eligible_week": "2026-05-02",
+          "model": "naive",
+          "target_week": "2026-05-09",
+          "y_pred": 1573.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 73,
+          "issued_for_cut": "2026-05-09",
+          "last_eligible_week": "2026-05-02",
+          "model": "ridge_F0",
+          "target_week": "2026-05-09",
+          "y_pred": 1807.720676
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 73,
+          "issued_for_cut": "2026-05-09",
+          "last_eligible_week": "2026-05-02",
+          "model": "ridge_F1",
+          "target_week": "2026-05-09",
+          "y_pred": 2461.630248
+        }
+      },
+      "last_visible_week": "2026-05-02",
+      "loss": {
+        "naive": 0.018119,
+        "ridge_F0": 0.065372,
+        "ridge_F1": 0.197017
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-05-09",
+      "y_mature": 1483.0
+    },
+    {
+      "abs_error": {
+        "naive": 112.0,
+        "ridge_F0": 200.022,
+        "ridge_F1": 668.103
+      },
+      "completeness": "complete",
+      "cut": "2026-05-16",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 301,
+          "issued_for_cut": "2026-05-16",
+          "last_eligible_week": "2026-05-09",
+          "model": "naive",
+          "target_week": "2026-05-16",
+          "y_pred": 1431.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 74,
+          "issued_for_cut": "2026-05-16",
+          "last_eligible_week": "2026-05-09",
+          "model": "ridge_F0",
+          "target_week": "2026-05-16",
+          "y_pred": 1118.978075
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 74,
+          "issued_for_cut": "2026-05-16",
+          "last_eligible_week": "2026-05-09",
+          "model": "ridge_F1",
+          "target_week": "2026-05-16",
+          "y_pred": 1987.103313
+        }
+      },
+      "last_visible_week": "2026-05-09",
+      "loss": {
+        "naive": 0.022548,
+        "ridge_F0": 0.040268,
+        "ridge_F1": 0.134502
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-05-16",
+      "y_mature": 1319.0
+    },
+    {
+      "abs_error": {
+        "naive": 24.0,
+        "ridge_F0": 708.948,
+        "ridge_F1": 301.242
+      },
+      "completeness": "complete",
+      "cut": "2026-05-23",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 302,
+          "issued_for_cut": "2026-05-23",
+          "last_eligible_week": "2026-05-16",
+          "model": "naive",
+          "target_week": "2026-05-23",
+          "y_pred": 1236.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 75,
+          "issued_for_cut": "2026-05-23",
+          "last_eligible_week": "2026-05-16",
+          "model": "ridge_F0",
+          "target_week": "2026-05-23",
+          "y_pred": 551.052286
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 75,
+          "issued_for_cut": "2026-05-23",
+          "last_eligible_week": "2026-05-16",
+          "model": "ridge_F1",
+          "target_week": "2026-05-23",
+          "y_pred": 1561.241761
+        }
+      },
+      "last_visible_week": "2026-05-16",
+      "loss": {
+        "naive": 0.004832,
+        "ridge_F0": 0.142724,
+        "ridge_F1": 0.060646
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-05-23",
+      "y_mature": 1260.0
+    },
+    {
+      "abs_error": {
+        "naive": 16.0,
+        "ridge_F0": 982.828,
+        "ridge_F1": 30.876
+      },
+      "completeness": "complete",
+      "cut": "2026-05-30",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 303,
+          "issued_for_cut": "2026-05-30",
+          "last_eligible_week": "2026-05-23",
+          "model": "naive",
+          "target_week": "2026-05-30",
+          "y_pred": 1088.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 76,
+          "issued_for_cut": "2026-05-30",
+          "last_eligible_week": "2026-05-23",
+          "model": "ridge_F0",
+          "target_week": "2026-05-30",
+          "y_pred": 89.171877
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 76,
+          "issued_for_cut": "2026-05-30",
+          "last_eligible_week": "2026-05-23",
+          "model": "ridge_F1",
+          "target_week": "2026-05-30",
+          "y_pred": 1102.876287
+        }
+      },
+      "last_visible_week": "2026-05-23",
+      "loss": {
+        "naive": 0.003221,
+        "ridge_F0": 0.197862,
+        "ridge_F1": 0.006216
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-05-30",
+      "y_mature": 1072.0
+    },
+    {
+      "abs_error": {
+        "naive": 49.0,
+        "ridge_F0": 1283.758,
+        "ridge_F1": 318.956
+      },
+      "completeness": "complete",
+      "cut": "2026-06-06",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 304,
+          "issued_for_cut": "2026-06-06",
+          "last_eligible_week": "2026-05-30",
+          "model": "naive",
+          "target_week": "2026-06-06",
+          "y_pred": 997.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 77,
+          "issued_for_cut": "2026-06-06",
+          "last_eligible_week": "2026-05-30",
+          "model": "ridge_F0",
+          "target_week": "2026-06-06",
+          "y_pred": -237.758143
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 77,
+          "issued_for_cut": "2026-06-06",
+          "last_eligible_week": "2026-05-30",
+          "model": "ridge_F1",
+          "target_week": "2026-06-06",
+          "y_pred": 727.043877
+        }
+      },
+      "last_visible_week": "2026-05-30",
+      "loss": {
+        "naive": 0.009865,
+        "ridge_F0": 0.258444,
+        "ridge_F1": 0.064212
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-06-06",
+      "y_mature": 1046.0
+    },
+    {
+      "abs_error": {
+        "naive": 97.0,
+        "ridge_F0": 1343.381,
+        "ridge_F1": 244.699
+      },
+      "completeness": "complete",
+      "cut": "2026-06-13",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 305,
+          "issued_for_cut": "2026-06-13",
+          "last_eligible_week": "2026-06-06",
+          "model": "naive",
+          "target_week": "2026-06-13",
+          "y_pred": 969.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 78,
+          "issued_for_cut": "2026-06-13",
+          "last_eligible_week": "2026-06-06",
+          "model": "ridge_F0",
+          "target_week": "2026-06-13",
+          "y_pred": -471.38077
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 78,
+          "issued_for_cut": "2026-06-13",
+          "last_eligible_week": "2026-06-06",
+          "model": "ridge_F1",
+          "target_week": "2026-06-13",
+          "y_pred": 627.301083
+        }
+      },
+      "last_visible_week": "2026-06-06",
+      "loss": {
+        "naive": 0.019528,
+        "ridge_F0": 0.270448,
+        "ridge_F1": 0.049262
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-06-13",
+      "y_mature": 872.0
+    },
+    {
+      "abs_error": {
+        "naive": 27.0,
+        "ridge_F0": 1534.171,
+        "ridge_F1": 635.424
+      },
+      "completeness": "complete",
+      "cut": "2026-06-20",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 306,
+          "issued_for_cut": "2026-06-20",
+          "last_eligible_week": "2026-06-13",
+          "model": "naive",
+          "target_week": "2026-06-20",
+          "y_pred": 768.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 79,
+          "issued_for_cut": "2026-06-20",
+          "last_eligible_week": "2026-06-13",
+          "model": "ridge_F0",
+          "target_week": "2026-06-20",
+          "y_pred": -739.171278
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 79,
+          "issued_for_cut": "2026-06-20",
+          "last_eligible_week": "2026-06-13",
+          "model": "ridge_F1",
+          "target_week": "2026-06-20",
+          "y_pred": 159.576281
+        }
+      },
+      "last_visible_week": "2026-06-13",
+      "loss": {
+        "naive": 0.005436,
+        "ridge_F0": 0.308857,
+        "ridge_F1": 0.127923
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-06-20",
+      "y_mature": 795.0
+    },
+    {
+      "abs_error": {
+        "naive": 19.0,
+        "ridge_F0": 1599.927,
+        "ridge_F1": 676.198
+      },
+      "completeness": "complete",
+      "cut": "2026-06-27",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 307,
+          "issued_for_cut": "2026-06-27",
+          "last_eligible_week": "2026-06-20",
+          "model": "naive",
+          "target_week": "2026-06-27",
+          "y_pred": 733.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 80,
+          "issued_for_cut": "2026-06-27",
+          "last_eligible_week": "2026-06-20",
+          "model": "ridge_F0",
+          "target_week": "2026-06-27",
+          "y_pred": -847.926964
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 80,
+          "issued_for_cut": "2026-06-27",
+          "last_eligible_week": "2026-06-20",
+          "model": "ridge_F1",
+          "target_week": "2026-06-27",
+          "y_pred": 75.802201
+        }
+      },
+      "last_visible_week": "2026-06-20",
+      "loss": {
+        "naive": 0.003825,
+        "ridge_F0": 0.322095,
+        "ridge_F1": 0.136131
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-06-27",
+      "y_mature": 752.0
+    },
+    {
+      "abs_error": {
+        "naive": 5.0,
+        "ridge_F0": 1599.323,
+        "ridge_F1": 697.703
+      },
+      "completeness": "complete",
+      "cut": "2026-07-04",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 308,
+          "issued_for_cut": "2026-07-04",
+          "last_eligible_week": "2026-06-27",
+          "model": "naive",
+          "target_week": "2026-07-04",
+          "y_pred": 729.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 81,
+          "issued_for_cut": "2026-07-04",
+          "last_eligible_week": "2026-06-27",
+          "model": "ridge_F0",
+          "target_week": "2026-07-04",
+          "y_pred": -865.322822
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 81,
+          "issued_for_cut": "2026-07-04",
+          "last_eligible_week": "2026-06-27",
+          "model": "ridge_F1",
+          "target_week": "2026-07-04",
+          "y_pred": 36.297287
+        }
+      },
+      "last_visible_week": "2026-06-27",
+      "loss": {
+        "naive": 0.001007,
+        "ridge_F0": 0.321973,
+        "ridge_F1": 0.140461
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-07-04",
+      "y_mature": 734.0
+    },
+    {
+      "abs_error": {
+        "naive": 58.0,
+        "ridge_F0": 1589.727,
+        "ridge_F1": 807.795
+      },
+      "completeness": "complete",
+      "cut": "2026-07-11",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 309,
+          "issued_for_cut": "2026-07-11",
+          "last_eligible_week": "2026-07-04",
+          "model": "naive",
+          "target_week": "2026-07-11",
+          "y_pred": 695.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 82,
+          "issued_for_cut": "2026-07-11",
+          "last_eligible_week": "2026-07-04",
+          "model": "ridge_F0",
+          "target_week": "2026-07-11",
+          "y_pred": -836.726556
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 82,
+          "issued_for_cut": "2026-07-11",
+          "last_eligible_week": "2026-07-04",
+          "model": "ridge_F1",
+          "target_week": "2026-07-11",
+          "y_pred": -54.794821
+        }
+      },
+      "last_visible_week": "2026-07-04",
+      "loss": {
+        "naive": 0.011676,
+        "ridge_F0": 0.320042,
+        "ridge_F1": 0.162624
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-07-11",
+      "y_mature": 753.0
+    },
+    {
+      "abs_error": {
+        "naive": 6.0,
+        "ridge_F0": 1416.846,
+        "ridge_F1": 792.959
+      },
+      "completeness": "complete",
+      "cut": "2026-07-18",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 310,
+          "issued_for_cut": "2026-07-18",
+          "last_eligible_week": "2026-07-11",
+          "model": "naive",
+          "target_week": "2026-07-18",
+          "y_pred": 660.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 83,
+          "issued_for_cut": "2026-07-18",
+          "last_eligible_week": "2026-07-11",
+          "model": "ridge_F0",
+          "target_week": "2026-07-18",
+          "y_pred": -750.845834
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 83,
+          "issued_for_cut": "2026-07-18",
+          "last_eligible_week": "2026-07-11",
+          "model": "ridge_F1",
+          "target_week": "2026-07-18",
+          "y_pred": -126.958705
+        }
+      },
+      "last_visible_week": "2026-07-11",
+      "loss": {
+        "naive": 0.001208,
+        "ridge_F0": 0.285237,
+        "ridge_F1": 0.159637
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-07-18",
+      "y_mature": 666.0
+    },
+    {
+      "abs_error": {
+        "naive": 59.0,
+        "ridge_F0": 1300.088,
+        "ridge_F1": 836.425
+      },
+      "completeness": "complete",
+      "cut": "2026-07-25",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 311,
+          "issued_for_cut": "2026-07-25",
+          "last_eligible_week": "2026-07-18",
+          "model": "naive",
+          "target_week": "2026-07-25",
+          "y_pred": 637.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 84,
+          "issued_for_cut": "2026-07-25",
+          "last_eligible_week": "2026-07-18",
+          "model": "ridge_F0",
+          "target_week": "2026-07-25",
+          "y_pred": -604.087865
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 84,
+          "issued_for_cut": "2026-07-25",
+          "last_eligible_week": "2026-07-18",
+          "model": "ridge_F1",
+          "target_week": "2026-07-25",
+          "y_pred": -140.425498
+        }
+      },
+      "last_visible_week": "2026-07-18",
+      "loss": {
+        "naive": 0.011878,
+        "ridge_F0": 0.261732,
+        "ridge_F1": 0.168388
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-07-25",
+      "y_mature": 696.0
+    },
+    {
+      "abs_error": {
+        "naive": 24.0,
+        "ridge_F0": 1040.076,
+        "ridge_F1": 601.96
+      },
+      "completeness": "complete",
+      "cut": "2026-08-01",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 312,
+          "issued_for_cut": "2026-08-01",
+          "last_eligible_week": "2026-07-25",
+          "model": "naive",
+          "target_week": "2026-08-01",
+          "y_pred": 681.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 85,
+          "issued_for_cut": "2026-08-01",
+          "last_eligible_week": "2026-07-25",
+          "model": "ridge_F0",
+          "target_week": "2026-08-01",
+          "y_pred": -383.075505
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 85,
+          "issued_for_cut": "2026-08-01",
+          "last_eligible_week": "2026-07-25",
+          "model": "ridge_F1",
+          "target_week": "2026-08-01",
+          "y_pred": 55.040273
+        }
+      },
+      "last_visible_week": "2026-07-25",
+      "loss": {
+        "naive": 0.004832,
+        "ridge_F0": 0.209387,
+        "ridge_F1": 0.121186
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-08-01",
+      "y_mature": 657.0
+    },
+    {
+      "abs_error": {
+        "naive": 9.0,
+        "ridge_F0": 790.432,
+        "ridge_F1": 581.935
+      },
+      "completeness": "complete",
+      "cut": "2026-08-08",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 313,
+          "issued_for_cut": "2026-08-08",
+          "last_eligible_week": "2026-08-01",
+          "model": "naive",
+          "target_week": "2026-08-08",
+          "y_pred": 643.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 86,
+          "issued_for_cut": "2026-08-08",
+          "last_eligible_week": "2026-08-01",
+          "model": "ridge_F0",
+          "target_week": "2026-08-08",
+          "y_pred": -156.432147
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 86,
+          "issued_for_cut": "2026-08-08",
+          "last_eligible_week": "2026-08-01",
+          "model": "ridge_F1",
+          "target_week": "2026-08-08",
+          "y_pred": 52.064983
+        }
+      },
+      "last_visible_week": "2026-08-01",
+      "loss": {
+        "naive": 0.001812,
+        "ridge_F0": 0.159129,
+        "ridge_F1": 0.117154
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-08-08",
+      "y_mature": 634.0
+    },
+    {
+      "abs_error": {
+        "naive": 88.0,
+        "ridge_F0": 595.553,
+        "ridge_F1": 552.206
+      },
+      "completeness": "complete",
+      "cut": "2026-08-15",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 314,
+          "issued_for_cut": "2026-08-15",
+          "last_eligible_week": "2026-08-08",
+          "model": "naive",
+          "target_week": "2026-08-15",
+          "y_pred": 610.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 87,
+          "issued_for_cut": "2026-08-15",
+          "last_eligible_week": "2026-08-08",
+          "model": "ridge_F0",
+          "target_week": "2026-08-15",
+          "y_pred": 102.447152
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 87,
+          "issued_for_cut": "2026-08-15",
+          "last_eligible_week": "2026-08-08",
+          "model": "ridge_F1",
+          "target_week": "2026-08-15",
+          "y_pred": 145.794225
+        }
+      },
+      "last_visible_week": "2026-08-08",
+      "loss": {
+        "naive": 0.017716,
+        "ridge_F0": 0.119896,
+        "ridge_F1": 0.111169
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-08-15",
+      "y_mature": 698.0
+    },
+    {
+      "abs_error": {
+        "naive": 203.0,
+        "ridge_F0": 414.767,
+        "ridge_F1": 450.849
+      },
+      "completeness": "complete",
+      "cut": "2026-08-22",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 315,
+          "issued_for_cut": "2026-08-22",
+          "last_eligible_week": "2026-08-15",
+          "model": "naive",
+          "target_week": "2026-08-22",
+          "y_pred": 671.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 88,
+          "issued_for_cut": "2026-08-22",
+          "last_eligible_week": "2026-08-15",
+          "model": "ridge_F0",
+          "target_week": "2026-08-22",
+          "y_pred": 459.2327
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 88,
+          "issued_for_cut": "2026-08-22",
+          "last_eligible_week": "2026-08-15",
+          "model": "ridge_F1",
+          "target_week": "2026-08-22",
+          "y_pred": 423.151213
+        }
+      },
+      "last_visible_week": "2026-08-15",
+      "loss": {
+        "naive": 0.040868,
+        "ridge_F0": 0.0835,
+        "ridge_F1": 0.090764
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-08-22",
+      "y_mature": 874.0
+    },
+    {
+      "abs_error": {
+        "naive": 102.0,
+        "ridge_F0": 7.321,
+        "ridge_F1": 175.028
+      },
+      "completeness": "complete",
+      "cut": "2026-08-29",
+      "excluded": {},
+      "forecasts": {
+        "naive": {
+          "horizon_weeks": 1,
+          "inputs_used": 316,
+          "issued_for_cut": "2026-08-29",
+          "last_eligible_week": "2026-08-22",
+          "model": "naive",
+          "target_week": "2026-08-29",
+          "y_pred": 822.0
+        },
+        "ridge_F0": {
+          "horizon_weeks": 1,
+          "inputs_used": 89,
+          "issued_for_cut": "2026-08-29",
+          "last_eligible_week": "2026-08-22",
+          "model": "ridge_F0",
+          "target_week": "2026-08-29",
+          "y_pred": 916.678842
+        },
+        "ridge_F1": {
+          "horizon_weeks": 1,
+          "inputs_used": 89,
+          "issued_for_cut": "2026-08-29",
+          "last_eligible_week": "2026-08-22",
+          "model": "ridge_F1",
+          "target_week": "2026-08-29",
+          "y_pred": 748.972256
+        }
+      },
+      "last_visible_week": "2026-08-22",
+      "loss": {
+        "naive": 0.020535,
+        "ridge_F0": 0.001474,
+        "ridge_F1": 0.035236
+      },
+      "publication_lag_days": 7,
+      "target_week": "2026-08-29",
+      "y_mature": 924.0
+    }
+  ],
+  "paired_against_m0": {
+    "ridge_F0": {
+      "beats_m0": 8,
+      "loses_to_m0": 47,
+      "mean_difference": -0.288305,
+      "median_difference": -0.284194,
+      "n": 55,
+      "ties_m0": 0
+    },
+    "ridge_F1": {
+      "beats_m0": 8,
+      "loses_to_m0": 47,
+      "mean_difference": -0.063516,
+      "median_difference": -0.122487,
+      "n": 55,
+      "ties_m0": 0
+    }
+  },
+  "provenance": {
+    "channel": "delphi_v5_archive",
+    "observed_at": "2026-10-18T07:34:20.802474+00:00",
+    "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-10-17"
+  },
+  "stratum_caveat": "The delayed_publication stratum is one outage observed several times: every origin in it shares the same last visible week, the same target week and the same label. Its effective support is the number of distinct target weeks reported beside it, not the number of origins, and it supports no comparison between candidates.",
+  "support": {
+    "common_origins": 61,
+    "distinct_target_weeks": 55,
+    "origins_above_distinct_weeks": 6,
+    "repeated_target_weeks": {
+      "2025-09-27": 7
+    },
+    "rule": "One row per target week, keeping the earliest origin. A stalled publication leaves the last visible week fixed while the calendar advances, so several origins forecast the same week from the same state; counting origins would weight that week once per origin."
+  },
+  "training_feasibility_per_candidate": {
+    "naive": {
+      "origins_excluded": 0,
+      "origins_with_a_forecast": 61
+    },
+    "ridge_F0": {
+      "origins_excluded": 0,
+      "origins_with_a_forecast": 61
+    },
+    "ridge_F1": {
+      "origins_excluded": 0,
+      "origins_with_a_forecast": 61
+    }
+  },
+  "universe": {
+    "all_cuts_on_the_scheduled_calendar": true,
+    "common_origins": 61,
+    "decision_a": "Sunday-displaced cuts are excluded by calendar rule, asserted above, never by looking at prediction error.",
+    "development_origins": 32,
+    "scheduled_origins": 100,
+    "scored_origins": 61,
+    "selection_origins": 68
+  }
+}

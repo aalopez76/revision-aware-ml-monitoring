@@ -162,7 +162,11 @@ def main() -> int:
             ),
         },
         "training_feasibility_per_candidate": {
-            candidate: "pending_P2" for candidate in ("M0", "M1", "M2", "M3a", "M3b")
+            # Not measurable in this script and never guessed here: it depends on
+            # models that this script knows nothing about. P2 measures it per
+            # candidate, with its exclusions, in 01_model_comparison.json.
+            candidate: "not measurable here; see 01_model_comparison.json"
+            for candidate in ("M0", "M1", "M2", "M3a", "M3b")
         },
         "limits": (
             "These are origins eligible by date, maturity and visible history only. "
@@ -183,7 +187,7 @@ def main() -> int:
         print(f"eligible origins @ {days:>3} days   : {info['origins']}")
     print(f"publication lag (days)        : median {int(lags.median())}, "
           f"min {int(lags.min())}, max {int(lags.max())}")
-    print("training feasibility          : pending_P2 for every candidate")
+    print("training feasibility          : not measurable here; P2 measures it")
     print("=" * 72)
     print(f"wrote {path.relative_to(sources.ROOT)}")
     return 0

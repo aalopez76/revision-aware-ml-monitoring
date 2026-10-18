@@ -93,6 +93,7 @@ class ExactClaim:
 G0 = "00_source_feasibility.json"
 G1 = "01_vertical_slice.json"
 G1A = "01_modeling_support.json"
+P2 = "01_model_comparison.json"
 
 CLAIMS: list[Claim] = [
     Claim(
@@ -247,6 +248,73 @@ CLAIMS: list[Claim] = [
         expected=0,
         tolerance=0,
     ),
+    # P2 comparison. The support rows are structural and carry tolerance 0; the
+    # losses move as weeks arrive, so they carry the run's date in the artefact
+    # and a tolerance at the last reported digit.
+    Claim(
+        label="P2 common origins",
+        source=P2,
+        path=("support", "common_origins"),
+        expected=61,
+        tolerance=0,
+    ),
+    Claim(
+        label="P2 distinct target weeks",
+        source=P2,
+        path=("support", "distinct_target_weeks"),
+        expected=55,
+        tolerance=0,
+    ),
+    Claim(
+        label="P2 origins above distinct weeks",
+        source=P2,
+        path=("support", "origins_above_distinct_weeks"),
+        expected=6,
+        tolerance=0,
+    ),
+    Claim(
+        label="M0 scaled loss, 55 weeks",
+        source=P2,
+        path=("on_distinct_target_weeks", "naive", "mean_scaled_loss"),
+        expected=0.314624,
+        tolerance=5e-6,
+    ),
+    Claim(
+        label="ridge_F0 scaled loss, 55 weeks",
+        source=P2,
+        path=("on_distinct_target_weeks", "ridge_F0", "mean_scaled_loss"),
+        expected=0.60293,
+        tolerance=5e-6,
+    ),
+    Claim(
+        label="ridge_F1 scaled loss, 55 weeks",
+        source=P2,
+        path=("on_distinct_target_weeks", "ridge_F1", "mean_scaled_loss"),
+        expected=0.378141,
+        tolerance=5e-6,
+    ),
+    Claim(
+        label="ridge_F1 weeks beating M0",
+        source=P2,
+        path=("paired_against_m0", "ridge_F1", "beats_m0"),
+        expected=8,
+        tolerance=0,
+    ),
+    Claim(
+        label="ridge_F1 weeks losing to M0",
+        source=P2,
+        path=("paired_against_m0", "ridge_F1", "loses_to_m0"),
+        expected=47,
+        tolerance=0,
+    ),
+    # The degenerate stratum, tracked so it cannot quietly be read as n=6.
+    Claim(
+        label="delayed-publication stratum: distinct weeks",
+        source=P2,
+        path=("by_publication_lag", "delayed_publication", "distinct_target_weeks"),
+        expected=1,
+        tolerance=0,
+    ),
 ]
 
 EXACT_CLAIMS: list[ExactClaim] = [
@@ -306,7 +374,7 @@ SCHEMA_REQUIREMENTS: dict[int, tuple[str, ...]] = {
     2: ("spec_sha256", "g1_mp_plan_sha256"),
 }
 
-MANIFEST_SOURCES = (G1, G1A)
+MANIFEST_SOURCES = (G1, G1A, P2)
 
 
 def sha256_file(path: Path) -> str | None:
