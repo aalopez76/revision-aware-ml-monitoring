@@ -1,0 +1,22 @@
+{
+  "channel": "flusight_hub",
+  "hub_versions_known": 5,
+  "iso_week": 42,
+  "iso_year": 2026,
+  "newest_hub_version": {
+    "committed_at": "2026-10-14T14:52:09Z",
+    "message": "Update target-hospital-admissions.csv",
+    "sha": "e4e60ab1a05fddc496eefcde60b6351b73a06daa"
+  },
+  "provenance": {
+    "channel": "flusight_hub_tip",
+    "observed_at": "2026-10-18T07:15:51.463353+00:00",
+    "request_url": "https://raw.githubusercontent.com/cdcepi/FluSight-forecast-hub/main/target-data/target-hospital-admissions.csv"
+  },
+  "run_at": "2026-10-18T07:15:49.944682+00:00",
+  "run_attempt": "1",
+  "runner": "local",
+  "scheduled_runner": false,
+  "tip_rows": 12986,
+  "v5_api_key_configured": true
+}

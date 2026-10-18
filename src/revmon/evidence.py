@@ -184,6 +184,24 @@ class RunManifest:
         return asdict(self)
 
 
+def write_json_once(path: Path, payload: object) -> tuple[object, bool]:
+    """Write a record the first time and never again. Returns `(stored, wrote)`.
+
+    The same invariant as `record_prediction`, for records whose identity is in
+    their filename rather than in a field. A caller that gets `False` is looking
+    at what an earlier execution wrote, and that is the point: re-entering a step
+    within the same run attempt must not produce a second, differently-timed
+    record of one execution, and must never silently overwrite the first.
+
+    Distinct executions get distinct names, so they do not collide here at all.
+    This only decides what happens when the *same* execution writes twice.
+    """
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8")), False
+    write_json_atomic(path, payload)
+    return payload, True
+
+
 def record_prediction(payload: dict) -> tuple[dict, bool]:
     """Persist a prediction once, and return the stored one if it already exists.
 

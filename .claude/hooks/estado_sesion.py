@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 from datetime import UTC, date, datetime
@@ -64,23 +65,42 @@ def git(root: Path, *args: str) -> str:
         return ""
 
 
+# Los dos esquemas de nombre que conviven. El antiguo, `AAAA-Wnn.json`, una
+# corrida por semana; el nuevo, `AAAA-Wnn__<run>__a<n>.json`, una por ejecución.
+# Los registros históricos no se migran, así que el conciliador lee los dos.
+SEMANA_EN_NOMBRE = re.compile(r"^(\d{4})-W(\d{2})(?:__.+)?$")
+
+
+def semana_de(archivo: Path) -> tuple[int, int] | None:
+    """El par (año ISO, semana ISO) que nombra un registro, o None si no encaja."""
+    coincide = SEMANA_EN_NOMBRE.match(archivo.stem)
+    if not coincide:
+        return None
+    return int(coincide.group(1)), int(coincide.group(2))
+
+
 def semanas_faltantes(semanales: list[Path]) -> int:
     """Semanas ISO transcurridas desde la primera corrida que no dejaron archivo.
+
+    Cuenta **semanas distintas**, no archivos. Desde que hay un registro por
+    ejecución, dos corridas en una misma semana son dos archivos y una sola
+    semana cubierta: contar archivos inflaría la cobertura y taparía un hueco
+    real, que es justo lo contrario de lo que esta función existe para hacer.
 
     Es conciliación, no estadística: un hueco se cuenta para que se vea, y lo
     que significa cada hueco lo dictamina `/registro-semanal`.
     """
-    if not semanales:
+    semanas = {s for s in (semana_de(a) for a in semanales) if s is not None}
+    if not semanas:
         return 0
+    anio, semana = min(semanas)
     try:
-        primero = semanales[0].stem
-        anio, semana = int(primero[:4]), int(primero.split("W")[1])
         inicio = date.fromisocalendar(anio, semana, 1)
-    except (ValueError, IndexError):
+    except ValueError:
         return 0
     hoy = datetime.now(UTC).date()
     transcurridas = max(0, ((hoy - inicio).days // 7) + 1)
-    return max(0, transcurridas - len(semanales))
+    return max(0, transcurridas - len(semanas))
 
 
 def informe(root: Path) -> str:
@@ -116,10 +136,23 @@ def informe(root: Path) -> str:
     semanales = sorted((root / "reports" / "weekly").glob("*.json"))
     if semanales:
         faltan = semanas_faltantes(semanales)
+        semanas = {s for s in (semana_de(a) for a in semanales) if s is not None}
         detalle = f", {faltan} semanas sin archivo" if faltan else ", sin huecos"
+        # Corridas y semanas se informan por separado a propósito: varias
+        # ejecuciones en una semana son más evidencia de operación, no más
+        # cobertura del calendario, y confundirlas es lo que oculta un hueco.
+        extra = ""
+        adicionales = len(semanales) - len(semanas)
+        if adicionales:
+            extra = (
+                f" ({adicionales} corrida adicional)"
+                if adicionales == 1
+                else f" ({adicionales} corridas adicionales)"
+            )
+        plural = "semana" if len(semanas) == 1 else "semanas"
         lineas.append(
-            f"  evidencia operacional: {len(semanales)} capturas, "
-            f"la última {semanales[-1].stem}{detalle}"
+            f"  evidencia operacional: {len(semanales)} capturas en "
+            f"{len(semanas)} {plural}{extra}, la última {semanales[-1].stem}{detalle}"
         )
     else:
         lineas.append(

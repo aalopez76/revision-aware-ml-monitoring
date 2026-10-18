@@ -24,9 +24,40 @@ Esta skill comprueba que eso siga siendo verdad.
 
 ### 1. Inventario
 
-Listar `reports/weekly/*.json`. Cada archivo se llama `AAAA-Wnn.json` y contiene
-`run_at`, `iso_week`, `channel`, `hub_versions_known`, `newest_hub_version`,
-`tip_rows`, `provenance`, `v5_api_key_configured` y `runner`.
+Listar `reports/weekly/*.json`. Conviven **dos esquemas de nombre**, y los
+registros históricos no se migran:
+
+| nombre | qué identifica |
+|---|---|
+| `AAAA-Wnn.json` | el esquema antiguo: **una corrida por semana**. Una segunda corrida en la misma semana sobrescribía la primera |
+| `AAAA-Wnn__<run>__a<n>.json` | el actual: **una por ejecución**. `<run>` es `GITHUB_RUN_ID` en el runner o `local-<marca>-<hex>` en una máquina, y `a<n>` es `GITHUB_RUN_ATTEMPT` |
+
+Campos comunes: `run_at`, `iso_year`, `iso_week`, `channel`,
+`hub_versions_known`, `newest_hub_version`, `tip_rows`, `provenance`,
+`v5_api_key_configured` y `runner`. El esquema nuevo añade `run_attempt` y
+`scheduled_runner`; **un registro antiguo no los lleva y eso no es un defecto** —
+no se rellenan retroactivamente.
+
+> **`v5_api_key_configured` dice que la variable está presente, no que algo se
+> haya autenticado.** Esta captura lee el canal del hub y no hace ninguna
+> petición a V5. Confundir las dos cosas sería afirmar más de lo que se midió.
+
+### 1 bis. Corridas y semanas no son la misma cuenta
+
+Desde que hay un registro por ejecución, **contar archivos no es contar
+cobertura**:
+
+- **corridas** = archivos. Es la evidencia de operación.
+- **semanas cubiertas** = pares `(iso_year, iso_week)` distintos. Es la
+  conciliación contra el calendario.
+
+Dos corridas en una semana son dos corridas y **una** semana. Contarlas como dos
+semanas inflaría la cobertura y taparía un hueco real. Y hay que separar:
+
+| | lectura |
+|---|---|
+| `scheduled_runner: true` | obligación programada cumplida — o un `workflow_dispatch`, que se distingue por el `run_at` |
+| `scheduled_runner: false`, `runner: "local"` | **captura adicional**, no una obligación. Cuenta como evidencia de que el mecanismo corre; **no** como corrida agendada de esa semana |
 
 ### 2. La prueba que importa: ¿quién escribió cada archivo?
 
@@ -87,7 +118,10 @@ corrida. Para cada hueco, decir lo que se sabe:
 
 **Un hueco documentado es honesto; un hueco rellenado es fraude.** El README
 dice cuántas corridas hay y cuántas semanas cubre; ninguna de esas dos cifras se
-redondea hacia arriba.
+redondea hacia arriba, y **son dos cifras distintas** — ver §1 bis.
+
+Un hueco se cuenta por semana ISO sin ningún archivo. Que una semana vecina
+tenga tres corridas no lo tapa.
 
 ### 5. Coherencia del cron
 
