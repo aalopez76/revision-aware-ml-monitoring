@@ -17,6 +17,13 @@ type with a strict parser rather than a string passed around:
 |                      | not another source clock                             |
 | `vintage_id`         | identity of a version. **Not a date.**               |
 
+`classify_emission` adds no eighth clock. It reads the instant a forecast was
+emitted — the `issued_at` a prediction already stores — against the week that
+forecast is about, and answers a question `decision_as_of` cannot: a cut says
+what the forecaster could see, not whether the week it predicted had already
+happened. Under this project's +1 recipe it had: the answer is `nowcast`, and
+the derivation is in that function's docstring.
+
 There is deliberately no module-level maturity constant. The previous version of
 this project carried `MATURITY_DAYS = 45`, taken from Delphi's documented
 behaviour on a *different* series, and that number had started to read as a
@@ -42,6 +49,11 @@ SENSITIVITY_WINDOWS_DAYS: tuple[int, ...] = (45, 60, 90)
 # claiming intraday visibility that was never demonstrated is the kind of small
 # optimism that turns into a look-ahead.
 AVAILABILITY_MARGIN_DAYS = 1
+
+# NHSN labels every observation by the Saturday that ends its surveillance week,
+# which runs Sunday through Saturday. `date.weekday()` numbers Monday 0, so
+# Saturday is 5. Named rather than inlined because three boundaries depend on it.
+SATURDAY = 5
 
 
 class ReplayMode(Enum):
@@ -71,6 +83,23 @@ class Completeness(Enum):
     INSUFFICIENT_EVIDENCE = "insufficient_evidence"
 
 
+class EmissionClass(Enum):
+    """When a forecast was emitted, relative to the week it is about.
+
+    Three classes and nothing else. `HISTORICAL_REPLAY` is deliberately absent:
+    that is a `Modality`, a statement about how a record came to exist, and
+    mixing the two axes is what lets a reconstruction read as an operation.
+    """
+
+    #: Emitted before the target week opened. The whole week was still ahead.
+    PRE_WEEK_FORECAST = "pre_week_forecast"
+    #: Emitted while the target week was running. Part of it had already elapsed,
+    #: so it is a nowcast and must not be called a full week ahead.
+    INTRA_WEEK_NOWCAST = "intra_week_nowcast"
+    #: Emitted after the target week closed. Not prospective about the event.
+    POST_EVENT = "post_event"
+
+
 class TemporalContractError(ValueError):
     """An ambiguous or impossible date. Never silently coerced."""
 
@@ -80,15 +109,31 @@ def parse_week_end(value: str | date) -> date:
 
     Rejects anything that is not an exact `YYYY-MM-DD`; a bare year-week or a
     timestamp would both be guesses about which day is meant.
+
+    Saturday is now **enforced**, not just documented. The source declares it —
+    `reference_time` is "labeled by Saturday week-ending date", covering "the
+    full 7-day surveillance week (Sunday through Saturday)" — and
+    `classify_emission` derives the week's start by subtracting six days from it.
+    A single non-Saturday value would shift that boundary by days without
+    anything failing, which is exactly the class of silent error this module
+    exists to prevent.
     """
     if isinstance(value, datetime):
         raise TemporalContractError(f"event_week_end must be a date, got a datetime: {value!r}")
     if isinstance(value, date):
-        return value
-    try:
-        return datetime.strptime(str(value).strip(), "%Y-%m-%d").date()
-    except ValueError as exc:
-        raise TemporalContractError(f"not an unambiguous week-ending date: {value!r}") from exc
+        parsed = value
+    else:
+        try:
+            parsed = datetime.strptime(str(value).strip(), "%Y-%m-%d").date()
+        except ValueError as exc:
+            raise TemporalContractError(
+                f"not an unambiguous week-ending date: {value!r}"
+            ) from exc
+    if parsed.weekday() != SATURDAY:
+        raise TemporalContractError(
+            f"NHSN weeks end on Saturday; {parsed} is a {parsed.strftime('%A')}"
+        )
+    return parsed
 
 
 def parse_report_date(value: str | date) -> date:
@@ -191,3 +236,69 @@ def latest_usable_report_date(decision_as_of: date, mode: ReplayMode) -> date:
     if mode is ReplayMode.PUBLIC_REPLAY:
         return decision_as_of - timedelta(days=AVAILABILITY_MARGIN_DAYS)
     return decision_as_of
+
+
+def scheduled_cut(instant: date) -> date:
+    """The weekly decision cut for the week containing `instant`.
+
+    `metodo.md` requires cuts "programados de antemano", and anchoring them to
+    whatever day a script happens to run breaks that: running on a Sunday
+    instead of a Saturday shifts every replay origin by a day and issues a
+    second, parallel set of predictions for cuts that were never scheduled.
+    That is exactly what happened on 2026-10-18 and is recorded as a correction
+    rather than quietly repaired.
+
+    The anchor is the most recent Saturday at or before `instant`, because that
+    is the boundary the source itself uses. The calendar still advances once a
+    week — a weekly decision — but no longer depends on the hour the job fires.
+    """
+    return instant - timedelta(days=(instant.weekday() - SATURDAY) % 7)
+
+
+def target_window(target_week_end: date) -> tuple[datetime, datetime]:
+    """The surveillance week as a half-open instant interval, in UTC.
+
+    The source labels weeks by their ending Saturday and defines them as running
+    Sunday through Saturday, but a surveillance week carries no timezone. Fixing
+    the boundaries at UTC midnight is therefore a **declared convention of this
+    project**, not a property read off the source — the same refusal to invent a
+    wall-clock hour that `parse_report_date` makes.
+    """
+    week_end = parse_week_end(target_week_end)
+    start = datetime.combine(week_end - timedelta(days=6), datetime.min.time(), tzinfo=UTC)
+    end_exclusive = datetime.combine(
+        week_end + timedelta(days=1), datetime.min.time(), tzinfo=UTC
+    )
+    return start, end_exclusive
+
+
+def classify_emission(
+    issued_at: str | datetime, target_week_end: date
+) -> tuple[EmissionClass, float]:
+    """Where a forecast's emission instant falls relative to its target week.
+
+    Answers a question `Modality` cannot: a real run proves the code executed,
+    not that it predicted anything still in the future. The two axes are
+    **orthogonal** and both are reported — a replay's `issued_at` is today, so by
+    this clock it is `POST_EVENT`, which is precisely why it must never be
+    presented as a historical run.
+
+    Returns the class and `lead_time_hours`, which is a **separate number, not a
+    fourth class**: positive before the week opens, exactly zero at the instant
+    it opens, negative once it has begun.
+
+    This function is general and will return `PRE_WEEK_FORECAST` whenever the
+    instant warrants it. The fact that *this project's* +1 recipe can never
+    produce one is a property of that scenario, not a rule imposed here: with `W`
+    the last visible event week and `lag = cut - W >= 1`, the target `W+7` opens
+    on `W+1`, so a pre-week emission would need `cut <= W` while `W <= cut - 1`.
+    The constraint belongs to the caller's recipe, and is tested as such.
+    """
+    issued = parse_instant(issued_at)
+    start, end_exclusive = target_window(target_week_end)
+    lead_hours = (start - issued).total_seconds() / 3600
+    if issued < start:
+        return EmissionClass.PRE_WEEK_FORECAST, lead_hours
+    if issued < end_exclusive:
+        return EmissionClass.INTRA_WEEK_NOWCAST, lead_hours
+    return EmissionClass.POST_EVENT, lead_hours

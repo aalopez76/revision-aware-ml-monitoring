@@ -17,6 +17,10 @@ Three properties this module exists to guarantee:
   historical replay, a controlled exercise or a proposal. A replay reconstructed
   today does not become a run that happened in the past by being stored next to
   one.
+* **Sealed contract.** A manifest names the two documents that govern the run by
+  SHA-256, so a reader can tell whether the rules changed. It carries a
+  `schema_version` because older manifests must stay verifiable under the schema
+  they were written with, rather than failing whenever a document is edited.
 """
 
 from __future__ import annotations
@@ -101,6 +105,21 @@ def write_json_atomic(path: Path, payload: object) -> Path:
     return path
 
 
+#: The two governing documents, and the only two that get hashed. Both are
+#: tracked by git for one reason: a hash of an untracked file is not reproducible
+#: by anyone else from the repository, so it would record identity that no third
+#: party can check. `alcance.md` says a second governance document is an alarm —
+#: this is the declared exception, and the reason is exactly that it is hashed.
+SPEC_V3_3 = "When_the_Past_Moves_Especificacion_Ejecutable_V3_3_2026.txt"
+G1_MP_PLAN = "When_the_Past_Moves_Plan_Ejecucion_Realista_G1_MP_V3_3_2026.txt"
+
+#: Bumped when the manifest gains or changes a field. Old manifests stay valid
+#: under the schema they were written with: a run from last week must not be
+#: required to match a document updated after it, or every past result would
+#: turn red the moment a typo is fixed.
+MANIFEST_SCHEMA_VERSION = 2
+
+
 @dataclass
 class RunManifest:
     """Everything needed to tie a result to what produced it."""
@@ -114,15 +133,36 @@ class RunManifest:
     lock_sha256: str | None
     spec_sha256: str | None
     runner: str
+    schema_version: int = MANIFEST_SCHEMA_VERSION
+    #: SHA-256 of the exact bytes of the G1-MP plan, the contract that governs
+    #: candidates, the promotion rule and the resource budget.
+    g1_mp_plan_sha256: str | None = None
+    #: SHA-256 of the frozen selection configuration. Stays `None` until P4
+    #: creates it: absent means "not yet declared", never "declared as nothing".
+    selection_config_sha256: str | None = None
     config: dict[str, Any] = field(default_factory=dict)
     provenance: list[dict[str, str]] = field(default_factory=list)
     state: str = "started"
     errors: list[str] = field(default_factory=list)
 
     @classmethod
-    def start(cls, *, decision_as_of: str, modality: str, config: dict) -> RunManifest:
+    def start(
+        cls,
+        *,
+        decision_as_of: str,
+        modality: str,
+        config: dict,
+        selection_config: Path | None = None,
+    ) -> RunManifest:
+        """Seal what produced this run against the documents that govern it.
+
+        A SHA-256 proves **identity of content, not date of predeclaration**.
+        Knowing that the plan has not changed since the run says nothing about
+        whether it existed before the selection cohort was scored; that needs the
+        two external bounds in `.claude/rules/metodo.md`, and it is P4's job. No
+        timestamp is manufactured here.
+        """
         now = datetime.now(UTC)
-        spec = sources.ROOT / "When_the_Past_Moves_Especificacion_Ejecutable_V3_3_2026.txt"
         return cls(
             run_id=f"{now.strftime('%Y%m%dT%H%M%SZ')}-{decision_as_of}",
             modality=modality,
@@ -131,7 +171,11 @@ class RunManifest:
             code_sha=git_commit(),
             code_tree_sha256=sha256_tree(sources.ROOT / "src"),
             lock_sha256=sha256_path(sources.ROOT / "uv.lock"),
-            spec_sha256=sha256_path(spec),
+            spec_sha256=sha256_path(sources.ROOT / SPEC_V3_3),
+            g1_mp_plan_sha256=sha256_path(sources.ROOT / G1_MP_PLAN),
+            selection_config_sha256=(
+                sha256_path(selection_config) if selection_config else None
+            ),
             runner=os.environ.get("GITHUB_RUN_ID", "local"),
             config=config,
         )
