@@ -9,13 +9,8 @@ auditadas. Siguiente: **P2 (modelado convencional)**; la compuerta sigue en G2.
 
 ## Qué está hecho
 
-- **G0, veredicto PROCEED** — `reports/results/00_source_feasibility.json`.
-  Historia de eventos 322 semanas contra **99** de versiones (223 sin ninguna);
-  `/archive/` no es diffs ni todas las versiones (100 de 102 publicaciones
-  llevan fila, mediana 17 versiones por clave); las publicaciones no son
-  semanales; `fill_method` es parte de la clave primaria; hub y V5 concuerdan en
-  245 semanas con **cero** desacuerdos. El universo elegible lo resolvió el dato:
-  el archivo empieza el 2024-11-19 y el periodo voluntario no tiene versiones.
+- **G0, veredicto PROCEED** — `reports/results/00_source_feasibility.json`. Sus
+  cuatro hallazgos y el universo elegible están en el README y en `datos.md`.
 - **G1-core ejecutada de verdad** — `reports/results/01_vertical_slice.json`.
   `s_dev = 4967.25` sobre 24 pares, 14 cortes de replay, 30 predicciones
   inmutables, figura de tres paneles, y una corrida observada que recomienda
@@ -36,11 +31,10 @@ auditadas. Siguiente: **P2 (modelado convencional)**; la compuerta sigue en G2.
   propio esquema y no se le exige un campo posterior. La excepción está
   declarada en `alcance.md`; `git ls-files '*.txt'` devuelve exactamente dos.
 - **`parse_week_end` exige sábado** y **`scheduled_cut` ancla el calendario** a
-  esa frontera. Lo segundo corrige un defecto encontrado al ejecutar lo primero:
-  los cortes se derivaban de `datetime.now()`, así que correr en domingo emitió
-  un juego paralelo de 15 predicciones. Se conservan, con el cruce registrado.
-- **26 cifras rastreadas** en `scripts/verify_results.py` y **61 pruebas**, todo
-  verde. CI corre `--locked`.
+  esa frontera, corrigiendo un defecto hallado al ejecutar lo primero: los cortes
+  se derivaban de `datetime.now()`, así que correr en domingo emitió un juego
+  paralelo de 15 predicciones. Se conservan, con el cruce registrado.
+- **26 cifras rastreadas** y **61 pruebas**, todo verde. CI corre `--locked`.
 
 ## Lo que NO está hecho
 
