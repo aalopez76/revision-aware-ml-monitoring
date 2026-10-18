@@ -4,51 +4,58 @@
 > Lo reescribe la skill `/handoff`.
 
 **Última actualización:** 18 de octubre de 2026
-**Fase:** **G0 y G1-core cerradas.** P0 y P1 del plan G1-MP ejecutadas y
-auditadas, más el ajuste de trazabilidad previo a P2. **P2 esperando
-autorización**; la compuerta sigue en G2.
+**Fase:** **G0, G1-core y P2 cerradas.** La comparación de modelos terminó sin
+promoción: **M0 sigue siendo el Champion**. Siguiente: **G2**, que es la
+compuerta. P3 (AutoGluon/Chronos) queda opcional y sin empezar.
 
 ## Qué está hecho
 
 - **G0, veredicto PROCEED** — `00_source_feasibility.json`. Sus cuatro hallazgos
   y el universo elegible están en el README y en `datos.md`.
 - **G1-core ejecutada de verdad** — `01_vertical_slice.json`: `s_dev = 4967.25`
-  sobre 24 pares, 14 cortes de replay, 30 predicciones inmutables, figura de
-  tres paneles, corrida observada con `INVESTIGAR_DATO`. `load_as_of`
-  reconstruye desde **una** consulta de `/archive/`, y `confirmatory=True` falla
-  sin acta antes de tocar la red.
+  sobre 24 pares, 14 cortes de replay, 30 predicciones inmutables, corrida
+  observada con `INVESTIGAR_DATO`. `load_as_of` reconstruye desde **una**
+  consulta de `/archive/` y `confirmatory=True` falla sin acta antes de la red.
 - **El producto es un nowcast, no un pronóstico a una semana.** A horizonte +1
-  `PRE_WEEK_FORECAST` es inalcanzable por aritmética; la derivación está en el
-  docstring de `classify_emission`. Contado: **0 pre-semana**, 1
-  `intra_week_nowcast`, 29 `post_event`.
-- **Soporte medido** — `01_modeling_support.json`: **100** cortes semanales
-  programados, los 100 `complete`, **93** elegibles a 45 días (91 a 60, 87 a
-  90). Retraso de publicación mediana 7 días, **máximo 49**. La viabilidad de
-  entrenamiento por candidato queda `pending_P2`, separada a propósito.
+  `PRE_WEEK_FORECAST` es inalcanzable por aritmética (derivación en el docstring
+  de `classify_emission`): **0 pre-semana**, 1 nowcast, 29 `post_event`.
+- **Soporte medido** — `01_modeling_support.json`: **100** cortes programados,
+  los 100 `complete`, **93** elegibles a 45 días (91 a 60, 87 a 90). Retraso de
+  publicación mediana 7 días, **máximo 49**.
 - **Dos documentos rectores sellados** por SHA-256 con `schema_version`: un
-  manifiesto antiguo se verifica bajo su propio esquema y no se le exige un
-  campo posterior. Excepción declarada en `alcance.md`; `git ls-files '*.txt'`
-  devuelve exactamente dos.
+  manifiesto antiguo se verifica bajo su propio esquema. Excepción declarada en
+  `alcance.md`.
 - **El calendario de cortes está anclado** al sábado de la fuente
-  (`scheduled_cut`) y `parse_week_end` lo exige. Corrige que los cortes se
-  derivaran de `datetime.now()`: correr en domingo emitió un juego paralelo de
-  15 predicciones, que se conservan con el cruce registrado.
-- **Un registro semanal por ejecución** — `AAAA-Wnn__<run>__a<n>.json`. Antes el
-  nombre era la semana y una segunda corrida pisaba la primera. La conciliación
-  lee los dos esquemas y cuenta **semanas ISO distintas**, no ficheros. Hoy: 3
-  capturas en 1 semana, 2 locales (`scheduled_runner: false`).
+  (`scheduled_cut`), exigido por `parse_week_end`. Corrige que se derivaran de
+  `datetime.now()`: correr en domingo emitió 15 predicciones paralelas, que se
+  conservan con el cruce registrado.
+- **Un registro semanal por ejecución** — `AAAA-Wnn__<run>__a<n>.json`. La
+  conciliación lee los dos esquemas y cuenta **semanas ISO distintas**, no
+  ficheros. Hoy: 3 capturas en 1 semana, 2 locales.
 - **`DELPHI_EPIDATA_KEY` es secreto del repositorio** y `weekly.yml:49-50` lo
-  pasa al entorno; el runner `39106257967` lo confirma. Pero eso dice que la
-  variable **está presente**, no que algo se autenticara: la captura lee el hub
-  y no hace ninguna petición a V5.
+  pasa al entorno. Eso dice que la variable **está presente**, no que algo se
+  autenticara: la captura lee el hub y no pide nada a V5.
 - **Decisiones A y B registradas** en la sección 6 BIS del plan G1-MP, con fecha
-  y antes de que exista resultado alguno de candidatos.
-- **26 cifras rastreadas** y **72 pruebas**, todo verde. CI corre `--locked`.
+  y antes de que existiera resultado alguno de candidatos.
+- **P2 cerrada sin promoción** — `01_model_comparison.json`. Sobre **55 semanas
+  objetivo distintas**: M0 `0.3146`, `ridge_F1` `0.3781`, `ridge_F0` `0.6029`.
+  Emparejado, `ridge_F1` gana 8 semanas y pierde 47. F1 mejora sobre F0 y
+  ninguno sobre M0. Alpha y la receta se eligieron **solo en desarrollo**,
+  cortado donde se fijó `s_dev`. Los tres candidatos cubren los 61 orígenes sin
+  exclusiones, así que `MIN_TRAIN_ROWS` nunca ató.
+- **Dos hallazgos de la estratificación de la Decisión B:** el estrato de
+  publicación tardía es **una interrupción vista seis veces** (misma semana
+  visible, mismo objetivo, misma etiqueta), soporte efectivo 1; y eso inflaba el
+  denominador — 61 orígenes comunes contra **55** semanas distintas, porque una
+  interrupción de siete semanas hizo que `2025-09-27` fuera el objetivo de
+  siete orígenes. Se colapsa al origen **más temprano**, por calendario.
+- **35 cifras rastreadas**, **85 pruebas** y **6 sellos**, todo verde.
 
 ## Lo que NO está hecho
 
-- **P2–P4 sin empezar**: no hay Ridge, LightGBM ni AutoGluon, ni
-  `01_model_comparison.json` ni `01_model_selection.json`. Es deliberado.
+- **P3 y P4 sin empezar**: no hay LightGBM ni AutoGluon, ni
+  `01_model_selection.json`. P4 queda sin objeto mientras no haya candidato que
+  promover; P3 es opcional y exige smoke test antes de instalar nada.
 - **`selection_config_sha256` es `null`**: la configuración de selección no
   existe. Ausente significa «aún no declarada», nunca «declarada vacía».
 - **El método no está congelado** y `frozen_method.json` no existe. La escribe
@@ -57,22 +64,19 @@ autorización**; la compuerta sigue en G2.
 
 ## Siguiente acción concreta
 
-1. **Autorizar P2.** Está parado esperando revisión del ajuste de trazabilidad
-   y de las decisiones A y B.
-2. **P2, en este orden:** EDA mínima sobre los 93 orígenes; M0 revisado; Ridge
-   con `Pipeline` y los conjuntos F0/F1 predeclarados; comparación rolling as-of
-   sobre orígenes comunes. LightGBM solo si el soporte lo justifica. Nada de
-   AutoGluon: eso es P3 y exige smoke test.
-3. **Declarar antes de P4**, en config versionada y sellada: `delta_min`,
-   bloques disjuntos de 4 semanas, `n ≥ 12` y la receta de desempate.
-4. **Redefinir las señales R y C a igual rezago** antes de G2. Ambas disparan
-   estructuralmente en el borde, así que los umbrales declarados (25 %, 2
-   puntos) no son informativos tal como están.
+**G2 es lo único que queda en el camino principal, y es la compuerta.** Tres
+cosas se declaran antes de calcularla, en config versionada:
 
-## Decisiones abiertas
+1. **Redefinir las señales R y C a igual rezago.** Ambas disparan
+   estructuralmente en el borde de la serie, así que los umbrales actuales
+   (25 %, 2 puntos) no son informativos. Es lo único que bloquea G2.
+2. **Malla de umbrales para N1** en lugar de un punto, y **soporte mínimo**
+   con el que N1 se considera estimable. El techo medido es 55 semanas
+   distintas, no 93 orígenes — la deduplicación de P2 también aplica aquí.
+3. **Los cortes concretos de la estratificación por horizonte.** La Decisión B
+   fijó *que* se distinguiría; P2 midió que el estrato tardío tiene soporte 1,
+   así que la malla tiene que declararse sabiendo eso.
 
-- **Malla de umbrales para N1** en lugar de un punto, y **soporte mínimo
-  predeclarado**. El techo es 93 orígenes; se fija antes de ver el resultado.
-- **Cómo se estratifica el horizonte efectivo.** La Decisión B fija *que* se
-  distinguirá; los cortes concretos de la estratificación se declaran en P2,
-  antes de usarlos.
+P3 (un TSFM zero-shot vía AutoGluon) queda **opcional**: M0 ganó, así que ya no
+hay promoción que perseguir, y entra solo si aporta un contraste y pasa su smoke
+test. P4 queda sin objeto mientras no haya candidato que promover.
