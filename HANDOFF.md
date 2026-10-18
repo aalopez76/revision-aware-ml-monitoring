@@ -3,101 +3,81 @@
 > Estado actual, corto. **No es un historial** — se reescribe, no se acumula.
 > Lo reescribe la skill `/handoff`.
 
-**Última actualización:** 16 de octubre de 2026
-**Fase:** **G0 cerrada con veredicto PROCEED.** Las primeras cifras del proyecto
-existen, están rastreadas y son citables. Siguiente compuerta: **G1**.
+**Última actualización:** 18 de octubre de 2026
+**Fase:** **G0 y G1-core cerradas.** P0 y P1 del plan G1-MP ejecutadas y
+auditadas. Siguiente: **P2 (modelado convencional)**; la compuerta sigue en G2.
 
 ## Qué está hecho
 
-- **Repositorio alineado con la especificación congelada V3.3** y commiteado:
-  documentos, cuatro reglas, tres hooks, cinco skills, dos subagentes, módulos,
-  scripts y CI describiendo el mismo método. `freeze_guard` retirado,
-  `MATURITY_DAYS = 45` retirado, ILINet/FluView V3 retirado.
-- **Clave de la API configurada y funcionando.** Vive en `.env` (gitignored) y la
-  carga `uv` por `UV_ENV_FILE`, fijado en `.claude/settings.json`.
-- **`sources.py` envuelve `epidatpy`**, el cliente oficial de V5, y añade el
-  calendario de publicaciones —que el cliente no expone— y el lector del canal
-  del hub. La clave viaja por basic auth, así que el `request_url` que se guarda
-  como procedencia no puede llevarla.
-- **G0 ejecutada:** `scripts/00_source_feasibility.py` →
-  `reports/results/00_source_feasibility.json`, 13 peticiones, 6,8 segundos, con
-  `request_url` y `observed_at` de cada consulta.
-- **18 cifras rastreadas** en `scripts/verify_results.py`, verificadas en CI. El
-  verificador se extendió con `ExactClaim` para fechas y veredictos: la regla
-  dice que **toda** cifra necesita fila, y una fecha es una cifra.
-- **Cuatro hallazgos de G0 que corrigieron supuestos del planteamiento**, ya
-  escritos en el README, en `datos.md` y como corrección en `referencias.md`:
-  - historia de eventos 322 semanas contra historia de versiones **99**; 223
-    semanas de evento sin ninguna versión. La cobertura del dato no es la
-    cobertura de vintages, y el factor era **3×**;
-  - `/archive/` **no es** diffs ni todas las versiones: 100 de 102 publicaciones
-    llevan fila, y una semana aparece en 17 de ellas (mediana). Cada release
-    reexpresa una ventana final;
-  - las publicaciones **no son semanales**: 189 fechas, mediana de 2 por semana
-    ISO, 3 días entre ellas. El proxy «un commit = una publicación» subcontaba
-    por la mitad;
-  - `fill_method` forma parte de la clave primaria de la fuente.
-- **El universo elegible quedó resuelto por los datos:** el archivo empieza el
-  2024-11-19, 18 días después de que el mandato de reporte volviera, así que el
-  periodo voluntario no tiene historia de versiones que contaminar.
-- **Las dos reconstrucciones concuerdan:** 245 semanas nacionales solapadas entre
-  el hub y V5, **cero en desacuerdo**. Valida la serie de valores, no los tiempos.
-- **Techo de N1 conocido: 99 cortes** semanales nacionales, antes de que la
-  madurez y la disponibilidad de etiquetas lo poden.
-
-- **Repositorio público y en remoto:**
-  `github.com/aalopez76/revision-aware-ml-monitoring`. CI verde en el primer
-  push. La captura semanal ya puede correr.
-- **`fill_method` incorporado** a la identidad del panel y a `KEY`, con su
-  prueba: dos filas que difieren solo en ese campo no son una revisión.
-- **`load_as_of` implementado** y corriendo sobre datos reales. Reconstruye
-  desde **una sola consulta de `/archive/`** en lugar de un `/snapshot/` por
-  corte, que es lo que G0 licenció al medir la reconstrucción exacta. El
-  `report_time` se acota en el servidor, así que una versión posterior al corte
-  no entra al proceso y la compuerta de `as_of_view` es la segunda línea.
-  Comprobado en tres cortes: en el de 2026-10-16 la publicación más nueva que
-  ve es la del 14, no la de hoy — el margen de disponibilidad funcionando sobre
-  dato vivo.
-- **El control confirmatorio vive en la ruta del dato:** `confirmatory=True`
-  falla si no existe el acta de congelación, antes de tocar la red. Es lo que
-  sustituye al guardián por nombre de archivo y no se puede rodear renombrando
-  un script.
+- **G0, veredicto PROCEED** — `reports/results/00_source_feasibility.json`.
+  Historia de eventos 322 semanas contra **99** de versiones (223 sin ninguna);
+  `/archive/` no es diffs ni todas las versiones (100 de 102 publicaciones
+  llevan fila, mediana 17 versiones por clave); las publicaciones no son
+  semanales; `fill_method` es parte de la clave primaria; hub y V5 concuerdan en
+  245 semanas con **cero** desacuerdos. El universo elegible lo resolvió el dato:
+  el archivo empieza el 2024-11-19 y el periodo voluntario no tiene versiones.
+- **G1-core ejecutada de verdad** — `reports/results/01_vertical_slice.json`.
+  `s_dev = 4967.25` sobre 24 pares, 14 cortes de replay, 30 predicciones
+  inmutables, figura de tres paneles, y una corrida observada que recomienda
+  `INVESTIGAR_DATO`. `load_as_of` reconstruye desde **una** consulta de
+  `/archive/`, y `confirmatory=True` falla sin acta antes de tocar la red.
+- **El producto es un nowcast, no un pronóstico a una semana.** A horizonte +1
+  `PRE_WEEK_FORECAST` es inalcanzable: con `W` la última semana visible y
+  `lag ≥ 1`, el objetivo `W+7` abre en `W+1`, así que haría falta `corte ≤ W`
+  mientras `W ≤ corte−1`. `classify_emission` lo clasifica y `emission_audit` lo
+  cuenta: **0 pre-semana**, 1 `intra_week_nowcast`, 29 `post_event`.
+- **Soporte medido** — `reports/results/01_modeling_support.json`: **100** cortes
+  semanales programados, los 100 con estado `complete`, **93** elegibles con la
+  política declarada de 45 días (91 a 60, 87 a 90). Retraso de publicación
+  mediana 7 días, **máximo 49**. La viabilidad de entrenamiento por candidato
+  queda `pending_P2`, separada a propósito.
+- **Dos documentos rectores versionados y sellados** por SHA-256 en el
+  manifiesto, con `schema_version`: un manifiesto antiguo se verifica bajo su
+  propio esquema y no se le exige un campo posterior. La excepción está
+  declarada en `alcance.md`; `git ls-files '*.txt'` devuelve exactamente dos.
+- **`parse_week_end` exige sábado** y **`scheduled_cut` ancla el calendario** a
+  esa frontera. Lo segundo corrige un defecto encontrado al ejecutar lo primero:
+  los cortes se derivaban de `datetime.now()`, así que correr en domingo emitió
+  un juego paralelo de 15 predicciones. Se conservan, con el cruce registrado.
+- **26 cifras rastreadas** en `scripts/verify_results.py` y **61 pruebas**, todo
+  verde. CI corre `--locked`.
 
 ## Lo que NO está hecho
 
-- **G1 está a medias.** Falta el baseline, la predicción inmutable con su
-  manifiesto, la señal, la recomendación de las cinco y la figura. No hay
-  `forecasting.py`, `monitoring.py`, `evaluation.py` ni `evidence.py`.
-- **La captura semanal todavía no ha dejado ningún archivo**: el cron corre los
-  miércoles y el horario sigue marcado como provisional.
+- **P2–P4 sin empezar**: no hay Ridge, LightGBM ni AutoGluon, ni
+  `01_model_comparison.json` ni `01_model_selection.json`. Es deliberado — el
+  plan los puso detrás de la compuerta de P0/P1, ya superada.
+- **`selection_config_sha256` es `null`**: la configuración de selección no
+  existe todavía. Ausente significa «aún no declarada», nunca «declarada vacía».
+- **El método no está congelado** y el acta `frozen_method.json` no existe. La
+  escribe la persona; los permisos deniegan al modelo escribir en `reports/`.
+- **`DELPHI_EPIDATA_KEY` no es secreto del repositorio**: el registro semanal
+  marca `v5_api_key_configured: False`, así que el bot corre anónimo a 60
+  peticiones/hora. Local sí está configurada.
+- **Una sola captura semanal** (`2026-W42`), y el horario del cron sigue
+  marcado como provisional.
 
 ## Siguiente acción concreta
 
-1. **Remoto y empujar.** Decidir visibilidad y crear el remoto; la captura
-   semanal arranca y deja de perderse evidencia operacional.
-2. **Añadir `fill_method` al esquema del panel** y a las pruebas del triángulo.
-   Es mecánico y lo exige `datos.md`.
-3. **G1, el vertical slice.** En este orden:
-   - implementar `load_as_of` contra el contrato ya escrito, aprovechando que la
-     reconstrucción `archive → snapshot` se midió exacta: una sola consulta de
-     archivo basta y evita pagar un `/snapshot/` por corte;
-   - baseline mínimo, predicción inmutable con su manifiesto;
-   - una señal y una recomendación de las cinco, con falla segura;
-   - la figura: pronóstico original, versiones posteriores del objetivo y
-     cobertura publicada, con ejes separados.
-4. Antes de G2, **declarar el soporte mínimo** con el que N1 se considera
-   estimable. El techo es 99 y ya es conocido, así que esto se decide ahora y no
-   después de ver el resultado.
+1. **Registrar la clave como secreto del repositorio.** Es tarea de la persona,
+   cuesta un minuto y cada semana sin ella es evidencia operacional degradada.
+2. **P2, en este orden:** EDA mínima sobre los 93 orígenes; M0 revisado; Ridge
+   con `Pipeline` y los dos conjuntos F0/F1 predeclarados; comparación
+   rolling as-of sobre orígenes comunes. LightGBM solo si el soporte lo
+   justifica. Nada de AutoGluon todavía: eso es P3 y exige smoke test.
+3. **Declarar antes de P4**, en config versionada y sellada: `delta_min`,
+   bloques disjuntos de 4 semanas, `n ≥ 12` y la receta de desempate.
+4. **Redefinir las dos señales R y C a igual rezago** antes de G2. Ambas disparan
+   estructuralmente en el borde de la serie, así que los umbrales declarados
+   (25 %, 2 puntos) no son informativos tal como están.
 
 ## Decisiones abiertas
 
-- **Visibilidad del remoto** (público o privado). Afecta al cron: GitHub solo
-  desactiva por inactividad los schedules de repositorios públicos.
-- **Malla de umbrales para N1**, en lugar de un punto: la magnitud de N1 depende
-  en parte de dónde cae el umbral base respecto de la frontera de decisión. Se
-  fija antes de G2.
-- **Soporte mínimo predeclarado** — ver el punto 4 de arriba.
-- **Estratificación por horizonte efectivo.** Si una publicación llega tarde, la
-  última semana elegible es más antigua y el horizonte deja de ser constante en
-  distancia de evento; mezclar horizontes en la pérdida media sesgaría la
-  comparación entre políticas.
+- **Estratificación por horizonte.** Ya no es hipótesis: el rezago medido va de
+  7 a 49 días, así que el horizonte efectivo varía y una pérdida promediada
+  entre cortes mezcla horizontes. Se declara antes de usarla, en G2.
+- **Malla de umbrales para N1** en lugar de un punto, y **soporte mínimo
+  predeclarado**. El techo es 93 orígenes; se fija antes de ver el resultado.
+- **Qué hacer con los dos calendarios de predicciones.** Las 15 del calendario
+  desviado son emisiones reales e inmutables. Lo abierto es si entran al
+  denominador de la comparación de P2 o se excluyen por declaración previa.
