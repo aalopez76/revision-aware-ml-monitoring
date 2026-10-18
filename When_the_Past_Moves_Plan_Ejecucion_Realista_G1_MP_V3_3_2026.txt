@@ -216,6 +216,44 @@ exploracion transparente, nunca como comparador operativo equivalente.
 M3b zero-shot no reajusta parametros y si puede utilizar como contexto
 observaciones provisionales ya publicadas en t, sujeto al reloj de datos.
 
+6 BIS. DECISIONES REGISTRADAS ANTES DE VER RESULTADOS DE CANDIDATOS
+--------------------------------------------------------------------------------
+Las dos se fijan aqui, con fecha, ANTES de examinar el desempeno de cualquier
+candidato. No se modifica ningun resultado anterior para ajustarlo a ellas.
+
+DECISION A - UNIVERSO DE COMPARACION (registrada 18-OCT-2026)
+Las 15 predicciones emitidas con cortes desplazados al domingo se CONSERVAN
+como evidencia operacional y quedan EXCLUIDAS del analisis predictivo
+principal, porque no pertenecen al calendario semanal predefinido.
+ - No se eliminan ni se ocultan: son emisiones reales e inmutables.
+ - Se identifican y cuentan por separado. El criterio es mecanico y observable:
+   el dia de la semana de issued_for_cut. scheduled_cut() ancla el calendario al
+   sabado que usa la fuente, asi que un corte en domingo no pertenece a el.
+ - La exclusion se determina POR REGLA DE CALENDARIO, nunca mirando el error de
+   prediccion. Es la misma razon por la que el denominador de N1 es exogeno:
+   un universo elegido en funcion del resultado selecciona su propio resultado.
+ - El desplazamiento y su correccion quedan registrados en emission_audit
+   (cut_weekdays, cut_calendars) y en el commit que lo corrigio. Se registra,
+   no se borra.
+
+DECISION B - HORIZONTE EFECTIVO (registrada 18-OCT-2026)
+Se mantiene el horizonte NOMINAL +1 y el nombre NOWCAST cuando corresponda. En
+P2 se analizan los retrasos reales de publicacion y la posicion del corte frente
+a la semana objetivo, y la evaluacion DISTINGUE horizontes efectivos.
+Cuatro cosas que no se confunden, cada una con su campo:
+ - la ultima semana-evento disponible en el corte    -> last_eligible_week
+ - el corte historico as-of                          -> issued_for_cut
+ - la fecha de emision real (un replay se emite hoy) -> issued_at
+ - el inicio y el fin de la semana objetivo          -> target_window()
+Medido en G1-A: el retraso del corte a la ultima semana visible va de 7 a 49
+dias, mediana 7. El adelanto temporal NO es el mismo en todos los cortes aunque
+la receta este fija en +1, y una perdida promediada entre cortes mezcla
+horizontes. La estratificacion se declara antes de usarse.
+NO ASUMIR que los 93 cortes elegibles sean automaticamente utilizables por todos
+los candidatos: 93 es elegibilidad por fecha, madurez e historia visible. La
+viabilidad de entrenamiento por candidato es pending_P2 en
+01_modeling_support.json y se mide, no se hereda.
+
 7. G1-D: COMPARACION Y PROMOCION SIN FALSA PRECISION
 --------------------------------------------------------------------------------
 TODOS los modelos reciben cortes/semana objetivo/label madura IDENTICOS

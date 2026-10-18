@@ -1,8 +1,8 @@
 {
   "limits": "These are origins eligible by date, maturity and visible history only. Whether any candidate can be fitted on them is not measured here and is decided in P2. No folds figure is estimated or implied.",
   "manifest": {
-    "code_sha": "5b02ee67e71ed279a263d04782c3b10fcd66b00a",
-    "code_tree_sha256": "7d127f613ec7244c699556d09105739e41207005309478ea00215733e41a7ef1",
+    "code_sha": "c2232757bb93671c8a3bb395ceb091ad0d1e99d8",
+    "code_tree_sha256": "5278ef4bb7030726e4b8b45b30df025efd7c8dea82540645a2a2eb8881c72da3",
     "config": {
       "declared_in": "G1-A support measurement, P0 of the G1-MP plan, 2026-10-18",
       "maturity_grid_days": [
@@ -15,21 +15,21 @@
     },
     "decision_as_of": "2026-10-17",
     "errors": [],
-    "g1_mp_plan_sha256": "1370c723710c79608f82ed93d8a5cbe7b0bc2fe3ef43804b399af6bda1c926e1",
+    "g1_mp_plan_sha256": "ce46d23dda58e5a4964314b210f17d1a01ba4aef20432cd52da00e313bc94da4",
     "lock_sha256": "7ef21773ab27c92e0fe3e25aad5fa13853088b9360c55a10a4b2052cabfdeae0",
     "modality": "historical_replay",
     "provenance": [],
-    "run_id": "20261018T062944Z-2026-10-17",
+    "run_id": "20261018T071752Z-2026-10-17",
     "runner": "local",
     "schema_version": 2,
     "selection_config_sha256": null,
     "spec_sha256": "5664b8889e618b03afeef4c05e3c2871013f87aad813e5cda70b1af0c25fdc91",
-    "started_at": "2026-10-18T06:29:44.970064+00:00",
+    "started_at": "2026-10-18T07:17:52.629742+00:00",
     "state": "started"
   },
   "provenance": {
     "channel": "delphi_v5_archive",
-    "observed_at": "2026-10-18T06:29:45.032972+00:00",
+    "observed_at": "2026-10-18T07:17:52.700013+00:00",
     "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-10-17"
   },
   "publication_lag_days": {

@@ -52,7 +52,7 @@
         "prediction_was_written_now": false,
         "provenance": {
           "channel": "delphi_v5_archive",
-          "observed_at": "2026-10-18T06:27:14.412421+00:00",
+          "observed_at": "2026-10-18T07:17:56.329817+00:00",
           "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-05-16"
         },
         "recommendation": {
@@ -109,7 +109,7 @@
         "prediction_was_written_now": false,
         "provenance": {
           "channel": "delphi_v5_archive",
-          "observed_at": "2026-10-18T06:27:14.512865+00:00",
+          "observed_at": "2026-10-18T07:17:56.411924+00:00",
           "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-05-23"
         },
         "recommendation": {
@@ -166,7 +166,7 @@
         "prediction_was_written_now": false,
         "provenance": {
           "channel": "delphi_v5_archive",
-          "observed_at": "2026-10-18T06:27:14.620022+00:00",
+          "observed_at": "2026-10-18T07:17:56.501456+00:00",
           "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-05-30"
         },
         "recommendation": {
@@ -223,7 +223,7 @@
         "prediction_was_written_now": false,
         "provenance": {
           "channel": "delphi_v5_archive",
-          "observed_at": "2026-10-18T06:27:14.731350+00:00",
+          "observed_at": "2026-10-18T07:17:56.589923+00:00",
           "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-06-06"
         },
         "recommendation": {
@@ -280,7 +280,7 @@
         "prediction_was_written_now": false,
         "provenance": {
           "channel": "delphi_v5_archive",
-          "observed_at": "2026-10-18T06:27:14.835667+00:00",
+          "observed_at": "2026-10-18T07:17:56.674105+00:00",
           "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-06-13"
         },
         "recommendation": {
@@ -337,7 +337,7 @@
         "prediction_was_written_now": false,
         "provenance": {
           "channel": "delphi_v5_archive",
-          "observed_at": "2026-10-18T06:27:14.947610+00:00",
+          "observed_at": "2026-10-18T07:17:56.774929+00:00",
           "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-06-20"
         },
         "recommendation": {
@@ -394,7 +394,7 @@
         "prediction_was_written_now": false,
         "provenance": {
           "channel": "delphi_v5_archive",
-          "observed_at": "2026-10-18T06:27:15.075738+00:00",
+          "observed_at": "2026-10-18T07:17:56.895680+00:00",
           "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-06-27"
         },
         "recommendation": {
@@ -451,7 +451,7 @@
         "prediction_was_written_now": false,
         "provenance": {
           "channel": "delphi_v5_archive",
-          "observed_at": "2026-10-18T06:27:15.186523+00:00",
+          "observed_at": "2026-10-18T07:17:56.998098+00:00",
           "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-07-04"
         },
         "recommendation": {
@@ -513,7 +513,7 @@
         "prediction_was_written_now": false,
         "provenance": {
           "channel": "delphi_v5_archive",
-          "observed_at": "2026-10-18T06:27:15.308749+00:00",
+          "observed_at": "2026-10-18T07:17:57.098584+00:00",
           "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-07-11"
         },
         "recommendation": {
@@ -570,7 +570,7 @@
         "prediction_was_written_now": false,
         "provenance": {
           "channel": "delphi_v5_archive",
-          "observed_at": "2026-10-18T06:27:15.422775+00:00",
+          "observed_at": "2026-10-18T07:17:57.200792+00:00",
           "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-07-18"
         },
         "recommendation": {
@@ -627,7 +627,7 @@
         "prediction_was_written_now": false,
         "provenance": {
           "channel": "delphi_v5_archive",
-          "observed_at": "2026-10-18T06:27:15.553984+00:00",
+          "observed_at": "2026-10-18T07:17:57.314039+00:00",
           "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-07-25"
         },
         "recommendation": {
@@ -684,7 +684,7 @@
         "prediction_was_written_now": false,
         "provenance": {
           "channel": "delphi_v5_archive",
-          "observed_at": "2026-10-18T06:27:15.685066+00:00",
+          "observed_at": "2026-10-18T07:17:57.417024+00:00",
           "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-08-01"
         },
         "recommendation": {
@@ -741,7 +741,7 @@
         "prediction_was_written_now": false,
         "provenance": {
           "channel": "delphi_v5_archive",
-          "observed_at": "2026-10-18T06:27:15.802620+00:00",
+          "observed_at": "2026-10-18T07:17:57.528248+00:00",
           "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-08-08"
         },
         "recommendation": {
@@ -798,7 +798,7 @@
         "prediction_was_written_now": false,
         "provenance": {
           "channel": "delphi_v5_archive",
-          "observed_at": "2026-10-18T06:27:15.922793+00:00",
+          "observed_at": "2026-10-18T07:17:57.631544+00:00",
           "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-08-15"
         },
         "recommendation": {
@@ -842,8 +842,8 @@
     "window_to": "2025-06-30"
   },
   "manifest": {
-    "code_sha": "5b02ee67e71ed279a263d04782c3b10fcd66b00a",
-    "code_tree_sha256": "7d127f613ec7244c699556d09105739e41207005309478ea00215733e41a7ef1",
+    "code_sha": "c2232757bb93671c8a3bb395ceb091ad0d1e99d8",
+    "code_tree_sha256": "5278ef4bb7030726e4b8b45b30df025efd7c8dea82540645a2a2eb8881c72da3",
     "config": {
       "arm": "d_11",
       "calibration_window": [
@@ -869,16 +869,16 @@
     },
     "decision_as_of": "2026-10-17",
     "errors": [],
-    "g1_mp_plan_sha256": "1370c723710c79608f82ed93d8a5cbe7b0bc2fe3ef43804b399af6bda1c926e1",
+    "g1_mp_plan_sha256": "ce46d23dda58e5a4964314b210f17d1a01ba4aef20432cd52da00e313bc94da4",
     "lock_sha256": "7ef21773ab27c92e0fe3e25aad5fa13853088b9360c55a10a4b2052cabfdeae0",
     "modality": "observed_run",
     "provenance": [],
-    "run_id": "20261018T062714Z-2026-10-17",
+    "run_id": "20261018T071755Z-2026-10-17",
     "runner": "local",
     "schema_version": 2,
     "selection_config_sha256": null,
     "spec_sha256": "5664b8889e618b03afeef4c05e3c2871013f87aad813e5cda70b1af0c25fdc91",
-    "started_at": "2026-10-18T06:27:14.044098+00:00",
+    "started_at": "2026-10-18T07:17:55.972101+00:00",
     "state": "completed"
   },
   "observed_run": {
@@ -905,7 +905,7 @@
     "prediction_was_written_now": false,
     "provenance": {
       "channel": "delphi_v5_archive",
-      "observed_at": "2026-10-18T06:27:16.043696+00:00",
+      "observed_at": "2026-10-18T07:17:57.731206+00:00",
       "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-10-17"
     },
     "recommendation": {
