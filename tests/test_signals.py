@@ -17,19 +17,19 @@ stated logic and not an observation about one download:
 
 from __future__ import annotations
 
-import importlib.util
-import sys
 from datetime import date
-from pathlib import Path
 
 import pandas as pd
 import pytest
 
-from revmon.monitoring import coverage_drop, revision_share
+from revmon.monitoring import (
+    coverage_drop,
+    relative_revisions,
+    revision_magnitude,
+    revision_share,
+)
 from revmon.panel import as_of_view, derive_revisions, visible_triangle
 from revmon.temporal import ReplayMode
-
-ROOT_DIR = Path(__file__).resolve().parents[1]
 
 
 def build(rows: list[dict]) -> pd.DataFrame:
@@ -48,18 +48,6 @@ def build(rows: list[dict]) -> pd.DataFrame:
 def coverage_series(values: list[float]) -> pd.DataFrame:
     weeks = pd.date_range("2025-01-04", periods=len(values), freq="7D")
     return pd.DataFrame({"event_week_end": weeks, "value": values})
-
-
-def diagnostics():
-    """The G2-A script, loaded as a module so its helpers can be tested."""
-    spec = importlib.util.spec_from_file_location(
-        "signal_diagnostics", ROOT_DIR / "scripts" / "02_signal_diagnostics.py"
-    )
-    assert spec and spec.loader
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
-    return module
 
 
 # --- one definition of visibility, two shapes ------------------------------
@@ -124,9 +112,8 @@ def test_the_share_can_saturate_while_the_magnitude_varies():
     ])
     assert revision_share(panel, lookback_weeks=8) == 1.0
 
-    module = diagnostics()
     pairs = panel[~panel["is_first_release"].astype(bool)]
-    relative = module.relative_revisions(pairs)
+    relative = relative_revisions(pairs)
     assert round(float(relative.min()), 6) == 0.001
     assert round(float(relative.max()), 6) == 0.3
 
@@ -139,9 +126,8 @@ def test_a_zero_base_pair_is_dropped_rather_than_divided_by():
         {"event_week_end": "2025-01-11", "source_report_date": "2025-01-15", "value": 200},
         {"event_week_end": "2025-01-11", "source_report_date": "2025-01-22", "value": 220},
     ])
-    module = diagnostics()
     pairs = panel[~panel["is_first_release"].astype(bool)]
-    relative = module.relative_revisions(pairs)
+    relative = relative_revisions(pairs)
 
     assert len(relative) == 1, "the pair restating a zero must not contribute"
     assert round(float(relative.iloc[0]), 6) == 0.1
@@ -153,21 +139,23 @@ def test_the_denominator_is_the_value_that_was_replaced():
         {"event_week_end": "2025-01-04", "source_report_date": "2025-01-08", "value": 200},
         {"event_week_end": "2025-01-04", "source_report_date": "2025-01-15", "value": 250},
     ])
-    module = diagnostics()
     pairs = panel[~panel["is_first_release"].astype(bool)]
-    relative = module.relative_revisions(pairs)
+    relative = relative_revisions(pairs)
     # 50/200 = 0.25 against the replaced value; 50/250 = 0.20 against the new one.
     assert round(float(relative.iloc[0]), 6) == 0.25
 
 
-def test_the_magnitude_needs_an_anchor_and_says_so():
-    module = diagnostics()
+def test_the_magnitude_is_missing_rather_than_zero_when_there_is_no_pair():
+    """An absent signal must not arrive as a quiet one, here as everywhere."""
     panel = build([
         {"event_week_end": "2025-01-04", "source_report_date": "2025-01-08", "value": 100},
         {"event_week_end": "2025-01-04", "source_report_date": "2025-01-15", "value": 110},
     ])
-    assert module.revision_magnitude_at_cut(panel, 8, None) == (None, None)
-    assert module.revision_magnitude_at_cut(panel.iloc[0:0], 8, date(2025, 1, 4)) == (None, None)
+    assert revision_magnitude(panel.iloc[0:0], 8) == (None, None)
+    # Anchored before every version, there is no comparable pair to size.
+    assert revision_magnitude(panel, 8, anchor_week=date(2024, 12, 1)) == (None, None)
+    mean, largest = revision_magnitude(panel, 8, anchor_week=date(2025, 1, 4))
+    assert mean == pytest.approx(0.1) and largest == pytest.approx(0.1)
 
 
 # --- the anchor, and the G1 behaviour preserved when it is absent ----------

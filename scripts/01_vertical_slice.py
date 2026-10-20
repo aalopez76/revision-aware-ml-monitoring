@@ -73,7 +73,8 @@ CALIBRATION = (date(2024, 11, 19), date(2025, 6, 30))
 
 THRESHOLDS = Thresholds(
     loss_alarm=2.0,
-    revision_share_alarm=0.25,
+    revision_alarm=0.25,
+    revision_statistic="revised_share",
     coverage_drop_alarm=2.0,
     min_mature_labels=4,
     declared_in=DECLARED_IN,

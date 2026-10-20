@@ -29,8 +29,9 @@ What it measures, and one thing it deliberately does not:
   180 days: this source restates every value in every publication, so a share
   of revised pairs is saturated and re-anchoring it cannot help. A saturated
   signal is reported as saturated, and the magnitude is then measured so that
-  the config step has something with spread to choose from. Measuring it here
-  is not adopting it.
+  the config step has something with spread to choose from. `config/g2_signals.json`
+  then adopted it, which is why `revision_magnitude` now lives in
+  `revmon.monitoring` and this script imports it rather than defining it.
 * **Whether the PERFORMANCE branch is reachable.** The G1 replay exited early at
   8 of 14 cuts with zero mature labels, so a discordance computed there would
   have measured the precedence table's early exits. Counted from the calendar
@@ -55,7 +56,12 @@ import pandas as pd
 
 from revmon import evidence, sources
 from revmon.evidence import Modality, RunManifest
-from revmon.monitoring import coverage_drop, revision_share
+from revmon.monitoring import (
+    coverage_drop,
+    relative_revisions,
+    revision_magnitude,
+    revision_share,
+)
 from revmon.panel import as_of_view, fetch_triangle_as_of, visible_triangle
 from revmon.temporal import (
     SATURDAY,
@@ -163,27 +169,6 @@ def share_above(values: list[float | None], grid: tuple[float, ...]) -> dict:
     return out
 
 
-def relative_revisions(pairs: pd.DataFrame) -> pd.Series:
-    """How large each restatement was, against the value it replaced.
-
-    Relative rather than absolute because admissions move by an order of
-    magnitude across a season: a 50-admission restatement is noise at the peak
-    and a large correction in the trough, and a signal that could not tell those
-    apart would fire on the calendar.
-
-    The denominator is the value **before** the restatement, recovered as
-    `value - revision`, so it is the quantity a monitor would have been looking
-    at. Pairs whose previous value was zero are dropped rather than divided by:
-    there is no relative change from nothing, and substituting one would be
-    inventing the signal.
-    """
-    revision = pd.to_numeric(pairs["revision"], errors="coerce")
-    value = pd.to_numeric(pairs["value"], errors="coerce")
-    previous = value - revision
-    usable = revision.notna() & previous.notna() & (previous != 0)
-    return (revision[usable] / previous[usable]).abs()
-
-
 def _bucket(flags: pd.Series, magnitudes: pd.Series) -> dict:
     total = int(len(flags))
     bucket = {
@@ -246,34 +231,6 @@ def revision_by_lag(triangle: pd.DataFrame) -> dict:
     }
 
 
-def revision_magnitude_at_cut(
-    triangle_at_cut: pd.DataFrame, lookback_weeks: int, anchor_week: date | None
-) -> tuple[float | None, float | None]:
-    """Mean and max relative restatement inside the anchored window.
-
-    The candidate R this script measures **because** the share turned out
-    saturated. It stays here, in the diagnostics, rather than in `monitoring.py`:
-    a signal moves into the monitor when versioned config declares it, and
-    putting it there first would make the measurement look like the decision.
-    """
-    if triangle_at_cut.empty or anchor_week is None:
-        return None, None
-    frame = triangle_at_cut.copy()
-    frame["event_week_end"] = pd.to_datetime(frame["event_week_end"])
-    frame = frame[frame["event_week_end"] <= pd.Timestamp(anchor_week)]
-    if frame.empty:
-        return None, None
-    cutoff = frame["event_week_end"].max() - pd.Timedelta(weeks=lookback_weeks)
-    window = frame[frame["event_week_end"] >= cutoff]
-    pairs = window[~window["is_first_release"].astype(bool)]
-    if pairs.empty:
-        return None, None
-    relative = relative_revisions(pairs)
-    if relative.empty:
-        return None, None
-    return round(float(relative.mean()), 6), round(float(relative.max()), 6)
-
-
 def main() -> int:
     ran_at = datetime.now(UTC).date()
 
@@ -326,8 +283,8 @@ def main() -> int:
             sorted(pd.to_datetime(state["event_week_end"]).dt.date) if not state.empty else []
         )
         anchor = matured_anchor(weeks, cut, MATURITY)
-        magnitude_mean, magnitude_max = revision_magnitude_at_cut(
-            triangle_at_cut, REVISION_LOOKBACK_WEEKS, anchor
+        magnitude_mean, magnitude_max = revision_magnitude(
+            triangle_at_cut, REVISION_LOOKBACK_WEEKS, anchor_week=anchor
         )
         scorable = sum(
             1

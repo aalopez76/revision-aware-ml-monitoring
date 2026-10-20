@@ -89,15 +89,23 @@ class Thresholds:
     """
 
     loss_alarm: float
-    revision_share_alarm: float
+    revision_alarm: float
     coverage_drop_alarm: float
     min_mature_labels: int
     declared_in: str
+    #: Which revision statistic `revision_alarm` applies to. Required, because
+    #: G2-A measured that the two candidates live on different scales: the
+    #: revised *share* is saturated at 1.0 in this source, and the mean relative
+    #: magnitude sits near 0.01. An alarm without its statistic is a number that
+    #: cannot be read, and the field used to be called `revision_share_alarm`
+    #: back when only one statistic existed.
+    revision_statistic: str = "revised_share"
 
     def as_dict(self) -> dict:
         return {
             "loss_alarm": self.loss_alarm,
-            "revision_share_alarm": self.revision_share_alarm,
+            "revision_alarm": self.revision_alarm,
+            "revision_statistic": self.revision_statistic,
             "coverage_drop_alarm": self.coverage_drop_alarm,
             "min_mature_labels": self.min_mature_labels,
             "declared_in": self.declared_in,
@@ -211,6 +219,65 @@ def revision_share(
     return round(float(pairs["revised"].astype(bool).mean()), 6)
 
 
+def relative_revisions(pairs: pd.DataFrame) -> pd.Series:
+    """How large each restatement was, against the value it replaced.
+
+    Relative rather than absolute because admissions move by an order of
+    magnitude across a season: a 50-admission restatement is noise at the peak
+    and a large correction in the trough, and a signal that could not tell those
+    apart would fire on the calendar.
+
+    The denominator is the value **before** the restatement, recovered as
+    `value - revision`, so it is the quantity a monitor would have been looking
+    at. Pairs whose previous value was zero are dropped rather than divided by:
+    there is no relative change from nothing, and substituting one would be
+    inventing the signal.
+    """
+    revision = pd.to_numeric(pairs["revision"], errors="coerce")
+    value = pd.to_numeric(pairs["value"], errors="coerce")
+    previous = value - revision
+    usable = revision.notna() & previous.notna() & (previous != 0)
+    return (revision[usable] / previous[usable]).abs()
+
+
+def revision_magnitude(
+    state_history: pd.DataFrame,
+    lookback_weeks: int = 8,
+    *,
+    anchor_week: date | None = None,
+) -> tuple[float | None, float | None]:
+    """Mean and max relative restatement in the anchored window.
+
+    The revision signal the monitor reads, and the reason it is not
+    `revision_share`: G2-A measured 1046 of 1046 comparable pairs revised, in
+    every publication-lag bucket out past 180 days. This source restates every
+    value in every publication, so the share is the constant 1.0 and no window
+    or anchor makes it discriminate. The size of the restatement does.
+
+    `anchor_week` is required in practice: unanchored, the window ends at the
+    series edge, where the median relative restatement is 3.8% against 0.03% at
+    the far end, so the reading would be about the calendar. It is still optional
+    in the signature because the caller names the anchor, as everywhere else.
+    """
+    if state_history.empty:
+        return None, None
+    frame = state_history.copy()
+    frame["event_week_end"] = pd.to_datetime(frame["event_week_end"])
+    if anchor_week is not None:
+        frame = frame[frame["event_week_end"] <= pd.Timestamp(anchor_week)]
+    if frame.empty:
+        return None, None
+    cutoff = frame["event_week_end"].max() - pd.Timedelta(weeks=lookback_weeks)
+    window = frame[frame["event_week_end"] >= cutoff]
+    pairs = window[~window["is_first_release"].astype(bool)]
+    if pairs.empty:
+        return None, None
+    relative = relative_revisions(pairs)
+    if relative.empty:
+        return None, None
+    return round(float(relative.mean()), 6), round(float(relative.max()), 6)
+
+
 def coverage_drop(
     coverage: pd.DataFrame | None,
     lookback_weeks: int = 4,
@@ -304,12 +371,12 @@ def recommend(
     if (
         information.revision
         and revisions is not None
-        and revisions > thresholds.revision_share_alarm
+        and revisions > thresholds.revision_alarm
     ):
         return done(
             INVESTIGATE_DATA,
             f"{revisions:.1%} of recent comparable pairs were revised, above the "
-            f"declared {thresholds.revision_share_alarm:.0%}",
+            f"declared {thresholds.revision_alarm:.0%}",
         )
     if (
         information.coverage

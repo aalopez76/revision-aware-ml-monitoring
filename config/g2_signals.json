@@ -1,0 +1,91 @@
+{
+  "declared_in": "config/g2_signals.json, G2 signal and threshold declaration",
+  "declared_on": "2026-10-19",
+  "declared_before": "any discordance was computed; reports/results/02_discordance.json did not exist and no arm had emitted a recommendation at any cut",
+  "declared_from": "reports/results/02_signal_diagnostics.json, 32 development cuts ending 2025-06-30",
+  "sealed_as": "selection_config_sha256 in the manifest of every run that reads this file",
+
+  "decision_c": {
+    "what_changed": "The revision factor R stops being the share of revised pairs and becomes the mean relative size of the restatements in the same window.",
+    "why": "G2-A measured 1046 of 1046 comparable pairs revised, in every publication-lag bucket out past 180 days. This source restates every value in every publication, so the share is the constant 1.0 under both anchorings and cannot discriminate anything. A factor that takes one value is not a factor, and crossing it with C would have produced a discordance that was an artefact of the saturation.",
+    "why_not_a_rescaling": "The share and the magnitude are logically independent: tests/test_signals.py holds a frame where every pair is revised, so the share is 1.0, while the sizes differ by two orders of magnitude. Replacing one with the other is a change of signal, and it is registered as such.",
+    "scope": "This changes which statistic the monitor reads. It does not change the 2x2, the estimand, the denominator, or the five actions.",
+    "registered_by": "the assistant, on the author's instruction of 2026-10-19 to register it rather than wait"
+  },
+
+  "signals": {
+    "R": {
+      "statistic": "mean_abs_relative_revision",
+      "implementation": "revmon.monitoring.revision_magnitude, mean component",
+      "lookback_weeks": 8,
+      "anchor": "newest_matured_event_week",
+      "alarm_grid": [0.005, 0.01, 0.02],
+      "primary_alarm": 0.02,
+      "declared_from": "The development distribution: min 0.005548, median 0.010218, p90 0.028564, max 0.034319, 31 distinct values over 32 cuts. 0.02 sits between the median and p90 and fires at 12 of 32 development cuts. A value below the median would fire on a majority of cuts, which is not a monitor.",
+      "window_unchanged_on_purpose": "8 weeks is the G1 value, carried over. The lag profile measured that the structural restatement window is about three weeks, but the distribution with spread was measured at 8; changing the statistic and the window in one step would make the contrast uninterpretable, which is the error this script's own docstring warns about."
+    },
+    "C": {
+      "statistic": "coverage_drop_points",
+      "implementation": "revmon.monitoring.coverage_drop",
+      "lookback_weeks": 4,
+      "anchor": "newest_matured_event_week",
+      "alarm_grid": [0.005, 0.02, 0.05],
+      "primary_alarm": 0.02,
+      "declared_from": "The development distribution anchored alike: min -0.535775, median 0.00185, p90 0.0178, max 0.033225. 0.02 sits just above p90.",
+      "retires": "The G1 alarm of 2.0 points, which G2-A measured to be unreachable: the observed maximum is 0.1187 points at the series edge and 0.033225 anchored, so it is between 17 and 60 times the ceiling and could never have fired. The declared grid that went with it, (0.0, 0.5, 1.0, 2.0, 5.0, 10.0), is retired for the same reason.",
+      "expected_support_is_thin": "At 0.02 the signal fires at about a tenth of development cuts. That is reported as a support limitation and is not engineered away by lowering the alarm towards the median, which would be choosing a threshold to obtain an answer."
+    }
+  },
+
+  "unchanged_and_why": {
+    "loss_alarm": {
+      "value": 2.0,
+      "reason": "Declared in the G1 development run, before P2 and before G2-A, which is the strongest provenance available to any threshold in this project. It is kept **because the evaluation-period loss distribution has already been seen** while reading P2's artefact: any value chosen now would be chosen having looked, and a worse-provenanced threshold is worse than an insensitive one.",
+      "measured_consequence": "Over P2's 61 origins the per-origin naive scaled loss has median 0.0346 and exceeds 2.0 at 3 of them. The monitor averages over all matured labels rather than a recent window, so its reading is smoother still and will rarely cross the alarm. The PERFORMANCE branch is therefore expected to fire seldom, and the discordance will be driven mainly by the data signals. That is a property of this monitor, reported, not repaired after the fact."
+    },
+    "recent_loss_window": {
+      "value": "none; the mean is taken over every matured label at the cut",
+      "reason": "The function's name promises recency that its body does not implement, and as the history grows the signal becomes insensitive by construction. It is a real defect and it is left in place for this gate for the same reason as the alarm above: choosing a window now would be choosing it having seen the losses it would be applied to. It is declared here instead of being quietly fixed."
+    },
+    "min_mature_labels": {
+      "value": 4,
+      "reason": "The G1 value. G2-A measured that the PERFORMANCE branch is reachable at 22 of 32 development cuts under it, which is adequate, so there is no observed problem to justify moving it."
+    },
+    "maturity_days": {
+      "value": 45,
+      "reason": "The first point on the pre-declared sensitivity grid (45, 60, 90), unchanged since G0."
+    }
+  },
+
+  "n1": {
+    "estimand": "D(11,00): the proportion of eligible cuts at which the recommendation under both kinds of information differs from the recommendation under neither.",
+    "not_called": "value of information, and not a false-alarm rate. It measures that the recommendation changed, not that it improved, and it does not identify the cause of the original.",
+    "reported_over": "the cross of the R and C alarm grids, nine cells, so the estimate's dependence on the thresholds is visible instead of hidden in one point",
+    "primary_cell": {"R": 0.02, "C": 0.02},
+    "denominator": "exogenous: cuts where an as-of state exists, is complete, a naive forecast is producible, and the target label has matured. Defined by source, model and data, never by what any arm decided.",
+    "abstentions": "ABSTENERSE is a category and is counted, never dropped as missing.",
+    "min_support_distinct_weeks": 20,
+    "min_support_reason": "Below 20 distinct target weeks the Wilson interval on a proportion near 0.5 is wider than plus or minus 0.20, so the estimate cannot tell a small discordance from a large one. At the measured ceiling of 55 weeks the half-width is about 0.13. Under 20, N1 is reported as not estimable rather than reported with a number.",
+    "interval": "Wilson score interval at 95 percent, declared because a normal approximation is wrong near 0 and 1 and the discordance may well sit there"
+  },
+
+  "g3_gate": {
+    "authorizes_g3_if": "N1 is estimable at the primary cell AND the Wilson lower bound of N1 exceeds 0.10",
+    "reason": "G3 simulates a policy trajectory per information configuration. If fewer than one eligible cut in ten changes its recommendation, the branches a simulator would separate are nearly the same branch, and the cost frontier it produced would be a frontier between two almost identical policies. The bound is used rather than the point estimate so that a large estimate on thin support does not open the gate.",
+    "declared_before": "N1 was computed. This criterion exists so the gate is not decided after seeing the number it is meant to judge.",
+    "if_not_authorized": "The project closes short at G2 with the measured discordance and its limits, which the scope rule already names as a publishable result. The scope is not widened to rescue a negative gate."
+  },
+
+  "horizon_strata": {
+    "rule": "publication lag at the cut, in days",
+    "strata": {"nominal": "lag <= 7", "delayed": "lag > 7"},
+    "declared_knowing": "P2 measured that the delayed stratum was one publication outage seen six times, with an effective support of 1 distinct target week. A stratum below min_support_distinct_weeks is reported with its support and never as an estimate.",
+    "deduplication": "One row per distinct target week, keeping the earliest origin at which that week became forecastable. A calendar rule, so the kept row cannot depend on which origin happened to score better."
+  },
+
+  "limits": [
+    "Thresholds were declared on development cuts ending 2025-06-30 and are applied to the period after it, which is the same split that fixed s_dev and chose P2's alpha.",
+    "A signal with spread is not thereby informative about the model. Whether R and C change recommendations is what G2 measures; that they can take more than one value is only the precondition.",
+    "Coverage is an information factor, never an attribution: revision, coverage and a change in the phenomenon are not three identifiable causes in aggregated data."
+  ]
+}
