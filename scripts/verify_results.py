@@ -94,6 +94,7 @@ G0 = "00_source_feasibility.json"
 G1 = "01_vertical_slice.json"
 G1A = "01_modeling_support.json"
 P2 = "01_model_comparison.json"
+G2A = "02_signal_diagnostics.json"
 
 CLAIMS: list[Claim] = [
     Claim(
@@ -315,6 +316,117 @@ CLAIMS: list[Claim] = [
         expected=1,
         tolerance=0,
     ),
+    # --- G2-A: the signals, before any threshold was declared ---------------
+    #
+    # The saturation rows are the load-bearing ones. If `revised_share` ever
+    # stops being 1.0, the conclusion that the share cannot discriminate stops
+    # holding, and these rows are what makes that visible instead of silent.
+    Claim(
+        label="G2-A development cuts",
+        source=G2A,
+        path=("window", "development_cuts"),
+        expected=32,
+        tolerance=0,
+    ),
+    Claim(
+        label="comparable pairs in development",
+        source=G2A,
+        path=("revision_by_publication_lag", "all_comparable_pairs", "pairs"),
+        expected=1046,
+        tolerance=0,
+    ),
+    Claim(
+        label="revised pairs in development",
+        source=G2A,
+        path=("revision_by_publication_lag", "all_comparable_pairs", "revised"),
+        expected=1046,
+        tolerance=0,
+    ),
+    Claim(
+        label="revised share, all pairs",
+        source=G2A,
+        path=("revision_by_publication_lag", "all_comparable_pairs", "revised_share"),
+        expected=1.0,
+        tolerance=0,
+    ),
+    Claim(
+        label="R as a share: distinct values, edge",
+        source=G2A,
+        path=("signals", "r_series_edge", "distribution", "distinct_values"),
+        expected=1,
+        tolerance=0,
+    ),
+    Claim(
+        label="R as a share: distinct values, anchored",
+        source=G2A,
+        path=("signals", "r_matured_window", "distribution", "distinct_values"),
+        expected=1,
+        tolerance=0,
+    ),
+    # The decay profile: three points of it, which is what says the structural
+    # restatement window is about three weeks rather than the eight G1 used.
+    Claim(
+        label="median |revision|, 0-7 day lag",
+        source=G2A,
+        path=("revision_by_publication_lag", "by_lag_days", "0-7",
+              "abs_relative_revision", "median"),
+        expected=0.037626,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="median |revision|, 22-28 day lag",
+        source=G2A,
+        path=("revision_by_publication_lag", "by_lag_days", "22-28",
+              "abs_relative_revision", "median"),
+        expected=0.001647,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="median |revision|, >180 day lag",
+        source=G2A,
+        path=("revision_by_publication_lag", "by_lag_days", ">180",
+              "abs_relative_revision", "median"),
+        expected=0.000625,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="R as magnitude: median",
+        source=G2A,
+        path=("signals", "r_magnitude_mean", "distribution", "median"),
+        expected=0.010218,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="R as magnitude: distinct values",
+        source=G2A,
+        path=("signals", "r_magnitude_mean", "distribution", "distinct_values"),
+        expected=31,
+        tolerance=0,
+    ),
+    # C against its own declared alarm of 2.0 points: the observed ceiling is
+    # the figure that says the threshold was never reachable.
+    Claim(
+        label="C at the edge: observed maximum",
+        source=G2A,
+        path=("signals", "c_series_edge", "distribution", "max"),
+        expected=0.1187,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="C anchored: observed maximum",
+        source=G2A,
+        path=("signals", "c_matured_window", "distribution", "max"),
+        expected=0.033225,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="cuts reaching PERFORMANCE at 4 labels",
+        source=G2A,
+        path=("performance_branch_reachability", "by_min_mature_labels", "4",
+              "cuts_reaching_performance"),
+        expected=22,
+        tolerance=0,
+    ),
 ]
 
 EXACT_CLAIMS: list[ExactClaim] = [
@@ -374,7 +486,7 @@ SCHEMA_REQUIREMENTS: dict[int, tuple[str, ...]] = {
     2: ("spec_sha256", "g1_mp_plan_sha256"),
 }
 
-MANIFEST_SOURCES = (G1, G1A, P2)
+MANIFEST_SOURCES = (G1, G1A, P2, G2A)
 
 
 def sha256_file(path: Path) -> str | None:
