@@ -11,31 +11,23 @@ abrir trabajo nuevo con la lista obligatoria pendiente.
 
 ## Qué está hecho
 
-- **G0, veredicto PROCEED** — `00_source_feasibility.json`. Sus hallazgos y el
-  universo elegible están en el README y en `datos.md`.
-- **G1-core ejecutada de verdad** — `01_vertical_slice.json`: `s_dev = 4967.25`
-  sobre 24 pares, 14 cortes de replay, 30 predicciones inmutables, una corrida
-  observada. `load_as_of` reconstruye desde **una** consulta y `confirmatory`
-  falla sin acta antes de la red.
-- **El producto es un nowcast**: a horizonte +1 `PRE_WEEK_FORECAST` es
-  inalcanzable por aritmética.
-- **Soporte medido** — `01_modeling_support.json`: 100 cortes, 93 elegibles a 45
-  días. Retraso mediano 7 días, máximo 49.
-- **P2 cerrada sin promoción** — `01_model_comparison.json`. Sobre 55 semanas:
-  M0 `0.3146`, `ridge_F1` `0.3781`, `ridge_F0` `0.6029`. `ridge_F1` gana 8 y
-  pierde 47. **M0 sigue siendo el Champion.**
+- **G0 PROCEED, G1-core real y P2 sin promoción** —
+  `00_source_feasibility.json`, `01_vertical_slice.json`,
+  `01_modeling_support.json`, `01_model_comparison.json`. `s_dev = 4967.25`;
+  93 orígenes elegibles a 45 días; sobre 55 semanas M0 `0.3146` contra
+  `ridge_F1` `0.3781`, que gana 8 y pierde 47. **M0 sigue siendo el Champion**,
+  y el producto es un **nowcast**, no un pronóstico a una semana.
 - **G2-A: la proporción revisada está saturada** —
   `02_signal_diagnostics.json`. 1046 de 1046 pares revisados, en todos los
-  buckets de rezago. Constante 1.0 bajo las dos anclas. La magnitud sí tiene
-  dispersión y su mediana cae de 3.76 % a 7 días a 0.03-0.06 % pasados 90.
-  La cobertura tenía el defecto simétrico: máximo observado 0.119 puntos contra
-  una alarma de 2.0.
-- **Decisión C registrada** en `config/g2_signals.json`, versionada y sellada
-  en `selection_config_sha256`, **antes** de calcular N1: R pasa de proporción
-  a magnitud. La config declara también lo que **no** se movió —`loss_alarm` en
-  2.0 y `recent_loss` sin ventana— y por qué: al leer P2 ya se había visto la
-  distribución de pérdidas, así que cualquier valor nuevo estaría elegido
-  habiendo mirado.
+  buckets de rezago, constante 1.0 bajo las dos anclas. La magnitud sí tiene
+  dispersión: su mediana cae de 3.76 % a 7 días a 0.03-0.06 % pasados 90. La
+  cobertura tenía el defecto simétrico: techo observado 0.119 puntos contra una
+  alarma de 2.0.
+- **Decisión C registrada** en `config/g2_signals.json`, sellada en
+  `selection_config_sha256` **antes** de calcular N1: R pasa de proporción a
+  magnitud. La config declara también lo que **no** se movió —`loss_alarm` en
+  2.0, `recent_loss` sin ventana— y por qué: la distribución de pérdidas de
+  evaluación ya se había visto al leer P2.
 - **G2, la compuerta** — `02_discordance.json`, clase **E2** (replay
   controlado: los pronósticos se reconstruyen, no se emitieron).
   - **N1 = D(11,00) = 0.454545**, 25 de 55, Wilson 95 % **[0.330, 0.585]**.
