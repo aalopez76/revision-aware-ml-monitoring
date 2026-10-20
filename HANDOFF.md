@@ -3,80 +3,78 @@
 > Estado actual, corto. **No es un historial** — se reescribe, no se acumula.
 > Lo reescribe la skill `/handoff`.
 
-**Última actualización:** 18 de octubre de 2026
-**Fase:** **G0, G1-core y P2 cerradas.** La comparación de modelos terminó sin
-promoción: **M0 sigue siendo el Champion**. Siguiente: **G2**, que es la
-compuerta. P3 (AutoGluon/Chronos) queda opcional y sin empezar.
+**Última actualización:** 19 de octubre de 2026
+**Fase:** **G0, G1-core, P2 y G2-A cerradas.** M0 sigue siendo el Champion.
+G2-A midió que **las dos señales del 2x2 estaban mal declaradas**, así que G2 no
+se calcula hasta declarar la config. P3 queda opcional y sin empezar.
 
 ## Qué está hecho
 
 - **G0, veredicto PROCEED** — `00_source_feasibility.json`. Sus cuatro hallazgos
   y el universo elegible están en el README y en `datos.md`.
 - **G1-core ejecutada de verdad** — `01_vertical_slice.json`: `s_dev = 4967.25`
-  sobre 24 pares, 14 cortes de replay, 30 predicciones inmutables, corrida
-  observada con `INVESTIGAR_DATO`. `load_as_of` reconstruye desde **una**
-  consulta de `/archive/` y `confirmatory=True` falla sin acta antes de la red.
+  sobre 24 pares, 14 cortes de replay, 30 predicciones inmutables, una corrida
+  observada. `load_as_of` reconstruye desde **una** consulta de `/archive/` y
+  `confirmatory=True` falla sin acta antes de la red.
 - **El producto es un nowcast, no un pronóstico a una semana.** A horizonte +1
-  `PRE_WEEK_FORECAST` es inalcanzable por aritmética (derivación en el docstring
-  de `classify_emission`): **0 pre-semana**, 1 nowcast, 29 `post_event`.
-- **Soporte medido** — `01_modeling_support.json`: **100** cortes programados,
-  los 100 `complete`, **93** elegibles a 45 días (91 a 60, 87 a 90). Retraso de
-  publicación mediana 7 días, **máximo 49**.
-- **Dos documentos rectores sellados** por SHA-256 con `schema_version`: un
-  manifiesto antiguo se verifica bajo su propio esquema. Excepción declarada en
-  `alcance.md`.
-- **El calendario de cortes está anclado** al sábado de la fuente
-  (`scheduled_cut`), exigido por `parse_week_end`. Corrige que se derivaran de
-  `datetime.now()`: correr en domingo emitió 15 predicciones paralelas, que se
-  conservan con el cruce registrado.
-- **Un registro semanal por ejecución** — `AAAA-Wnn__<run>__a<n>.json`. La
-  conciliación lee los dos esquemas y cuenta **semanas ISO distintas**, no
-  ficheros. Hoy: 3 capturas en 1 semana, 2 locales.
-- **`DELPHI_EPIDATA_KEY` es secreto del repositorio** y `weekly.yml:49-50` lo
-  pasa al entorno. Eso dice que la variable **está presente**, no que algo se
-  autenticara: la captura lee el hub y no pide nada a V5.
-- **Decisiones A y B registradas** en la sección 6 BIS del plan G1-MP, con fecha
-  y antes de que existiera resultado alguno de candidatos.
+  `PRE_WEEK_FORECAST` es inalcanzable por aritmética: 0 pre-semana, 1 nowcast,
+  29 `post_event`.
+- **Soporte medido** — `01_modeling_support.json`: 100 cortes programados, 93
+  elegibles a 45 días (91 a 60, 87 a 90). Retraso mediano 7 días, máximo 49.
 - **P2 cerrada sin promoción** — `01_model_comparison.json`. Sobre **55 semanas
   objetivo distintas**: M0 `0.3146`, `ridge_F1` `0.3781`, `ridge_F0` `0.6029`.
-  Emparejado, `ridge_F1` gana 8 semanas y pierde 47. F1 mejora sobre F0 y
-  ninguno sobre M0. Alpha y la receta se eligieron **solo en desarrollo**,
-  cortado donde se fijó `s_dev`. Los tres candidatos cubren los 61 orígenes sin
-  exclusiones, así que `MIN_TRAIN_ROWS` nunca ató.
-- **Dos hallazgos de la estratificación de la Decisión B:** el estrato de
-  publicación tardía es **una interrupción vista seis veces** (misma semana
-  visible, mismo objetivo, misma etiqueta), soporte efectivo 1; y eso inflaba el
-  denominador — 61 orígenes comunes contra **55** semanas distintas, porque una
-  interrupción de siete semanas hizo que `2025-09-27` fuera el objetivo de
-  siete orígenes. Se colapsa al origen **más temprano**, por calendario.
-- **35 cifras rastreadas**, **85 pruebas** y **6 sellos**, todo verde.
+  `ridge_F1` gana 8 semanas y pierde 47. Alpha y la receta se eligieron solo en
+  desarrollo. El estrato de publicación tardía era una interrupción vista seis
+  veces, soporte efectivo 1, y eso inflaba el denominador a 61 orígenes.
+- **G2-A: las dos señales medidas, sin declarar umbral** —
+  `02_signal_diagnostics.json`, 32 cortes de desarrollo, los dos tirones
+  acotados en `2025-06-30` del lado del servidor.
+  - **R como proporción no sirve: está saturada.** 1046 de 1046 pares
+    comparables revisados, en todos los buckets de rezago, incluso más allá de
+    180 días. Constante 1.0 **bajo las dos anclas**, así que reanclarla no lo
+    arregla — el diagnóstico anterior de este archivo era equivocado.
+  - **La magnitud sí tiene dispersión.** El cambio relativo mediano cae de
+    3.76 % a 7 días de rezago a 0.16 % a 22-28 y se estabiliza en 0.03-0.06 %:
+    la ventana estructural son **unas tres semanas, no ocho**. Como señal por
+    corte, la magnitud media da 31 valores distintos en 32 cortes.
+  - **C tiene el defecto simétrico:** su máximo observado es **0.119 puntos**
+    contra una alarma declarada en **2.0**, así que nunca podía disparar.
+  - **La rama PERFORMANCE se alcanza en 22 de 32 cortes** con el mínimo de 4
+    etiquetas, contado por calendario y no por predicciones guardadas.
+- **49 cifras rastreadas**, **97 pruebas** y **8 sellos**, todo verde.
 
 ## Lo que NO está hecho
 
-- **P3 y P4 sin empezar**: no hay LightGBM ni AutoGluon, ni
-  `01_model_selection.json`. P4 queda sin objeto mientras no haya candidato que
-  promover; P3 es opcional y exige smoke test antes de instalar nada.
-- **`selection_config_sha256` es `null`**: la configuración de selección no
-  existe. Ausente significa «aún no declarada», nunca «declarada vacía».
+- **La config de G2 no existe.** Sin ella no hay N1: con los umbrales de G1,
+  `d_1*` dispararía siempre y `d_01` sería idéntica a `d_00`, así que la
+  discordancia medida sería un artefacto de la saturación. Esto es derivado de
+  las dos mediciones, no medido: nadie ha calculado N1.
+- **`selection_config_sha256` es `null`**: ausente significa «aún no
+  declarada», nunca «declarada vacía».
 - **El método no está congelado** y `frozen_method.json` no existe. La escribe
   la persona; los permisos deniegan al modelo escribir en `reports/`.
-- **Una sola semana cubierta** (`2026-W42`); el cron sigue provisional.
+- **P3 y P4 sin empezar.** P4 no tiene objeto mientras no haya candidato que
+  promover; P3 es opcional y exige smoke test antes de instalar nada.
+- **Una sola semana cubierta** (`2026-W42`, 2 de 3 registros locales); el cron
+  sigue provisional y `2026-W43` abrió sin captura.
 
 ## Siguiente acción concreta
 
-**G2 es lo único que queda en el camino principal, y es la compuerta.** Tres
-cosas se declaran antes de calcularla, en config versionada:
+1. **Declarar `config/g2_signals.json`**, versionado, con `declared_in`, y
+   sellarlo en `selection_config_sha256`. Tres contenidos: la definición y el
+   ancla de R y C; la malla de umbrales para N1 más el soporte mínimo con que
+   se considera estimable (techo **55 semanas distintas**, no 93 orígenes); y
+   los cortes de estratificación por horizonte, sabiendo que el estrato tardío
+   tiene soporte 1.
+2. **`scripts/02_discordance.py`**: N1 = D(11,00), los cuatro efectos simples,
+   los dos contrastes sin sumarlos, contingencias y abstenciones, con el
+   denominador exógeno y la deduplicación por calendario de P2.
 
-1. **Redefinir las señales R y C a igual rezago.** Ambas disparan
-   estructuralmente en el borde de la serie, así que los umbrales actuales
-   (25 %, 2 puntos) no son informativos. Es lo único que bloquea G2.
-2. **Malla de umbrales para N1** en lugar de un punto, y **soporte mínimo**
-   con el que N1 se considera estimable. El techo medido es 55 semanas
-   distintas, no 93 orígenes — la deduplicación de P2 también aplica aquí.
-3. **Los cortes concretos de la estratificación por horizonte.** La Decisión B
-   fijó *que* se distinguiría; P2 midió que el estrato tardío tiene soporte 1,
-   así que la malla tiene que declararse sabiendo eso.
+## Decisiones abiertas
 
-P3 (un TSFM zero-shot vía AutoGluon) queda **opcional**: M0 ganó, así que ya no
-hay promoción que perseguir, y entra solo si aporta un contraste y pasa su smoke
-test. P4 queda sin objeto mientras no haya candidato que promover.
+- **Si R pasa de proporción a magnitud.** Es un cambio de señal, no de umbral,
+  y lo registra la persona antes de calcular N1. Postergarlo cuesta poco hoy y
+  mucho después: declarado una vez calculada la discordancia, ya no es
+  predeclarado y G2 deja de valer.
+- **Si los 2 registros semanales locales se quedan** en la evidencia
+  operacional, y si el cron deja de ser provisional antes de congelar.
