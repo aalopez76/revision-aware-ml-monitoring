@@ -127,6 +127,47 @@ def derive_revisions(frame: pd.DataFrame, *, publication_clock: str) -> pd.DataF
     return panel[PANEL_COLUMNS]
 
 
+def visible_triangle(
+    panel: pd.DataFrame,
+    decision_as_of: date,
+    mode: ReplayMode,
+) -> pd.DataFrame:
+    """Every version visible at the cut, **without collapsing to one per key**.
+
+    This is the half of the gate a monitor needs and a forecaster does not. A
+    forecast consumes one value per week, so `as_of_view` collapses; a revision
+    signal is about the versions themselves, so collapsing would delete the
+    quantity being measured.
+
+    It exists here, and not as a filter inside a script, because the visibility
+    rule is the project's central definition: two implementations of it are two
+    definitions of what was knowable when. `as_of_view` is built on top of this
+    function for that reason, so there is exactly one.
+    """
+    if panel.empty:
+        return panel.copy()
+    if mode is ReplayMode.LIVE:
+        return panel
+
+    # Compared as timestamps rather than Python dates: a column that is all
+    # NaT keeps its datetime dtype, and comparing that against a `date`
+    # raises instead of filtering. A gate that can raise on empty input is a
+    # gate that fails open in exactly the case it exists for.
+    cutoff = pd.Timestamp(latest_usable_report_date(decision_as_of, mode))
+    report = pd.to_datetime(panel["source_report_date"], errors="coerce")
+    visible = panel[report.notna() & (report <= cutoff)]
+
+    if mode is ReplayMode.OBSERVED_REPLAY:
+        # A row we never observed cannot be part of a replay of what we saw.
+        # The bound is the end of the cut day, so "observed on the cut date"
+        # counts and nothing later does.
+        observed = pd.to_datetime(visible["observed_at"], utc=True, errors="coerce")
+        limit = pd.Timestamp(decision_as_of, tz="UTC") + pd.Timedelta(days=1)
+        visible = visible[observed.notna() & (observed < limit)]
+
+    return visible
+
+
 def as_of_view(
     panel: pd.DataFrame,
     decision_as_of: date,
@@ -152,23 +193,7 @@ def as_of_view(
     if panel.empty:
         return panel.copy(), Completeness.INCOMPLETE_HISTORY
 
-    visible = panel
-    if mode is not ReplayMode.LIVE:
-        # Compared as timestamps rather than Python dates: a column that is all
-        # NaT keeps its datetime dtype, and comparing that against a `date`
-        # raises instead of filtering. A gate that can raise on empty input is a
-        # gate that fails open in exactly the case it exists for.
-        cutoff = pd.Timestamp(latest_usable_report_date(decision_as_of, mode))
-        report = pd.to_datetime(visible["source_report_date"], errors="coerce")
-        visible = visible[report.notna() & (report <= cutoff)]
-
-        if mode is ReplayMode.OBSERVED_REPLAY:
-            # A row we never observed cannot be part of a replay of what we saw.
-            # The bound is the end of the cut day, so "observed on the cut date"
-            # counts and nothing later does.
-            observed = pd.to_datetime(visible["observed_at"], utc=True, errors="coerce")
-            limit = pd.Timestamp(decision_as_of, tz="UTC") + pd.Timedelta(days=1)
-            visible = visible[observed.notna() & (observed < limit)]
+    visible = visible_triangle(panel, decision_as_of, mode)
 
     if visible.empty:
         return visible.copy(), Completeness.INCOMPLETE_HISTORY

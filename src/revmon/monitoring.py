@@ -175,18 +175,34 @@ def recent_loss(
     return round(sum(losses) / len(losses), 6), len(losses)
 
 
-def revision_share(state_history: pd.DataFrame, lookback_weeks: int = 8) -> float | None:
+def revision_share(
+    state_history: pd.DataFrame,
+    lookback_weeks: int = 8,
+    *,
+    anchor_week: date | None = None,
+) -> float | None:
     """Share of recent comparable publication pairs whose value changed.
 
     The denominator is pairs in which the key appeared on both sides, which is
     what G0 measured to be the right definition: `/archive/` keeps unchanged
     republications but a key is absent from most publications, so dividing by
     the rows the endpoint returned would be dividing by the wrong thing.
+
+    `anchor_week` names where the window ends, and the caller has to name it for
+    the same reason `derive_revisions` refuses to guess a clock. Left at `None`
+    the window ends at the newest event week present — the edge of the series,
+    which every release restates, so the signal measures the edge being fresh
+    rather than anything having gone unusually wrong. Given a week, the window
+    ends there, which is how this signal can be put at the same lag as coverage.
     """
     if state_history.empty:
         return None
     frame = state_history.copy()
     frame["event_week_end"] = pd.to_datetime(frame["event_week_end"])
+    if anchor_week is not None:
+        frame = frame[frame["event_week_end"] <= pd.Timestamp(anchor_week)]
+        if frame.empty:
+            return None
     cutoff = frame["event_week_end"].max() - pd.Timedelta(weeks=lookback_weeks)
     recent = frame[frame["event_week_end"] >= cutoff]
     pairs = recent[~recent["is_first_release"].astype(bool)]
@@ -195,18 +211,31 @@ def revision_share(state_history: pd.DataFrame, lookback_weeks: int = 8) -> floa
     return round(float(pairs["revised"].astype(bool).mean()), 6)
 
 
-def coverage_drop(coverage: pd.DataFrame | None, lookback_weeks: int = 4) -> float | None:
+def coverage_drop(
+    coverage: pd.DataFrame | None,
+    lookback_weeks: int = 4,
+    *,
+    anchor_week: date | None = None,
+) -> float | None:
     """Fall in reporting coverage against its recent level, in percentage points.
 
     A jump in admissions can come from more hospitals reporting. That is neither
     a revision nor a change in the phenomenon, and it is measurable from the
     source, which is why it is a signal here and not a caveat in a footnote.
+
+    `anchor_week` works exactly as it does in `revision_share`, and for the same
+    reason: the newest coverage week at a cut is the least completely reported
+    one, so an unanchored reading of this signal is dominated by that edge. The
+    two signals have to be anchored alike or the 2x2 crosses a measurement of
+    the edge with a measurement of the data.
     """
     if coverage is None or coverage.empty:
         return None
     frame = coverage.copy()
     frame["event_week_end"] = pd.to_datetime(frame["event_week_end"])
     frame = frame.sort_values("event_week_end")
+    if anchor_week is not None:
+        frame = frame[frame["event_week_end"] <= pd.Timestamp(anchor_week)]
     if len(frame) < 2:
         return None
     latest = float(frame.iloc[-1]["value"])
