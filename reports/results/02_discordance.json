@@ -1,0 +1,1916 @@
+{
+  "by_horizon_stratum": {
+    "caveat": "The deduplicated delayed stratum is empty by construction, not by measurement: keeping the earliest origin for each target week keeps the shortest lag. The undeduplicated counts are shown for completeness and are marked not estimable, because P2 measured that the delayed origins there are one publication outage seen six times, all targeting the same week with the same label. Neither reading supports a claim about how discordance varies with the effective horizon, and that is the honest answer to the stratification Decision B asked for.",
+    "deduplicated": {
+      "delayed": {
+        "distinct_target_weeks": 0,
+        "estimable": false,
+        "n1_d11_vs_d00": null
+      },
+      "nominal": {
+        "distinct_target_weeks": 55,
+        "estimable": true,
+        "n1_d11_vs_d00": {
+          "denominator": 55,
+          "estimate": 0.454545,
+          "numerator": 25,
+          "wilson_95": [
+            0.330253,
+            0.584773
+          ]
+        }
+      }
+    },
+    "undeduplicated_origins": {
+      "delayed": {
+        "distinct_target_weeks": 1,
+        "estimable": false,
+        "n1_d11_vs_d00": {
+          "denominator": 6,
+          "estimate": 0.666667,
+          "numerator": 4,
+          "wilson_95": [
+            0.299993,
+            0.903229
+          ]
+        },
+        "origins": 6
+      },
+      "nominal": {
+        "distinct_target_weeks": 55,
+        "estimable": false,
+        "n1_d11_vs_d00": {
+          "denominator": 55,
+          "estimate": 0.454545,
+          "numerator": 25,
+          "wilson_95": [
+            0.330253,
+            0.584773
+          ]
+        },
+        "origins": 55
+      }
+    }
+  },
+  "by_threshold_cell": {
+    "R=0.005,C=0.005": {
+      "abstentions": {
+        "d_00": 0,
+        "d_01": 0,
+        "d_10": 0,
+        "d_11": 0
+      },
+      "action_counts": {
+        "d_00": {
+          "CONTINUAR": 45,
+          "ESPERAR_MADUREZ": 10
+        },
+        "d_01": {
+          "CONTINUAR": 14,
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 31
+        },
+        "d_10": {
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 45
+        },
+        "d_11": {
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 45
+        }
+      },
+      "n1_d11_vs_d00": {
+        "denominator": 55,
+        "estimate": 0.818182,
+        "numerator": 45,
+        "wilson_95": [
+          0.696695,
+          0.898123
+        ]
+      },
+      "simple_effects": {
+        "d01_vs_d00": {
+          "denominator": 55,
+          "estimate": 0.563636,
+          "numerator": 31,
+          "wilson_95": [
+            0.432698,
+            0.686266
+          ]
+        },
+        "d10_vs_d00": {
+          "denominator": 55,
+          "estimate": 0.818182,
+          "numerator": 45,
+          "wilson_95": [
+            0.696695,
+            0.898123
+          ]
+        },
+        "d11_vs_d01": {
+          "denominator": 55,
+          "estimate": 0.254545,
+          "numerator": 14,
+          "wilson_95": [
+            0.158121,
+            0.383019
+          ]
+        },
+        "d11_vs_d10": {
+          "denominator": 55,
+          "estimate": 0.0,
+          "numerator": 0,
+          "wilson_95": [
+            0.0,
+            0.065285
+          ]
+        }
+      }
+    },
+    "R=0.005,C=0.02": {
+      "abstentions": {
+        "d_00": 0,
+        "d_01": 0,
+        "d_10": 0,
+        "d_11": 0
+      },
+      "action_counts": {
+        "d_00": {
+          "CONTINUAR": 45,
+          "ESPERAR_MADUREZ": 10
+        },
+        "d_01": {
+          "CONTINUAR": 20,
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 25
+        },
+        "d_10": {
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 45
+        },
+        "d_11": {
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 45
+        }
+      },
+      "n1_d11_vs_d00": {
+        "denominator": 55,
+        "estimate": 0.818182,
+        "numerator": 45,
+        "wilson_95": [
+          0.696695,
+          0.898123
+        ]
+      },
+      "simple_effects": {
+        "d01_vs_d00": {
+          "denominator": 55,
+          "estimate": 0.454545,
+          "numerator": 25,
+          "wilson_95": [
+            0.330253,
+            0.584773
+          ]
+        },
+        "d10_vs_d00": {
+          "denominator": 55,
+          "estimate": 0.818182,
+          "numerator": 45,
+          "wilson_95": [
+            0.696695,
+            0.898123
+          ]
+        },
+        "d11_vs_d01": {
+          "denominator": 55,
+          "estimate": 0.363636,
+          "numerator": 20,
+          "wilson_95": [
+            0.249305,
+            0.495772
+          ]
+        },
+        "d11_vs_d10": {
+          "denominator": 55,
+          "estimate": 0.0,
+          "numerator": 0,
+          "wilson_95": [
+            0.0,
+            0.065285
+          ]
+        }
+      }
+    },
+    "R=0.005,C=0.05": {
+      "abstentions": {
+        "d_00": 0,
+        "d_01": 0,
+        "d_10": 0,
+        "d_11": 0
+      },
+      "action_counts": {
+        "d_00": {
+          "CONTINUAR": 45,
+          "ESPERAR_MADUREZ": 10
+        },
+        "d_01": {
+          "CONTINUAR": 20,
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 25
+        },
+        "d_10": {
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 45
+        },
+        "d_11": {
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 45
+        }
+      },
+      "n1_d11_vs_d00": {
+        "denominator": 55,
+        "estimate": 0.818182,
+        "numerator": 45,
+        "wilson_95": [
+          0.696695,
+          0.898123
+        ]
+      },
+      "simple_effects": {
+        "d01_vs_d00": {
+          "denominator": 55,
+          "estimate": 0.454545,
+          "numerator": 25,
+          "wilson_95": [
+            0.330253,
+            0.584773
+          ]
+        },
+        "d10_vs_d00": {
+          "denominator": 55,
+          "estimate": 0.818182,
+          "numerator": 45,
+          "wilson_95": [
+            0.696695,
+            0.898123
+          ]
+        },
+        "d11_vs_d01": {
+          "denominator": 55,
+          "estimate": 0.363636,
+          "numerator": 20,
+          "wilson_95": [
+            0.249305,
+            0.495772
+          ]
+        },
+        "d11_vs_d10": {
+          "denominator": 55,
+          "estimate": 0.0,
+          "numerator": 0,
+          "wilson_95": [
+            0.0,
+            0.065285
+          ]
+        }
+      }
+    },
+    "R=0.01,C=0.005": {
+      "abstentions": {
+        "d_00": 0,
+        "d_01": 0,
+        "d_10": 0,
+        "d_11": 0
+      },
+      "action_counts": {
+        "d_00": {
+          "CONTINUAR": 45,
+          "ESPERAR_MADUREZ": 10
+        },
+        "d_01": {
+          "CONTINUAR": 14,
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 31
+        },
+        "d_10": {
+          "CONTINUAR": 31,
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 14
+        },
+        "d_11": {
+          "CONTINUAR": 10,
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 35
+        }
+      },
+      "n1_d11_vs_d00": {
+        "denominator": 55,
+        "estimate": 0.636364,
+        "numerator": 35,
+        "wilson_95": [
+          0.504228,
+          0.750695
+        ]
+      },
+      "simple_effects": {
+        "d01_vs_d00": {
+          "denominator": 55,
+          "estimate": 0.563636,
+          "numerator": 31,
+          "wilson_95": [
+            0.432698,
+            0.686266
+          ]
+        },
+        "d10_vs_d00": {
+          "denominator": 55,
+          "estimate": 0.254545,
+          "numerator": 14,
+          "wilson_95": [
+            0.158121,
+            0.383019
+          ]
+        },
+        "d11_vs_d01": {
+          "denominator": 55,
+          "estimate": 0.072727,
+          "numerator": 4,
+          "wilson_95": [
+            0.028644,
+            0.172599
+          ]
+        },
+        "d11_vs_d10": {
+          "denominator": 55,
+          "estimate": 0.381818,
+          "numerator": 21,
+          "wilson_95": [
+            0.26516,
+            0.513908
+          ]
+        }
+      }
+    },
+    "R=0.01,C=0.02": {
+      "abstentions": {
+        "d_00": 0,
+        "d_01": 0,
+        "d_10": 0,
+        "d_11": 0
+      },
+      "action_counts": {
+        "d_00": {
+          "CONTINUAR": 45,
+          "ESPERAR_MADUREZ": 10
+        },
+        "d_01": {
+          "CONTINUAR": 20,
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 25
+        },
+        "d_10": {
+          "CONTINUAR": 31,
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 14
+        },
+        "d_11": {
+          "CONTINUAR": 13,
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 32
+        }
+      },
+      "n1_d11_vs_d00": {
+        "denominator": 55,
+        "estimate": 0.581818,
+        "numerator": 32,
+        "wilson_95": [
+          0.450331,
+          0.702622
+        ]
+      },
+      "simple_effects": {
+        "d01_vs_d00": {
+          "denominator": 55,
+          "estimate": 0.454545,
+          "numerator": 25,
+          "wilson_95": [
+            0.330253,
+            0.584773
+          ]
+        },
+        "d10_vs_d00": {
+          "denominator": 55,
+          "estimate": 0.254545,
+          "numerator": 14,
+          "wilson_95": [
+            0.158121,
+            0.383019
+          ]
+        },
+        "d11_vs_d01": {
+          "denominator": 55,
+          "estimate": 0.127273,
+          "numerator": 7,
+          "wilson_95": [
+            0.063042,
+            0.24017
+          ]
+        },
+        "d11_vs_d10": {
+          "denominator": 55,
+          "estimate": 0.327273,
+          "numerator": 18,
+          "wilson_95": [
+            0.218131,
+            0.458968
+          ]
+        }
+      }
+    },
+    "R=0.01,C=0.05": {
+      "abstentions": {
+        "d_00": 0,
+        "d_01": 0,
+        "d_10": 0,
+        "d_11": 0
+      },
+      "action_counts": {
+        "d_00": {
+          "CONTINUAR": 45,
+          "ESPERAR_MADUREZ": 10
+        },
+        "d_01": {
+          "CONTINUAR": 20,
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 25
+        },
+        "d_10": {
+          "CONTINUAR": 31,
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 14
+        },
+        "d_11": {
+          "CONTINUAR": 13,
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 32
+        }
+      },
+      "n1_d11_vs_d00": {
+        "denominator": 55,
+        "estimate": 0.581818,
+        "numerator": 32,
+        "wilson_95": [
+          0.450331,
+          0.702622
+        ]
+      },
+      "simple_effects": {
+        "d01_vs_d00": {
+          "denominator": 55,
+          "estimate": 0.454545,
+          "numerator": 25,
+          "wilson_95": [
+            0.330253,
+            0.584773
+          ]
+        },
+        "d10_vs_d00": {
+          "denominator": 55,
+          "estimate": 0.254545,
+          "numerator": 14,
+          "wilson_95": [
+            0.158121,
+            0.383019
+          ]
+        },
+        "d11_vs_d01": {
+          "denominator": 55,
+          "estimate": 0.127273,
+          "numerator": 7,
+          "wilson_95": [
+            0.063042,
+            0.24017
+          ]
+        },
+        "d11_vs_d10": {
+          "denominator": 55,
+          "estimate": 0.327273,
+          "numerator": 18,
+          "wilson_95": [
+            0.218131,
+            0.458968
+          ]
+        }
+      }
+    },
+    "R=0.02,C=0.005": {
+      "abstentions": {
+        "d_00": 0,
+        "d_01": 0,
+        "d_10": 0,
+        "d_11": 0
+      },
+      "action_counts": {
+        "d_00": {
+          "CONTINUAR": 45,
+          "ESPERAR_MADUREZ": 10
+        },
+        "d_01": {
+          "CONTINUAR": 14,
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 31
+        },
+        "d_10": {
+          "CONTINUAR": 45,
+          "ESPERAR_MADUREZ": 10
+        },
+        "d_11": {
+          "CONTINUAR": 14,
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 31
+        }
+      },
+      "n1_d11_vs_d00": {
+        "denominator": 55,
+        "estimate": 0.563636,
+        "numerator": 31,
+        "wilson_95": [
+          0.432698,
+          0.686266
+        ]
+      },
+      "simple_effects": {
+        "d01_vs_d00": {
+          "denominator": 55,
+          "estimate": 0.563636,
+          "numerator": 31,
+          "wilson_95": [
+            0.432698,
+            0.686266
+          ]
+        },
+        "d10_vs_d00": {
+          "denominator": 55,
+          "estimate": 0.0,
+          "numerator": 0,
+          "wilson_95": [
+            0.0,
+            0.065285
+          ]
+        },
+        "d11_vs_d01": {
+          "denominator": 55,
+          "estimate": 0.0,
+          "numerator": 0,
+          "wilson_95": [
+            0.0,
+            0.065285
+          ]
+        },
+        "d11_vs_d10": {
+          "denominator": 55,
+          "estimate": 0.563636,
+          "numerator": 31,
+          "wilson_95": [
+            0.432698,
+            0.686266
+          ]
+        }
+      }
+    },
+    "R=0.02,C=0.02": {
+      "abstentions": {
+        "d_00": 0,
+        "d_01": 0,
+        "d_10": 0,
+        "d_11": 0
+      },
+      "action_counts": {
+        "d_00": {
+          "CONTINUAR": 45,
+          "ESPERAR_MADUREZ": 10
+        },
+        "d_01": {
+          "CONTINUAR": 20,
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 25
+        },
+        "d_10": {
+          "CONTINUAR": 45,
+          "ESPERAR_MADUREZ": 10
+        },
+        "d_11": {
+          "CONTINUAR": 20,
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 25
+        }
+      },
+      "n1_d11_vs_d00": {
+        "denominator": 55,
+        "estimate": 0.454545,
+        "numerator": 25,
+        "wilson_95": [
+          0.330253,
+          0.584773
+        ]
+      },
+      "simple_effects": {
+        "d01_vs_d00": {
+          "denominator": 55,
+          "estimate": 0.454545,
+          "numerator": 25,
+          "wilson_95": [
+            0.330253,
+            0.584773
+          ]
+        },
+        "d10_vs_d00": {
+          "denominator": 55,
+          "estimate": 0.0,
+          "numerator": 0,
+          "wilson_95": [
+            0.0,
+            0.065285
+          ]
+        },
+        "d11_vs_d01": {
+          "denominator": 55,
+          "estimate": 0.0,
+          "numerator": 0,
+          "wilson_95": [
+            0.0,
+            0.065285
+          ]
+        },
+        "d11_vs_d10": {
+          "denominator": 55,
+          "estimate": 0.454545,
+          "numerator": 25,
+          "wilson_95": [
+            0.330253,
+            0.584773
+          ]
+        }
+      }
+    },
+    "R=0.02,C=0.05": {
+      "abstentions": {
+        "d_00": 0,
+        "d_01": 0,
+        "d_10": 0,
+        "d_11": 0
+      },
+      "action_counts": {
+        "d_00": {
+          "CONTINUAR": 45,
+          "ESPERAR_MADUREZ": 10
+        },
+        "d_01": {
+          "CONTINUAR": 20,
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 25
+        },
+        "d_10": {
+          "CONTINUAR": 45,
+          "ESPERAR_MADUREZ": 10
+        },
+        "d_11": {
+          "CONTINUAR": 20,
+          "ESPERAR_MADUREZ": 10,
+          "INVESTIGAR_DATO": 25
+        }
+      },
+      "n1_d11_vs_d00": {
+        "denominator": 55,
+        "estimate": 0.454545,
+        "numerator": 25,
+        "wilson_95": [
+          0.330253,
+          0.584773
+        ]
+      },
+      "simple_effects": {
+        "d01_vs_d00": {
+          "denominator": 55,
+          "estimate": 0.454545,
+          "numerator": 25,
+          "wilson_95": [
+            0.330253,
+            0.584773
+          ]
+        },
+        "d10_vs_d00": {
+          "denominator": 55,
+          "estimate": 0.0,
+          "numerator": 0,
+          "wilson_95": [
+            0.0,
+            0.065285
+          ]
+        },
+        "d11_vs_d01": {
+          "denominator": 55,
+          "estimate": 0.0,
+          "numerator": 0,
+          "wilson_95": [
+            0.0,
+            0.065285
+          ]
+        },
+        "d11_vs_d10": {
+          "denominator": 55,
+          "estimate": 0.454545,
+          "numerator": 25,
+          "wilson_95": [
+            0.330253,
+            0.584773
+          ]
+        }
+      }
+    }
+  },
+  "evidence_class": "E2, controlled replay. The forecasts are reconstructed from as-of states; no run issued one at these origins, and a replay built today does not demonstrate that this system ran then.",
+  "g3_gate": {
+    "authorizes_g3": true,
+    "criterion": "N1 is estimable at the primary cell AND the Wilson lower bound of N1 exceeds 0.10",
+    "declared_before": "N1 was computed. This criterion exists so the gate is not decided after seeing the number it is meant to judge.",
+    "n1_estimate": 0.454545,
+    "n1_wilson_lower": 0.330253,
+    "support_sufficient": true
+  },
+  "limits": [
+    "Thresholds were declared on development cuts ending 2025-06-30 and are applied to the period after it, which is the same split that fixed s_dev and chose P2's alpha.",
+    "A signal with spread is not thereby informative about the model. Whether R and C change recommendations is what G2 measures; that they can take more than one value is only the precondition.",
+    "Coverage is an information factor, never an attribution: revision, coverage and a change in the phenomenon are not three identifiable causes in aggregated data."
+  ],
+  "loss_scale": {
+    "method": "mean absolute week-over-week difference of eligible labels",
+    "pairs": 24,
+    "s_dev": 4967.25,
+    "window_from": "2024-11-19",
+    "window_to": "2025-06-30"
+  },
+  "manifest": {
+    "code_sha": "f2ae35d137db65799c7f03ef35e0fcb4d5c4fea7",
+    "code_tree_sha256": "0192f5cdf4dd514561defb2bbc541a16b3b3736b963433cf51069c63e5b328e9",
+    "config": {
+      "calibration_window": [
+        "2024-11-19",
+        "2025-06-30"
+      ],
+      "declared_in": "config/g2_signals.json, G2 signal and threshold declaration",
+      "evaluation_from": "2025-07-01",
+      "evidence_class": "E2 controlled replay: forecasts reconstructed, not issued",
+      "maturity_days": 45,
+      "universe_from": "2024-11-01"
+    },
+    "decision_as_of": "2026-10-17",
+    "errors": [],
+    "g1_mp_plan_sha256": "ce46d23dda58e5a4964314b210f17d1a01ba4aef20432cd52da00e313bc94da4",
+    "lock_sha256": "0935e1c33fca3ff013e3f4da93b8582f704dd76e0e507cdde141bf3a770f12d2",
+    "modality": "historical_replay",
+    "provenance": [],
+    "run_id": "20261020T050916Z-2026-10-17",
+    "runner": "local",
+    "schema_version": 2,
+    "selection_config_sha256": "5d811bcf1a4911861d7cb8ae243d4dbbcec1c10917467b1315d2050778ebf92a",
+    "spec_sha256": "5664b8889e618b03afeef4c05e3c2871013f87aad813e5cda70b1af0c25fdc91",
+    "started_at": "2026-10-20T05:09:16.719368+00:00",
+    "state": "started"
+  },
+  "not_called": "value of information, and not a false-alarm rate. It measures that the recommendation changed, not that it improved, and it does not identify the cause of the original.",
+  "per_week": [
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.016425,
+      "cut": "2025-07-05",
+      "last_visible_week": "2025-06-28",
+      "loss": null,
+      "mature_labels": 0,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "ESPERAR_MADUREZ",
+        "d_01": "ESPERAR_MADUREZ",
+        "d_10": "ESPERAR_MADUREZ",
+        "d_11": "ESPERAR_MADUREZ"
+      },
+      "revision_magnitude": 0.008527,
+      "target_week": "2025-07-05",
+      "y_pred": 976.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": -0.000875,
+      "cut": "2025-07-12",
+      "last_visible_week": "2025-07-05",
+      "loss": null,
+      "mature_labels": 0,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "ESPERAR_MADUREZ",
+        "d_01": "ESPERAR_MADUREZ",
+        "d_10": "ESPERAR_MADUREZ",
+        "d_11": "ESPERAR_MADUREZ"
+      },
+      "revision_magnitude": 0.008428,
+      "target_week": "2025-07-12",
+      "y_pred": 915.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.00455,
+      "cut": "2025-07-19",
+      "last_visible_week": "2025-07-12",
+      "loss": null,
+      "mature_labels": 0,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "ESPERAR_MADUREZ",
+        "d_01": "ESPERAR_MADUREZ",
+        "d_10": "ESPERAR_MADUREZ",
+        "d_11": "ESPERAR_MADUREZ"
+      },
+      "revision_magnitude": 0.009394,
+      "target_week": "2025-07-19",
+      "y_pred": 982.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": -0.0006,
+      "cut": "2025-07-26",
+      "last_visible_week": "2025-07-19",
+      "loss": null,
+      "mature_labels": 0,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "ESPERAR_MADUREZ",
+        "d_01": "ESPERAR_MADUREZ",
+        "d_10": "ESPERAR_MADUREZ",
+        "d_11": "ESPERAR_MADUREZ"
+      },
+      "revision_magnitude": 0.010525,
+      "target_week": "2025-07-26",
+      "y_pred": 793.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.00515,
+      "cut": "2025-08-02",
+      "last_visible_week": "2025-07-26",
+      "loss": null,
+      "mature_labels": 0,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "ESPERAR_MADUREZ",
+        "d_01": "ESPERAR_MADUREZ",
+        "d_10": "ESPERAR_MADUREZ",
+        "d_11": "ESPERAR_MADUREZ"
+      },
+      "revision_magnitude": 0.011135,
+      "target_week": "2025-08-02",
+      "y_pred": 827.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.010725,
+      "cut": "2025-08-09",
+      "last_visible_week": "2025-08-02",
+      "loss": null,
+      "mature_labels": 0,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "ESPERAR_MADUREZ",
+        "d_01": "ESPERAR_MADUREZ",
+        "d_10": "ESPERAR_MADUREZ",
+        "d_11": "ESPERAR_MADUREZ"
+      },
+      "revision_magnitude": 0.010921,
+      "target_week": "2025-08-09",
+      "y_pred": 741.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.009675,
+      "cut": "2025-08-16",
+      "last_visible_week": "2025-08-09",
+      "loss": null,
+      "mature_labels": 0,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "ESPERAR_MADUREZ",
+        "d_01": "ESPERAR_MADUREZ",
+        "d_10": "ESPERAR_MADUREZ",
+        "d_11": "ESPERAR_MADUREZ"
+      },
+      "revision_magnitude": 0.010604,
+      "target_week": "2025-08-16",
+      "y_pred": 710.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.0002,
+      "cut": "2025-08-23",
+      "last_visible_week": "2025-08-16",
+      "loss": 0.005033,
+      "mature_labels": 1,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "ESPERAR_MADUREZ",
+        "d_01": "ESPERAR_MADUREZ",
+        "d_10": "ESPERAR_MADUREZ",
+        "d_11": "ESPERAR_MADUREZ"
+      },
+      "revision_magnitude": 0.010713,
+      "target_week": "2025-08-23",
+      "y_pred": 734.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": -0.00035,
+      "cut": "2025-08-30",
+      "last_visible_week": "2025-08-23",
+      "loss": 0.008053,
+      "mature_labels": 2,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "ESPERAR_MADUREZ",
+        "d_01": "ESPERAR_MADUREZ",
+        "d_10": "ESPERAR_MADUREZ",
+        "d_11": "ESPERAR_MADUREZ"
+      },
+      "revision_magnitude": 0.010979,
+      "target_week": "2025-08-30",
+      "y_pred": 739.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": -0.000625,
+      "cut": "2025-09-06",
+      "last_visible_week": "2025-08-30",
+      "loss": 0.013421,
+      "mature_labels": 3,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "ESPERAR_MADUREZ",
+        "d_01": "ESPERAR_MADUREZ",
+        "d_10": "ESPERAR_MADUREZ",
+        "d_11": "ESPERAR_MADUREZ"
+      },
+      "revision_magnitude": 0.010373,
+      "target_week": "2025-09-06",
+      "y_pred": 815.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.0126,
+      "cut": "2025-09-13",
+      "last_visible_week": "2025-09-06",
+      "loss": 0.015049,
+      "mature_labels": 4,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "CONTINUAR",
+        "d_10": "CONTINUAR",
+        "d_11": "CONTINUAR"
+      },
+      "revision_magnitude": 0.011391,
+      "target_week": "2025-09-13",
+      "y_pred": 926.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.0028,
+      "cut": "2025-09-20",
+      "last_visible_week": "2025-09-13",
+      "loss": 0.013207,
+      "mature_labels": 5,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "CONTINUAR",
+        "d_10": "CONTINUAR",
+        "d_11": "CONTINUAR"
+      },
+      "revision_magnitude": 0.011191,
+      "target_week": "2025-09-20",
+      "y_pred": 933.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": -0.0125,
+      "cut": "2025-09-27",
+      "last_visible_week": "2025-09-20",
+      "loss": 0.01171,
+      "mature_labels": 6,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "CONTINUAR",
+        "d_10": "CONTINUAR",
+        "d_11": "CONTINUAR"
+      },
+      "revision_magnitude": 0.010868,
+      "target_week": "2025-09-27",
+      "y_pred": 841.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.007775,
+      "cut": "2025-11-15",
+      "last_visible_week": "2025-11-08",
+      "loss": 0.023406,
+      "mature_labels": 19,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "CONTINUAR",
+        "d_10": "CONTINUAR",
+        "d_11": "CONTINUAR"
+      },
+      "revision_magnitude": 0.016014,
+      "target_week": "2025-11-15",
+      "y_pred": 1618.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.00595,
+      "cut": "2025-11-22",
+      "last_visible_week": "2025-11-15",
+      "loss": 0.023406,
+      "mature_labels": 19,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "CONTINUAR",
+        "d_10": "CONTINUAR",
+        "d_11": "CONTINUAR"
+      },
+      "revision_magnitude": 0.013244,
+      "target_week": "2025-11-22",
+      "y_pred": 2293.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": -0.007125,
+      "cut": "2025-11-29",
+      "last_visible_week": "2025-11-22",
+      "loss": 0.023406,
+      "mature_labels": 19,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "CONTINUAR",
+        "d_10": "CONTINUAR",
+        "d_11": "CONTINUAR"
+      },
+      "revision_magnitude": 0.013183,
+      "target_week": "2025-11-29",
+      "y_pred": 3264.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": -0.0044,
+      "cut": "2025-12-06",
+      "last_visible_week": "2025-11-29",
+      "loss": 0.023406,
+      "mature_labels": 19,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "CONTINUAR",
+        "d_10": "CONTINUAR",
+        "d_11": "CONTINUAR"
+      },
+      "revision_magnitude": 0.011462,
+      "target_week": "2025-12-06",
+      "y_pred": 4855.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.003025,
+      "cut": "2025-12-13",
+      "last_visible_week": "2025-12-06",
+      "loss": 0.023406,
+      "mature_labels": 19,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "CONTINUAR",
+        "d_10": "CONTINUAR",
+        "d_11": "CONTINUAR"
+      },
+      "revision_magnitude": 0.009972,
+      "target_week": "2025-12-13",
+      "y_pred": 6919.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.00105,
+      "cut": "2025-12-20",
+      "last_visible_week": "2025-12-13",
+      "loss": 0.023406,
+      "mature_labels": 19,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "CONTINUAR",
+        "d_10": "CONTINUAR",
+        "d_11": "CONTINUAR"
+      },
+      "revision_magnitude": 0.007827,
+      "target_week": "2025-12-20",
+      "y_pred": 9999.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.009075,
+      "cut": "2025-12-27",
+      "last_visible_week": "2025-12-20",
+      "loss": 0.023406,
+      "mature_labels": 19,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "CONTINUAR",
+        "d_10": "CONTINUAR",
+        "d_11": "CONTINUAR"
+      },
+      "revision_magnitude": 0.007619,
+      "target_week": "2025-12-27",
+      "y_pred": 18546.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.010475,
+      "cut": "2026-01-03",
+      "last_visible_week": "2025-12-27",
+      "loss": 0.030953,
+      "mature_labels": 20,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "CONTINUAR",
+        "d_10": "CONTINUAR",
+        "d_11": "CONTINUAR"
+      },
+      "revision_magnitude": 0.0071,
+      "target_week": "2026-01-03",
+      "y_pred": 33494.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.003425,
+      "cut": "2026-01-10",
+      "last_visible_week": "2026-01-03",
+      "loss": 0.041826,
+      "mature_labels": 21,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "CONTINUAR",
+        "d_10": "CONTINUAR",
+        "d_11": "CONTINUAR"
+      },
+      "revision_magnitude": 0.006009,
+      "target_week": "2026-01-10",
+      "y_pred": 40240.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.009325,
+      "cut": "2026-01-17",
+      "last_visible_week": "2026-01-10",
+      "loss": 0.057833,
+      "mature_labels": 22,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "CONTINUAR",
+        "d_10": "CONTINUAR",
+        "d_11": "CONTINUAR"
+      },
+      "revision_magnitude": 0.006566,
+      "target_week": "2026-01-17",
+      "y_pred": 28240.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.3,
+      "cut": "2026-01-24",
+      "last_visible_week": "2026-01-17",
+      "loss": 0.078033,
+      "mature_labels": 23,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.006391,
+      "target_week": "2026-01-24",
+      "y_pred": 18199.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 2.4,
+      "cut": "2026-01-31",
+      "last_visible_week": "2026-01-24",
+      "loss": 0.110146,
+      "mature_labels": 24,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.006548,
+      "target_week": "2026-01-31",
+      "y_pred": 15350.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": -0.575,
+      "cut": "2026-02-07",
+      "last_visible_week": "2026-01-31",
+      "loss": 0.194788,
+      "mature_labels": 25,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "CONTINUAR",
+        "d_10": "CONTINUAR",
+        "d_11": "CONTINUAR"
+      },
+      "revision_magnitude": 0.006739,
+      "target_week": "2026-02-07",
+      "y_pred": 14750.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": -0.465,
+      "cut": "2026-02-14",
+      "last_visible_week": "2026-02-07",
+      "loss": 0.334073,
+      "mature_labels": 26,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "CONTINUAR",
+        "d_10": "CONTINUAR",
+        "d_11": "CONTINUAR"
+      },
+      "revision_magnitude": 0.007095,
+      "target_week": "2026-02-14",
+      "y_pred": 14134.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": -0.535,
+      "cut": "2026-02-21",
+      "last_visible_week": "2026-02-14",
+      "loss": 0.388851,
+      "mature_labels": 27,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "CONTINUAR",
+        "d_10": "CONTINUAR",
+        "d_11": "CONTINUAR"
+      },
+      "revision_magnitude": 0.006701,
+      "target_week": "2026-02-21",
+      "y_pred": 14940.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.7025,
+      "cut": "2026-02-28",
+      "last_visible_week": "2026-02-21",
+      "loss": 0.449243,
+      "mature_labels": 28,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.006633,
+      "target_week": "2026-02-28",
+      "y_pred": 13785.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.4825,
+      "cut": "2026-03-07",
+      "last_visible_week": "2026-02-28",
+      "loss": 0.492821,
+      "mature_labels": 29,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.006658,
+      "target_week": "2026-03-07",
+      "y_pred": 10673.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.6775,
+      "cut": "2026-03-14",
+      "last_visible_week": "2026-03-07",
+      "loss": 0.485675,
+      "mature_labels": 30,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.007459,
+      "target_week": "2026-03-14",
+      "y_pred": 9130.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.885,
+      "cut": "2026-03-21",
+      "last_visible_week": "2026-03-14",
+      "loss": 0.47254,
+      "mature_labels": 31,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.007169,
+      "target_week": "2026-03-21",
+      "y_pred": 7348.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.5375,
+      "cut": "2026-03-28",
+      "last_visible_week": "2026-03-21",
+      "loss": 0.466443,
+      "mature_labels": 32,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.006991,
+      "target_week": "2026-03-28",
+      "y_pred": 5640.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.74,
+      "cut": "2026-04-04",
+      "last_visible_week": "2026-03-28",
+      "loss": 0.466577,
+      "mature_labels": 33,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.00741,
+      "target_week": "2026-04-04",
+      "y_pred": 3050.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.4675,
+      "cut": "2026-04-11",
+      "last_visible_week": "2026-04-04",
+      "loss": 0.454051,
+      "mature_labels": 34,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.007779,
+      "target_week": "2026-04-11",
+      "y_pred": 2589.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.9325,
+      "cut": "2026-04-18",
+      "last_visible_week": "2026-04-11",
+      "loss": 0.456067,
+      "mature_labels": 35,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.007746,
+      "target_week": "2026-04-18",
+      "y_pred": 1893.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 2.35,
+      "cut": "2026-04-25",
+      "last_visible_week": "2026-04-18",
+      "loss": 0.449377,
+      "mature_labels": 36,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.008155,
+      "target_week": "2026-04-25",
+      "y_pred": 1662.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 1.805,
+      "cut": "2026-05-02",
+      "last_visible_week": "2026-04-25",
+      "loss": 0.444457,
+      "mature_labels": 37,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.007989,
+      "target_week": "2026-05-02",
+      "y_pred": 1711.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": -0.6275,
+      "cut": "2026-05-09",
+      "last_visible_week": "2026-05-02",
+      "loss": 0.439404,
+      "mature_labels": 38,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "CONTINUAR",
+        "d_10": "CONTINUAR",
+        "d_11": "CONTINUAR"
+      },
+      "revision_magnitude": 0.007664,
+      "target_week": "2026-05-09",
+      "y_pred": 1573.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.9725,
+      "cut": "2026-05-16",
+      "last_visible_week": "2026-05-09",
+      "loss": 0.440015,
+      "mature_labels": 39,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.006673,
+      "target_week": "2026-05-16",
+      "y_pred": 1431.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 2.29,
+      "cut": "2026-05-23",
+      "last_visible_week": "2026-05-16",
+      "loss": 0.42971,
+      "mature_labels": 40,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.00703,
+      "target_week": "2026-05-23",
+      "y_pred": 1236.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": -0.355,
+      "cut": "2026-05-30",
+      "last_visible_week": "2026-05-23",
+      "loss": 0.420933,
+      "mature_labels": 41,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "CONTINUAR",
+        "d_10": "CONTINUAR",
+        "d_11": "CONTINUAR"
+      },
+      "revision_magnitude": 0.007668,
+      "target_week": "2026-05-30",
+      "y_pred": 1088.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.4775,
+      "cut": "2026-06-06",
+      "last_visible_week": "2026-05-30",
+      "loss": 0.411179,
+      "mature_labels": 42,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.00769,
+      "target_week": "2026-06-06",
+      "y_pred": 997.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": -0.0525,
+      "cut": "2026-06-13",
+      "last_visible_week": "2026-06-06",
+      "loss": 0.402656,
+      "mature_labels": 43,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "CONTINUAR",
+        "d_10": "CONTINUAR",
+        "d_11": "CONTINUAR"
+      },
+      "revision_magnitude": 0.008399,
+      "target_week": "2026-06-13",
+      "y_pred": 969.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": -0.8125,
+      "cut": "2026-06-20",
+      "last_visible_week": "2026-06-13",
+      "loss": 0.393784,
+      "mature_labels": 44,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "CONTINUAR",
+        "d_10": "CONTINUAR",
+        "d_11": "CONTINUAR"
+      },
+      "revision_magnitude": 0.008945,
+      "target_week": "2026-06-20",
+      "y_pred": 768.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.34,
+      "cut": "2026-06-27",
+      "last_visible_week": "2026-06-20",
+      "loss": 0.385436,
+      "mature_labels": 45,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.009374,
+      "target_week": "2026-06-27",
+      "y_pred": 733.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.3975,
+      "cut": "2026-07-04",
+      "last_visible_week": "2026-06-27",
+      "loss": 0.377547,
+      "mature_labels": 46,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.00981,
+      "target_week": "2026-07-04",
+      "y_pred": 729.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.9425,
+      "cut": "2026-07-11",
+      "last_visible_week": "2026-07-04",
+      "loss": 0.369617,
+      "mature_labels": 47,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.009967,
+      "target_week": "2026-07-11",
+      "y_pred": 695.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.645,
+      "cut": "2026-07-18",
+      "last_visible_week": "2026-07-11",
+      "loss": 0.361983,
+      "mature_labels": 48,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.010347,
+      "target_week": "2026-07-18",
+      "y_pred": 660.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.3625,
+      "cut": "2026-07-25",
+      "last_visible_week": "2026-07-18",
+      "loss": 0.354797,
+      "mature_labels": 49,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.010688,
+      "target_week": "2026-07-25",
+      "y_pred": 637.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.4775,
+      "cut": "2026-08-01",
+      "last_visible_week": "2026-07-25",
+      "loss": 0.348092,
+      "mature_labels": 50,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.011349,
+      "target_week": "2026-08-01",
+      "y_pred": 681.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.2075,
+      "cut": "2026-08-08",
+      "last_visible_week": "2026-08-01",
+      "loss": 0.341373,
+      "mature_labels": 51,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.011535,
+      "target_week": "2026-08-08",
+      "y_pred": 643.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 0.6425,
+      "cut": "2026-08-15",
+      "last_visible_week": "2026-08-08",
+      "loss": 0.334882,
+      "mature_labels": 52,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.011251,
+      "target_week": "2026-08-15",
+      "y_pred": 610.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 1.14,
+      "cut": "2026-08-22",
+      "last_visible_week": "2026-08-15",
+      "loss": 0.328582,
+      "mature_labels": 53,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.011876,
+      "target_week": "2026-08-22",
+      "y_pred": 671.0
+    },
+    {
+      "completeness": "complete",
+      "coverage_drop": 2.82,
+      "cut": "2026-08-29",
+      "last_visible_week": "2026-08-22",
+      "loss": 0.322714,
+      "mature_labels": 54,
+      "publication_lag_days": 7,
+      "recommendations": {
+        "d_00": "CONTINUAR",
+        "d_01": "INVESTIGAR_DATO",
+        "d_10": "CONTINUAR",
+        "d_11": "INVESTIGAR_DATO"
+      },
+      "revision_magnitude": 0.013417,
+      "target_week": "2026-08-29",
+      "y_pred": 822.0
+    }
+  ],
+  "primary_cell": {
+    "abstentions": {
+      "d_00": 0,
+      "d_01": 0,
+      "d_10": 0,
+      "d_11": 0
+    },
+    "action_counts": {
+      "d_00": {
+        "CONTINUAR": 45,
+        "ESPERAR_MADUREZ": 10
+      },
+      "d_01": {
+        "CONTINUAR": 20,
+        "ESPERAR_MADUREZ": 10,
+        "INVESTIGAR_DATO": 25
+      },
+      "d_10": {
+        "CONTINUAR": 45,
+        "ESPERAR_MADUREZ": 10
+      },
+      "d_11": {
+        "CONTINUAR": 20,
+        "ESPERAR_MADUREZ": 10,
+        "INVESTIGAR_DATO": 25
+      }
+    },
+    "contingency_d11_by_d00": {
+      "d_00=CONTINUAR": {
+        "d_11=CONTINUAR": 20,
+        "d_11=INVESTIGAR_DATO": 25
+      },
+      "d_00=ESPERAR_MADUREZ": {
+        "d_11=ESPERAR_MADUREZ": 10
+      }
+    },
+    "interaction_contrasts": {
+      "coverage_given_revisions_minus_coverage_alone": 0.0,
+      "note": "Descriptive differences of discordances, not interaction terms of a model. They are not added together and neither is subtracted from N1.",
+      "revisions_given_coverage_minus_revisions_alone": 0
+    },
+    "key": "R=0.02,C=0.02",
+    "n1_d11_vs_d00": {
+      "denominator": 55,
+      "estimate": 0.454545,
+      "numerator": 25,
+      "wilson_95": [
+        0.330253,
+        0.584773
+      ]
+    },
+    "simple_effects": {
+      "d01_vs_d00": {
+        "denominator": 55,
+        "estimate": 0.454545,
+        "numerator": 25,
+        "wilson_95": [
+          0.330253,
+          0.584773
+        ]
+      },
+      "d10_vs_d00": {
+        "denominator": 55,
+        "estimate": 0.0,
+        "numerator": 0,
+        "wilson_95": [
+          0.0,
+          0.065285
+        ]
+      },
+      "d11_vs_d01": {
+        "denominator": 55,
+        "estimate": 0.0,
+        "numerator": 0,
+        "wilson_95": [
+          0.0,
+          0.065285
+        ]
+      },
+      "d11_vs_d10": {
+        "denominator": 55,
+        "estimate": 0.454545,
+        "numerator": 25,
+        "wilson_95": [
+          0.330253,
+          0.584773
+        ]
+      }
+    },
+    "thresholds": {
+      "coverage_drop_alarm": 0.02,
+      "declared_in": "config/g2_signals.json, G2 signal and threshold declaration",
+      "loss_alarm": 2.0,
+      "min_mature_labels": 4,
+      "revision_alarm": 0.02,
+      "revision_statistic": "mean_abs_relative_revision"
+    }
+  },
+  "provenance": {
+    "coverage": {
+      "channel": "delphi_v5_archive",
+      "observed_at": "2026-10-20T05:09:16.858795+00:00",
+      "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=hosprep_pct_confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-10-17"
+    },
+    "target": {
+      "channel": "delphi_v5_archive",
+      "observed_at": "2026-10-20T05:09:16.779183+00:00",
+      "request_url": "https://delphi.cmu.edu/epidata/v5/archive/?source=nhsn&signal=confirmed_admissions_flu_ew&geo_type=nation&report_time_query=2024-11-01%3A2026-10-17"
+    }
+  },
+  "signal_values_in_evaluation": {
+    "caveat": "The alarms were declared on development cuts ending 2025-06-30, and the two signals do not keep the same scale afterwards. The coverage drop reached 0.033225 points in development and 2.82 here, about eighty times larger, so a threshold set just above the development p90 sits far below the evaluation scale. The revision magnitude moves the other way: its whole evaluation range falls between two points of the declared grid, so R fires always at 0.005, partly at 0.01 and never at 0.02. This is what declaring on an unrepresentative window costs, and it is reported rather than fixed by re-declaring after the fact.",
+    "coverage_drop": {
+      "max": 2.82,
+      "median": 0.010725,
+      "min": -0.8125,
+      "n": 55,
+      "n_missing": 0
+    },
+    "revision_magnitude": {
+      "max": 0.016014,
+      "median": 0.008527,
+      "min": 0.006009,
+      "n": 55,
+      "n_missing": 0
+    }
+  },
+  "support": {
+    "candidate_cuts": 68,
+    "collapsed_by_calendar": 6,
+    "distinct_target_weeks": 55,
+    "eligible_origins": 61,
+    "estimable": true,
+    "measured_cuts": 68,
+    "min_support_distinct_weeks": 20
+  },
+  "threshold_sensitivity": {
+    "gate_authorized_in_every_cell": true,
+    "n1_max": 0.818182,
+    "n1_min": 0.454545,
+    "note": "N1 is reported over the grid because it depends on the alarms, and a single point would hide that. The primary cell is the lowest of the nine, so the headline is not the flattering one."
+  }
+}

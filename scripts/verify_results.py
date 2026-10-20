@@ -95,6 +95,7 @@ G1 = "01_vertical_slice.json"
 G1A = "01_modeling_support.json"
 P2 = "01_model_comparison.json"
 G2A = "02_signal_diagnostics.json"
+G2 = "02_discordance.json"
 
 CLAIMS: list[Claim] = [
     Claim(
@@ -427,9 +428,151 @@ CLAIMS: list[Claim] = [
         expected=22,
         tolerance=0,
     ),
+    # --- G2: the gate -------------------------------------------------------
+    #
+    # N1 with its numerator, denominator and interval, the four simple effects
+    # and the two contrasts. The zeros are tracked as tightly as the rest: that
+    # the revision factor changed nothing is the result, so it has to be as hard
+    # to lose from the document as a positive number would be.
+    Claim(
+        label="N1 = D(11,00)",
+        source=G2,
+        path=("primary_cell", "n1_d11_vs_d00", "estimate"),
+        expected=0.454545,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="N1 numerator",
+        source=G2,
+        path=("primary_cell", "n1_d11_vs_d00", "numerator"),
+        expected=25,
+        tolerance=0,
+    ),
+    Claim(
+        label="N1 denominator: distinct target weeks",
+        source=G2,
+        path=("primary_cell", "n1_d11_vs_d00", "denominator"),
+        expected=55,
+        tolerance=0,
+    ),
+    Claim(
+        label="N1 Wilson lower bound",
+        source=G2,
+        path=("primary_cell", "n1_d11_vs_d00", "wilson_95", 0),
+        expected=0.330253,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="N1 Wilson upper bound",
+        source=G2,
+        path=("primary_cell", "n1_d11_vs_d00", "wilson_95", 1),
+        expected=0.584773,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="simple effect: revisions alone",
+        source=G2,
+        path=("primary_cell", "simple_effects", "d10_vs_d00", "estimate"),
+        expected=0.0,
+        tolerance=0,
+    ),
+    Claim(
+        label="simple effect: coverage alone",
+        source=G2,
+        path=("primary_cell", "simple_effects", "d01_vs_d00", "estimate"),
+        expected=0.454545,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="simple effect: coverage given revisions",
+        source=G2,
+        path=("primary_cell", "simple_effects", "d11_vs_d10", "estimate"),
+        expected=0.454545,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="simple effect: revisions given coverage",
+        source=G2,
+        path=("primary_cell", "simple_effects", "d11_vs_d01", "estimate"),
+        expected=0.0,
+        tolerance=0,
+    ),
+    Claim(
+        label="interaction contrast: coverage",
+        source=G2,
+        path=("primary_cell", "interaction_contrasts",
+              "coverage_given_revisions_minus_coverage_alone"),
+        expected=0.0,
+        tolerance=0,
+    ),
+    Claim(
+        label="interaction contrast: revisions",
+        source=G2,
+        path=("primary_cell", "interaction_contrasts",
+              "revisions_given_coverage_minus_revisions_alone"),
+        expected=0.0,
+        tolerance=0,
+    ),
+    # The grid, so the headline cannot be quoted without its dependence.
+    Claim(
+        label="N1 over the grid: minimum",
+        source=G2,
+        path=("threshold_sensitivity", "n1_min"),
+        expected=0.454545,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="N1 over the grid: maximum",
+        source=G2,
+        path=("threshold_sensitivity", "n1_max"),
+        expected=0.818182,
+        tolerance=1e-6,
+    ),
+    # The two signals' evaluation range, which is what makes the alarms readable.
+    Claim(
+        label="R magnitude in evaluation: maximum",
+        source=G2,
+        path=("signal_values_in_evaluation", "revision_magnitude", "max"),
+        expected=0.016014,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="C drop in evaluation: maximum",
+        source=G2,
+        path=("signal_values_in_evaluation", "coverage_drop", "max"),
+        expected=2.82,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="eligible origins before deduplication",
+        source=G2,
+        path=("support", "eligible_origins"),
+        expected=61,
+        tolerance=0,
+    ),
+    Claim(
+        label="weeks collapsed by the calendar rule",
+        source=G2,
+        path=("support", "collapsed_by_calendar"),
+        expected=6,
+        tolerance=0,
+    ),
 ]
 
 EXACT_CLAIMS: list[ExactClaim] = [
+    # The gate's verdict as a figure, because a verdict is a figure.
+    ExactClaim(
+        label="G2 gate authorizes G3",
+        source=G2,
+        path=("g3_gate", "authorizes_g3"),
+        expected="True",
+    ),
+    ExactClaim(
+        label="G2 evidence class",
+        source=G2,
+        path=("manifest", "config", "evidence_class"),
+        expected="E2 controlled replay: forecasts reconstructed, not issued",
+    ),
     ExactClaim(
         label="first recoverable report_time",
         source=G0,
@@ -486,7 +629,16 @@ SCHEMA_REQUIREMENTS: dict[int, tuple[str, ...]] = {
     2: ("spec_sha256", "g1_mp_plan_sha256"),
 }
 
-MANIFEST_SOURCES = (G1, G1A, P2, G2A)
+#: Seals that are checked **when present** and never required. The selection
+#: configuration did not exist until G2 declared it, so a run that predates it
+#: carries `null` there — which means "not yet declared", never "declared as
+#: nothing". Requiring it would turn every earlier result red; ignoring it would
+#: leave the seal decorative, and a seal nobody checks is not evidence.
+OPTIONAL_SEALS = {
+    "selection_config_sha256": "config/g2_signals.json",
+}
+
+MANIFEST_SOURCES = (G1, G1A, P2, G2A, G2)
 
 
 def sha256_file(path: Path) -> str | None:
@@ -510,7 +662,10 @@ def check_manifests(root: Path | None = None) -> list[tuple[str, str]]:
     base = root or ROOT
     results = base / "reports" / "results"
     failures: list[tuple[str, str]] = []
-    live = {field: sha256_file(base / name) for field, name in SEALED_DOCUMENTS.items()}
+    live = {
+        field: sha256_file(base / name)
+        for field, name in (*SEALED_DOCUMENTS.items(), *OPTIONAL_SEALS.items())
+    }
 
     print(f"\n{'manifest seal':42}{'schema':>10}{'document':>30}{'state':>12}")
     for source in MANIFEST_SOURCES:
@@ -527,9 +682,10 @@ def check_manifests(root: Path | None = None) -> list[tuple[str, str]]:
             print(f"{source:42}{schema:>10}{'-':>30}{'UNKNOWN':>12}")
             continue
 
-        for field in required:
+        optional = tuple(f for f in OPTIONAL_SEALS if manifest.get(f) is not None)
+        for field in (*required, *optional):
             stored = manifest.get(field)
-            document = SEALED_DOCUMENTS[field]
+            document = SEALED_DOCUMENTS.get(field) or OPTIONAL_SEALS[field]
             label = f"{source} :: {field}"
             if stored is None:
                 failures.append((label, f"schema {schema} requires {field}, absent"))
