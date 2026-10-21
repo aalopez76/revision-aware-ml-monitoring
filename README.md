@@ -39,6 +39,11 @@ recommendation under both kinds of information differs from the recommendation
 under neither. Wilson 95% interval **[0.330253, 0.584773]**. No arm abstained at
 any cut, so no cut is missing from the denominator.
 
+**How it was measured.** 55 scheduled national decision cuts were replayed
+against the record as it stood at each cut, never as it stands now. At every cut
+the same monitor ran four times over two crossed information factors — revision
+history and reporting coverage — and the four recommendations were compared.
+
 N1 is the **discordance of recommendations**. It is not "the value of
 information" — that names a specific decision-theoretic quantity this is not —
 and a recommendation that changes under a counterfactual is not a false alarm.

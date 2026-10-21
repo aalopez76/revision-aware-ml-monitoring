@@ -53,7 +53,6 @@ G3 queda autorizado por el criterio declarado y **no se ha corrido**.
 - **P3 y P4 sin objeto**: M0 ganó, no hay candidato que promover.
 - **Una sola semana cubierta** (`2026-W42`, 2 de 3 registros locales);
   `2026-W43` abrió sin captura y el cron sigue provisional.
-- **Ocho commits sin empujar.**
 
 ## Siguiente acción concreta
 
