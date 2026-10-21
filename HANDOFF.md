@@ -4,8 +4,9 @@
 > Lo reescribe la skill `/handoff`.
 
 **Última actualización:** 20 de octubre de 2026
-**Fase:** **G2 cerrada y llevada al README.** N1 = 0.454545 sobre 55 semanas.
-G3 queda autorizado por el criterio declarado y **no se ha corrido**.
+**Fase:** **V1 cerrada con G0 + G1 + G2.** N1 = 0.454545 sobre 55 semanas.
+G3 quedo autorizado por el criterio y **no se construye**: M0 no tiene
+parametros, asi que su frontera de costos se deriva en lugar de simularse.
 
 ## Qué está hecho
 
@@ -15,14 +16,10 @@ G3 queda autorizado por el criterio declarado y **no se ha corrido**.
   93 orígenes elegibles a 45 días; sobre 55 semanas M0 `0.314624` contra
   `ridge_F1` `0.378141`, que gana 8 y pierde 47. **M0 sigue siendo el Champion**,
   y el producto es un **nowcast**, no un pronóstico a una semana.
-- **G2-A: la proporción revisada está saturada** —
-  `02_signal_diagnostics.json`. 1046 de 1046 pares revisados, en los nueve
-  buckets de rezago. La magnitud sí discrimina: su mediana cae de `0.037626`
-  a 7 días a `0.000326` pasados 90.
-- **Decisión C registrada** en `config/g2_signals.json`, sellada en
-  `selection_config_sha256` antes de calcular N1: R pasa de proporción a
-  magnitud. Declara también lo que **no** se movió —`loss_alarm` en 2.0,
-  `recent_loss` sin ventana— y por qué.
+- **G2-A y la Decisión C** — `02_signal_diagnostics.json`. 1046 de 1046 pares
+  revisados en los nueve buckets, así que R pasa de proporción a magnitud en
+  `config/g2_signals.json`, sellada antes de calcular N1 y declarando también
+  lo que **no** se movió: `loss_alarm` en 2.0 y `recent_loss` sin ventana.
 - **G2, la compuerta** — `02_discordance.json`, clase **E2**.
   - **N1 = D(11,00) = 0.454545**, 25 de 55, Wilson 95 % [0.330253, 0.584773].
     Cero abstenciones en las cuatro ramas.
@@ -34,9 +31,8 @@ G3 queda autorizado por el criterio declarado y **no se ha corrido**.
     de la malla R sí mueve: `0.254545` (14/55) a 0.01 y `0.818182` (45/55) a
     0.005. La discordancia es robusta; su atribución a la cobertura no lo es.
   - Ninguna rama emite `EVALUAR_REENTRENO` ni `ABSTENERSE`.
-- **El README ya es el entregable.** Quince secciones con P2, G2-A y G2
-  dentro, cada cifra con su rastro, y §10 «Where it fails» con la limitación
-  anterior como la más dura del informe.
+- **El README ya es el entregable**, con cada cifra rastreada y §10 «Where it
+  fails» abriendo con la sensibilidad al umbral.
 - **El intervalo, verificado y acotado.** `referencias.md` §8: Brown, Cai y
   DasGupta (2001) ✓ abriendo el fichero del editor; Wilson (1927) con metadatos
   confirmados y **texto no abierto**, así que sin ✓. La comprobación corrigió dos
@@ -47,10 +43,13 @@ G3 queda autorizado por el criterio declarado y **no se ha corrido**.
 
 ## Lo que NO está hecho
 
-- **G3 sin empezar.** Autorizado por el criterio, y por omisión solo dos
-  configuraciones (00 y 11): la interacción medida en la celda primaria es 0.
-  Antes de correrlo hay que decidir si la malla de R entra también ahí, porque
-  la inercia de R no sobrevive a un paso de umbral.
+- **G3 no se construye, y la decisión está razonada en el README §8.** M0 es
+  el último valor elegible arrastrado (`forecasting.py:128`): no hay parámetro
+  que reajustar, así que las cuatro políticas emiten la misma predicción, el
+  mismo error y la misma alarma. `Δ(c) = c·(r_A − r_P)`, la política simple
+  domina en todo `c ≥ 0`, no hay cruce y por tanto no hay `c_star`. Es la
+  conclusión **B** de las tres admisibles, y N3 sale de la misma álgebra.
+  Derivación, no simulación: va etiquetada **E3**.
 - **El método no está congelado** y `frozen_method.json` no existe. La escribe
   la persona; los permisos deniegan al modelo escribir en `reports/`.
 - **P3 y P4 sin objeto**: M0 ganó, no hay candidato que promover.
@@ -59,14 +58,18 @@ G3 queda autorizado por el criterio declarado y **no se ha corrido**.
 
 ## Siguiente acción concreta
 
-1. **G3**: trayectorias por política desde el mismo estado inicial y
-   la región de costos sobre la malla declarada. `c_star` únicamente si hay
-   cruce positivo y estable.
+1. **Auditoría final del README y del código** con la mirada de un evaluador
+   técnico senior: que cada cifra siga apuntando a su clave, que ninguna
+   afirmación supere su evidencia, y que la primera pantalla se sostenga sola.
+2. **Congelar el método**, que es el único ítem obligatorio que sigue abierto y
+   que escribe la persona.
 
 ## Decisiones abiertas
 
-- **Si G3 se corre sobre una sola celda de umbral o sobre la malla.** Correrlo
-  solo en la primaria heredaría una atribución que la malla contradice; correrlo
-  en las nueve multiplica por nueve un simulador de trayectorias.
+- **Si una V2 estudia políticas de actuación** —investigar, esperar madurez,
+  pedir información— en lugar de políticas de reentrenamiento. Es la evolución
+  que el resultado de G2 sugiere, y exigiría definir qué acción cambia el
+  resultado, cuánto cuesta y con qué evidencia se evalúa. No sería el G3
+  original y no debe presentarse como tal.
 - **Si los 2 registros semanales locales se quedan** en la evidencia
   operacional, y si el cron deja de ser provisional antes de congelar.

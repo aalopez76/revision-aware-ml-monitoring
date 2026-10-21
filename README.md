@@ -2,9 +2,10 @@
 
 **Revision-Aware ML Monitoring & Decision Reliability**
 
-> **Status: the gate has been measured.** G0, G1 and G2 have run on real data and
-> their figures are below. G3 is authorised by a criterion declared before the
-> number that judges it existed, and has not been run. Every figure about these
+> **Status: complete, and closing short on purpose.** G0, G1 and G2 have run on
+> real data and their figures are below. G3 was authorised by a criterion declared
+> in advance, and is not built: the Champion this project selected by measurement
+> has no parameters to retrain, which settles G3's question analytically (§8). Every figure about these
 > data comes from a script in this repository, is stored in
 > [`reports/results/`](reports/results), and has a row in
 > [`scripts/verify_results.py`](scripts/verify_results.py), which CI runs.
@@ -312,26 +313,90 @@ Discordance is a non-additive functional of the four arms, so the two interactio
 contrasts need not coincide, neither is a linear interaction term, and they are
 not summed.
 
-## 8. Consequences and the cost frontier
+## 8. The cost frontier, which this Champion settles without a simulator
 
-**Authorised, not yet run.** The criterion was written into the config before N1
-existed: G3 proceeds if N1 is estimable at the primary cell **and** its Wilson
-lower bound exceeds 0.10. The measured lower bound is **0.330253**, so the gate
-opens. The bound is used rather than the point estimate so that a large estimate
-on thin support cannot open it.
+**The gate opened and G3 was not built.** Those are two separate facts and the
+second is not a retreat from the first.
 
-When it runs, four maintenance policies are simulated as complete trajectories
-from the same initial state: never retrain, periodic, reactive to mature error,
-and revision-and-coverage aware. Retraining changes the model, and the model
-changes later predictions, errors and alarms, so applying one alarm vector to
-four policies would invalidate the comparison. G3 carries **two** information
-configurations rather than four, because the measured interaction is 0 and a
-third would separate branches the measurement says are the same branch.
+The criterion was written into the config before N1 existed: G3 proceeds if N1 is
+estimable at the primary cell **and** its Wilson lower bound exceeds 0.10. The
+measured lower bound is **0.330253**, so the gate opens. What G3 was to do was
+simulate four maintenance policies as complete trajectories from the same initial
+state — never retrain, periodic, reactive to mature error, and
+revision-and-coverage aware — and report the region of costs over
+`L_p(c) = e_p + c·r_p`, where `e_p` is a policy's mean predictive loss, `r_p` its
+retraining frequency and `c` the cost of one retraining in units of predictive
+loss per period.
 
-The output is a **region of costs**, not a number: `L_p(c) = e_p + c·r_p`, with
-`c` in units of predictive loss per period — not money and not health. A single
-break-even `c*` is reported only where the crossing is positive and stable, and
-never as "dollars saved".
+**The Champion has no parameters to retrain.** M0 is the last eligible week's
+value carried forward — one line, [`forecasting.py`](src/revmon/forecasting.py),
+`value = float(last["value"])`. Nothing is estimated, so there is no fitted object
+for a retraining policy to refresh. "Retrain M0" is not a cheap operation; it is
+not an operation.
+
+That makes the frontier derivable rather than measurable. If refitting is the
+identity, the four policies see the same state at every cut, emit the same
+forecast, incur the same error and raise the same alarms. So `e_p` is one number
+shared by all four, and the difference between any two policies collapses to
+
+```
+Δ(c) = (e_A − e_P) + c·(r_A − r_P) = c·(r_A − r_P)
+```
+
+The simple policy **weakly dominates at every `c ≥ 0`, and strictly dominates at
+every `c > 0` at which the specialised policy triggers a retrain.** There is no
+crossing, so there is no `c*` — which is exactly the condition under which the
+method rule says `c*` must not be reported. Of the three admissible conclusions
+declared before any of this was measured, this is **conclusion B: the simple
+policy dominates.**
+
+**N3 falls out of the same algebra.** The specification defines N3(c) as the
+count of weeks where the specialised policy costs more than the simple one,
+`N3(c) = #{t : l_A,t + c*k_A,t > l_P,t + c*k_P,t}`. With the predictive losses
+equal week by week, the comparison reduces to the retraining counts: N3(0) = 0,
+and for every `c > 0`, N3(c) is exactly the number of weeks at which the
+specialised policy retrains and the simple one does not. The magnitude of each
+such loss is `c` per excess retraining, with no predictive component at all. So
+the specialised policy never decides better, and it decides worse precisely when
+it acts.
+
+**That result is a derivation, not a measurement**, and it is labelled E3 rather
+than E1 or E2. No trajectory was simulated, no cost grid was swept, and the
+reader should not be told that one was. The derivation is also not a discovery:
+it follows from the definition of M0, and anyone can check it against the line of
+code above.
+
+**The premise failed two gates earlier than it was noticed.** G3 was designed
+assuming a Champion with parameters. P2 then chose, on measurement, a Champion
+with none — and that is the right choice, since the ridge candidates lost at 47
+of 55 weeks. The consequence for G3 was implicit from that moment and was not
+drawn until the gate had already opened. It is recorded here rather than
+presented as a plan that always said this.
+
+### When retraining would be justified
+
+Five conditions. The point of writing them down is that each is checkable, so a
+future reader can tell whether the situation changed rather than re-arguing it.
+
+| # | Condition | Status here |
+|---|---|---|
+| 1 | **A Champion with parameters.** Something must exist that refitting changes. | **Not met.** M0 carries a value forward. |
+| 2 | **Degradation that is the model's.** Loss rises on labels mature enough that the rise is not a restatement or a coverage shift. | **Not met.** The performance alarm never fires, and §7 shows the discordance is between CONTINUAR and INVESTIGAR_DATO, never a retrain. |
+| 3 | **Refitting helps.** Re-estimating on recent data must improve out-of-sample loss against not doing it. | **Not tested.** It cannot be, for a model with nothing to estimate. |
+| 4 | **Trajectories are reconstructible.** Complete per-policy paths from one initial state, with no future information. | **Met.** The as-of contract supports it; this is the one condition the project already satisfies. |
+| 5 | **The cost is justifiable.** Expected improvement must exceed the cost of retraining, validating and shipping, under stated assumptions. | **Not reachable.** With condition 1 unmet, the improvement term is identically zero. |
+
+Conditions 1 and 3 are the ones that would have to change first, and the obvious
+route — promote a trainable model — is closed by measurement, not by preference:
+promoting ridge to make G3 runnable would mean choosing a worse forecaster in
+order to have something to retrain.
+
+**And a distinction worth stating on its own**, because it is the whole difference
+between what this project measured and what it declined to claim:
+
+> A recommendation to retrain is not evidence that retraining helps. G2 measures
+> when the recommendation changes. G3 would measure whether acting on it improves
+> anything, and at what cost. The second question is not answered here.
 
 ## 9. The decision this would support
 
@@ -382,10 +447,15 @@ deduplicated rows cannot populate a delayed stratum. Both the deduplicated and
 undeduplicated readings are reported, and neither supports a claim about how
 discordance varies with effective horizon.
 
-**55 rows are not 55 independent observations.** Consecutive weeks share state,
-the same restatement pattern touches several of them, and the effective sample
-size is smaller than the row count. The Wilson interval prices binomial
-uncertainty, not dependence, so it is an understatement of the real uncertainty.
+**55 rows are not 55 independent observations, so read the interval as a
+convention.** The Wilson interval assumes independent Bernoulli trials. These
+weeks are not independent: consecutive weeks share state, one restatement pattern
+touches several of them, and one publication outage touches a run of them at
+once. The effective sample size is therefore smaller than 55, and
+**[0.330253, 0.584773] should be read as a conventional reference interval, not
+as a guaranteed 95% coverage statement for this series.** No correction for the
+dependence is applied, because estimating the dependence from 55 correlated weeks
+would need assumptions this project cannot check.
 
 **And the interval is not the one the standard reference would pick at this n.**
 Wilson was declared in `config/g2_signals.json` and sealed before the discordance
@@ -548,7 +618,7 @@ the measurement it is.
 | **G0** | Measured source windows, `archive`→`snapshot` reconstruction, cross-channel discrepancy table | **Done** — PROCEED |
 | **G1** | One real run end to end, and the figure | **Done** — plus P0–P2 of the G1-MP plan; no candidate promoted |
 | **G2** | **The gate.** N1 and the 2x2, with uncertainty and limits | **Done** — N1 = 0.454545, gate opens |
-| **G3** | Policy trajectories and the cost region | **Authorised, not run** |
+| **G3** | Policy trajectories and the cost region | **Authorised; answered by derivation, not built** — §8 |
 
 Each delivery stands on its own. Had G2 found the discordance small, the support
 insufficient or the missing periods dominant, that would have been the result:
