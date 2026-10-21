@@ -391,6 +391,59 @@ CLAIMS: list[Claim] = [
         tolerance=1e-6,
     ),
     Claim(
+        label="median |revision|, 8-14 day lag",
+        source=G2A,
+        path=("revision_by_publication_lag", "by_lag_days", "8-14",
+              "abs_relative_revision", "median"),
+        expected=0.012175,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="median |revision|, 91-180 day lag",
+        source=G2A,
+        path=("revision_by_publication_lag", "by_lag_days", "91-180",
+              "abs_relative_revision", "median"),
+        expected=0.000326,
+        tolerance=1e-6,
+    ),
+    # The pair counts behind each bucket. The saturation claim is only as strong
+    # as the n it holds on, so the n is tracked beside the share.
+    Claim(
+        label="pairs, 0-7 day lag",
+        source=G2A,
+        path=("revision_by_publication_lag", "by_lag_days", "0-7", "pairs"),
+        expected=33,
+        tolerance=0,
+    ),
+    Claim(
+        label="pairs, 8-14 day lag",
+        source=G2A,
+        path=("revision_by_publication_lag", "by_lag_days", "8-14", "pairs"),
+        expected=62,
+        tolerance=0,
+    ),
+    Claim(
+        label="pairs, 22-28 day lag",
+        source=G2A,
+        path=("revision_by_publication_lag", "by_lag_days", "22-28", "pairs"),
+        expected=53,
+        tolerance=0,
+    ),
+    Claim(
+        label="pairs, 91-180 day lag",
+        source=G2A,
+        path=("revision_by_publication_lag", "by_lag_days", "91-180", "pairs"),
+        expected=167,
+        tolerance=0,
+    ),
+    Claim(
+        label="pairs, >180 day lag",
+        source=G2A,
+        path=("revision_by_publication_lag", "by_lag_days", ">180", "pairs"),
+        expected=359,
+        tolerance=0,
+    ),
+    Claim(
         label="R as magnitude: median",
         source=G2A,
         path=("signals", "r_magnitude_mean", "distribution", "median"),
@@ -557,6 +610,187 @@ CLAIMS: list[Claim] = [
         expected=6,
         tolerance=0,
     ),
+    Claim(
+        label="candidate cuts measured",
+        source=G2,
+        path=("support", "candidate_cuts"),
+        expected=68,
+        tolerance=0,
+    ),
+    # The thresholds themselves are figures the README states, so the artefact
+    # that was computed under them is what backs them -- not the config file,
+    # which declares them. A run under a different alarm fails here.
+    Claim(
+        label="declared revision alarm",
+        source=G2,
+        path=("primary_cell", "thresholds", "revision_alarm"),
+        expected=0.02,
+        tolerance=1e-9,
+    ),
+    Claim(
+        label="declared coverage alarm",
+        source=G2,
+        path=("primary_cell", "thresholds", "coverage_drop_alarm"),
+        expected=0.02,
+        tolerance=1e-9,
+    ),
+    Claim(
+        label="R magnitude in evaluation: minimum",
+        source=G2,
+        path=("signal_values_in_evaluation", "revision_magnitude", "min"),
+        expected=0.006009,
+        tolerance=1e-6,
+    ),
+    # The grid cells where the revision factor is NOT inert. These rows exist
+    # because the primary cell alone would let the README imply that revision
+    # information does not move recommendations in this series, which the other
+    # two declared alarms contradict. The qualification has to be as hard to
+    # lose from the document as the headline is.
+    Claim(
+        label="revisions alone at alarm 0.005",
+        source=G2,
+        path=("by_threshold_cell", "R=0.005,C=0.02", "simple_effects",
+              "d10_vs_d00", "estimate"),
+        expected=0.818182,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="revisions alone at alarm 0.005: numerator",
+        source=G2,
+        path=("by_threshold_cell", "R=0.005,C=0.02", "simple_effects",
+              "d10_vs_d00", "numerator"),
+        expected=45,
+        tolerance=0,
+    ),
+    Claim(
+        label="revisions alone at alarm 0.01",
+        source=G2,
+        path=("by_threshold_cell", "R=0.01,C=0.02", "simple_effects",
+              "d10_vs_d00", "estimate"),
+        expected=0.254545,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="revisions alone at alarm 0.01: numerator",
+        source=G2,
+        path=("by_threshold_cell", "R=0.01,C=0.02", "simple_effects",
+              "d10_vs_d00", "numerator"),
+        expected=14,
+        tolerance=0,
+    ),
+    Claim(
+        label="N1 at alarm 0.01",
+        source=G2,
+        path=("by_threshold_cell", "R=0.01,C=0.02", "n1_d11_vs_d00", "estimate"),
+        expected=0.581818,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="N1 at alarm 0.005",
+        source=G2,
+        path=("by_threshold_cell", "R=0.005,C=0.02", "n1_d11_vs_d00", "estimate"),
+        expected=0.818182,
+        tolerance=1e-6,
+    ),
+    # The upper bound on the zeros. "Revisions changed nothing" is a statement
+    # about what was observed; this is the figure that says what the 55 weeks
+    # actually rule out, and without it the zero reads as an exact null.
+    Claim(
+        label="revisions alone: Wilson upper bound",
+        source=G2,
+        path=("primary_cell", "simple_effects", "d10_vs_d00", "wilson_95", 1),
+        expected=0.065285,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="revisions given coverage: Wilson upper bound",
+        source=G2,
+        path=("primary_cell", "simple_effects", "d11_vs_d01", "wilson_95", 1),
+        expected=0.065285,
+        tolerance=1e-6,
+    ),
+    # What each arm recommended. The abstentions are tracked although they are
+    # zero: the rule is that ABSTENERSE is a category and is reported even when
+    # empty, and a row that only exists when the number is interesting is not a
+    # verifier.
+    Claim(
+        label="abstentions, base arm",
+        source=G2,
+        path=("primary_cell", "abstentions", "d_00"),
+        expected=0,
+        tolerance=0,
+    ),
+    Claim(
+        label="abstentions, both-information arm",
+        source=G2,
+        path=("primary_cell", "abstentions", "d_11"),
+        expected=0,
+        tolerance=0,
+    ),
+    Claim(
+        label="d_00 recommends CONTINUAR",
+        source=G2,
+        path=("primary_cell", "action_counts", "d_00", "CONTINUAR"),
+        expected=45,
+        tolerance=0,
+    ),
+    Claim(
+        label="d_00 recommends ESPERAR_MADUREZ",
+        source=G2,
+        path=("primary_cell", "action_counts", "d_00", "ESPERAR_MADUREZ"),
+        expected=10,
+        tolerance=0,
+    ),
+    Claim(
+        label="d_11 recommends CONTINUAR",
+        source=G2,
+        path=("primary_cell", "action_counts", "d_11", "CONTINUAR"),
+        expected=20,
+        tolerance=0,
+    ),
+    Claim(
+        label="d_11 recommends INVESTIGAR_DATO",
+        source=G2,
+        path=("primary_cell", "action_counts", "d_11", "INVESTIGAR_DATO"),
+        expected=25,
+        tolerance=0,
+    ),
+    # --- figures the earlier gates state and the README now cites ------------
+    Claim(
+        label="s_dev, calibration scale",
+        source=P2,
+        path=("loss_scale", "s_dev"),
+        expected=4967.25,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="calibration pairs behind s_dev",
+        source=P2,
+        path=("loss_scale", "pairs"),
+        expected=24,
+        tolerance=0,
+    ),
+    Claim(
+        label="days between publications, median",
+        source=G0,
+        path=("g0_4_calendar", "days_between_publications", "median"),
+        expected=2.5,
+        tolerance=1e-9,
+    ),
+    Claim(
+        label="observed run: coverage drop",
+        source=G1,
+        path=("observed_run", "recommendation", "evidence", "coverage_drop"),
+        expected=4.5875,
+        tolerance=1e-6,
+    ),
+    Claim(
+        label="observed run: matured labels behind the loss",
+        source=G1,
+        path=("observed_run", "recommendation", "evidence", "mature_labels"),
+        expected=28,
+        tolerance=0,
+    ),
 ]
 
 EXACT_CLAIMS: list[ExactClaim] = [
@@ -605,6 +839,28 @@ EXACT_CLAIMS: list[ExactClaim] = [
         source=G1,
         path=("observed_run", "emission_class"),
         expected="intra_week_nowcast",
+    ),
+    ExactClaim(
+        label="observed run recommendation",
+        source=G1,
+        path=("observed_run", "recommendation", "action"),
+        expected="INVESTIGAR_DATO",
+    ),
+    # The whole distribution of actions, not only the counts that are non-zero.
+    # A numeric row cannot state that an action was never emitted, because the
+    # artefact omits the key entirely; these two rows are what back the README
+    # saying EVALUAR_REENTRENO and ABSTENERSE never appear.
+    ExactClaim(
+        label="d_00 action distribution, in full",
+        source=G2,
+        path=("primary_cell", "action_counts", "d_00"),
+        expected="{'CONTINUAR': 45, 'ESPERAR_MADUREZ': 10}",
+    ),
+    ExactClaim(
+        label="d_11 action distribution, in full",
+        source=G2,
+        path=("primary_cell", "action_counts", "d_11"),
+        expected="{'CONTINUAR': 20, 'ESPERAR_MADUREZ': 10, 'INVESTIGAR_DATO': 25}",
     ),
 ]
 
