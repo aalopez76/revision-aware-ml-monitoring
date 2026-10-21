@@ -3,82 +3,72 @@
 > Estado actual, corto. **No es un historial** — se reescribe, no se acumula.
 > Lo reescribe la skill `/handoff`.
 
-**Última actualización:** 19 de octubre de 2026
-**Fase:** **G2 cerrada. La compuerta se abrió.** N1 = 0.4546 sobre 55 semanas,
-y toda la discordancia viene de la cobertura. G3 queda autorizado por el
-criterio declarado, pero **primero el README**: la regla de alcance prohíbe
-abrir trabajo nuevo con la lista obligatoria pendiente.
+**Última actualización:** 20 de octubre de 2026
+**Fase:** **G2 cerrada y llevada al README.** N1 = 0.454545 sobre 55 semanas.
+G3 queda autorizado por el criterio declarado y **no se ha corrido**.
 
 ## Qué está hecho
 
 - **G0 PROCEED, G1-core real y P2 sin promoción** —
   `00_source_feasibility.json`, `01_vertical_slice.json`,
   `01_modeling_support.json`, `01_model_comparison.json`. `s_dev = 4967.25`;
-  93 orígenes elegibles a 45 días; sobre 55 semanas M0 `0.3146` contra
-  `ridge_F1` `0.3781`, que gana 8 y pierde 47. **M0 sigue siendo el Champion**,
+  93 orígenes elegibles a 45 días; sobre 55 semanas M0 `0.314624` contra
+  `ridge_F1` `0.378141`, que gana 8 y pierde 47. **M0 sigue siendo el Champion**,
   y el producto es un **nowcast**, no un pronóstico a una semana.
 - **G2-A: la proporción revisada está saturada** —
-  `02_signal_diagnostics.json`. 1046 de 1046 pares revisados, en todos los
-  buckets de rezago, constante 1.0 bajo las dos anclas. La magnitud sí tiene
-  dispersión: su mediana cae de 3.76 % a 7 días a 0.03-0.06 % pasados 90. La
-  cobertura tenía el defecto simétrico: techo observado 0.119 puntos contra una
-  alarma de 2.0.
+  `02_signal_diagnostics.json`. 1046 de 1046 pares revisados, en los nueve
+  buckets de rezago. La magnitud sí discrimina: su mediana cae de `0.037626`
+  a 7 días a `0.000326` pasados 90.
 - **Decisión C registrada** en `config/g2_signals.json`, sellada en
-  `selection_config_sha256` **antes** de calcular N1: R pasa de proporción a
-  magnitud. La config declara también lo que **no** se movió —`loss_alarm` en
-  2.0, `recent_loss` sin ventana— y por qué: la distribución de pérdidas de
-  evaluación ya se había visto al leer P2.
-- **G2, la compuerta** — `02_discordance.json`, clase **E2** (replay
-  controlado: los pronósticos se reconstruyen, no se emitieron).
-  - **N1 = D(11,00) = 0.454545**, 25 de 55, Wilson 95 % **[0.330, 0.585]**.
-  - **Toda la discordancia es de la cobertura.** Cobertura sola mueve 25 de 55;
-    **revisiones solas mueven cero.** `D(11,01) = 0`, así que los dos
-    contrastes de interacción valen exactamente 0 y **R está perfectamente
-    inerte**. Es medición, no defecto: la magnitud recorre 0.0060-0.0160 y
-    nunca alcanza la alarma de 0.02.
-  - **Ninguna rama recomienda jamás EVALUAR_REENTRENO.** La discordancia es
-    enteramente CONTINUAR → INVESTIGAR_DATO.
-  - **N1 recorre 0.4546 a 0.8182 en la malla de nueve celdas**; la primaria es
-    la más baja. La compuerta se abre en las nueve, así que el veredicto no
-    depende de la celda.
-  - **El estrato tardío queda vacío por construcción**, no por medición:
-    conservar el origen más temprano conserva el rezago más corto.
-- **68 cifras rastreadas**, **114 pruebas**, **11 sellos**, todo verde.
+  `selection_config_sha256` antes de calcular N1: R pasa de proporción a
+  magnitud. Declara también lo que **no** se movió —`loss_alarm` en 2.0,
+  `recent_loss` sin ventana— y por qué.
+- **G2, la compuerta** — `02_discordance.json`, clase **E2**.
+  - **N1 = D(11,00) = 0.454545**, 25 de 55, Wilson 95 % [0.330253, 0.584773].
+    Cero abstenciones en las cuatro ramas.
+  - En la celda primaria toda la discordancia es de la cobertura: `d_10` iguala
+    a `d_00` y `d_11` iguala a `d_01` en las 55 semanas, así que los dos
+    contrastes de interacción valen 0 y la cota superior de Wilson sobre cada
+    cero es `0.065285`.
+  - **Pero eso es propio de la alarma 0.02.** A los otros dos puntos declarados
+    de la malla R sí mueve: `0.254545` (14/55) a 0.01 y `0.818182` (45/55) a
+    0.005. La discordancia es robusta; su atribución a la cobertura no lo es.
+  - Ninguna rama emite `EVALUAR_REENTRENO` ni `ABSTENERSE`.
+- **El README ya es el entregable.** Quince secciones con P2, G2-A y G2
+  dentro, cada cifra con su rastro, y §10 «Where it fails» con la limitación
+  anterior como la más dura del informe.
+- **101 cifras rastreadas**, **114 pruebas**, **11 sellos**, `ruff` limpio.
 
 ## Lo que NO está hecho
 
-- **El README no lleva nada de P2, G2-A ni G2.** Es el entregable, y la lista
-  obligatoria de `alcance.md` pide el veredicto de G2 con sus límites, el
-  estado prospectivo declarado y cada cifra con su rastro.
 - **G3 sin empezar.** Autorizado por el criterio, y por omisión solo dos
-  configuraciones (00 y 11): la interacción medida es 0, así que no entra una
-  tercera.
+  configuraciones (00 y 11): la interacción medida en la celda primaria es 0.
+  Antes de correrlo hay que decidir si la malla de R entra también ahí, porque
+  la inercia de R no sobrevive a un paso de umbral.
 - **El método no está congelado** y `frozen_method.json` no existe. La escribe
   la persona; los permisos deniegan al modelo escribir en `reports/`.
+- **Wilson no está en `referencias.md`.** La verificación de Wilson (1927) y
+  Brown, Cai y DasGupta (2001) está delegada al subagente y pendiente de
+  veredicto; hasta que vuelva, el README nombra el método sin citarlo.
 - **P3 y P4 sin objeto**: M0 ganó, no hay candidato que promover.
 - **Una sola semana cubierta** (`2026-W42`, 2 de 3 registros locales);
   `2026-W43` abrió sin captura y el cron sigue provisional.
-- **Tres commits sin empujar** desde `f2ae35d`.
+- **Ocho commits sin empujar.**
 
 ## Siguiente acción concreta
 
-1. **Llevar P2, G2-A y G2 al README**, en inglés, con el rastro cifra → script
-   → clave para cada una. El titular honesto es que la discordancia existe y
-   **no viene de donde el proyecto esperaba**: viene de la cobertura, y el
-   factor de revisiones no mueve ninguna recomendación en esta serie.
-2. **Añadir la sección de dónde falla**, que no es opcional: la alarma de
-   cobertura se declaró sobre un desarrollo no representativo —0.033 puntos de
-   techo contra 2.82 en evaluación— y eso es lo que cuesta declarar sobre una
-   ventana que no representa el periodo evaluado.
-3. **Solo entonces G3**: trayectorias por política desde el mismo estado
-   inicial, y la región de costos sobre la malla declarada. `c_star` únicamente
-   si hay cruce positivo y estable.
+1. **Cerrar la verificación de las dos referencias** y, si vuelven ✓, añadir
+   Wilson y Brown-Cai-DasGupta a `referencias.md` con su fecha y su venue.
+2. **Empujar.** El árbol está verde y el README ya corresponde a los
+   artefactos; `verify_results.py` corre en CI y es lo que lo protege.
+3. **Entonces G3**: trayectorias por política desde el mismo estado inicial y
+   la región de costos sobre la malla declarada. `c_star` únicamente si hay
+   cruce positivo y estable.
 
 ## Decisiones abiertas
 
-- **Si el hallazgo de que R no mueve nada se reporta como paso o se degrada
-  más.** Parece lo bastante importante para ser el titular, y por la regla del
-  proyecto ésa es exactamente la señal de dejarlo como una comprobación dentro
-  de G2, con su cifra y su cautela.
+- **Si G3 se corre sobre una sola celda de umbral o sobre la malla.** Correrlo
+  solo en la primaria heredaría una atribución que la malla contradice; correrlo
+  en las nueve multiplica por nueve un simulador de trayectorias.
 - **Si los 2 registros semanales locales se quedan** en la evidencia
   operacional, y si el cron deja de ser provisional antes de congelar.
