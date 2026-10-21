@@ -37,6 +37,12 @@ G3 queda autorizado por el criterio declarado y **no se ha corrido**.
 - **El README ya es el entregable.** Quince secciones con P2, G2-A y G2
   dentro, cada cifra con su rastro, y §10 «Where it fails» con la limitación
   anterior como la más dura del informe.
+- **El intervalo, verificado y acotado.** `referencias.md` §8: Brown, Cai y
+  DasGupta (2001) ✓ abriendo el fichero del editor; Wilson (1927) con metadatos
+  confirmados y **texto no abierto**, así que sin ✓. La comprobación corrigió dos
+  cosas antes de publicarlas: la justificación que iba a atribuírseles no está en
+  su artículo, y a n = 55 ellos prefieren Agresti-Coull. Wilson se queda porque
+  estaba declarado y sellado; el intercambio se declara en §10 del README.
 - **101 cifras rastreadas**, **114 pruebas**, **11 sellos**, `ruff` limpio.
 
 ## Lo que NO está hecho
@@ -47,20 +53,13 @@ G3 queda autorizado por el criterio declarado y **no se ha corrido**.
   la inercia de R no sobrevive a un paso de umbral.
 - **El método no está congelado** y `frozen_method.json` no existe. La escribe
   la persona; los permisos deniegan al modelo escribir en `reports/`.
-- **Wilson no está en `referencias.md`.** La verificación de Wilson (1927) y
-  Brown, Cai y DasGupta (2001) está delegada al subagente y pendiente de
-  veredicto; hasta que vuelva, el README nombra el método sin citarlo.
 - **P3 y P4 sin objeto**: M0 ganó, no hay candidato que promover.
 - **Una sola semana cubierta** (`2026-W42`, 2 de 3 registros locales);
   `2026-W43` abrió sin captura y el cron sigue provisional.
 
 ## Siguiente acción concreta
 
-1. **Cerrar la verificación de las dos referencias** y, si vuelven ✓, añadir
-   Wilson y Brown-Cai-DasGupta a `referencias.md` con su fecha y su venue.
-2. **Empujar.** El árbol está verde y el README ya corresponde a los
-   artefactos; `verify_results.py` corre en CI y es lo que lo protege.
-3. **Entonces G3**: trayectorias por política desde el mismo estado inicial y
+1. **G3**: trayectorias por política desde el mismo estado inicial y
    la región de costos sobre la malla declarada. `c_star` únicamente si hay
    cruce positivo y estable.
 

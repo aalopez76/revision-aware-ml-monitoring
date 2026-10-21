@@ -360,3 +360,84 @@ certifies that this pilot works, complies with anything, or runs at scale.
 
 > Govern / Map / Measure / Manage, and the monitoring and lineage vocabulary. **No
 > compliance is claimed**, and neither is voluntary guidance a certification.
+
+## 8. Uncertainty for a proportion
+
+Added on **20 October 2026**, when the gate's figure made the interval a
+published claim rather than an implementation detail. Verified by delegating to
+the source-checking subagent, which opened what could be opened and said plainly
+what could not.
+
+**Brown, L. D., Cai, T. T. and DasGupta, A.** (2001). *Interval Estimation for a
+Binomial Proportion.* **Statistical Science** 16(2), 101–133.
+DOI: [10.1214/ss/1009213286](https://doi.org/10.1214/ss/1009213286) ✓ 20 Oct 2026
+
+> Peer-reviewed, three authors, not a preprint. A **discussion paper**: the page
+> range includes the comments by Agresti and Coull, Casella, Corcoran and Mehta,
+> Ghosh and Santner, and the authors' rejoinder, so a quoted sentence has to say
+> whether it is the authors' or a commenter's. Every quotation below is the
+> authors'.
+>
+> **What it supports here, and only this.** The standard Wald interval is
+> rejected: its coverage shows *"erratic behavior"*, its *"chaotic coverage
+> properties"* are *"far more persistent than is appreciated"*, and *"common
+> textbook prescriptions regarding its safety are misleading and defective"*.
+> On the boundary specifically: *"It is widely recognized that the actual
+> coverage probability of the standard interval is poor for p near 0 or 1"*
+> (§1). The Wilson interval's form is confirmed at §3.1.1, equation (4): the
+> centre is `(X + z²/2)/(n + z²)`, which is the centre this project computes.
+>
+> **Verified by opening the publisher's file** — the deposit in Penn's
+> institutional repository, bitstream `euclid.ss.1009213286.pdf`, read through a
+> text-extraction proxy because the repository returns 403 to a direct fetch.
+> The header, affiliations and section structure match the published article.
+> Project Euclid, JSTOR and Taylor & Francis all refused automated access.
+
+**Wilson, E. B.** (1927). *Probable Inference, the Law of Succession, and
+Statistical Inference.* **Journal of the American Statistical Association**
+22(158), 209–212. DOI: [10.1080/01621459.1927.10502953](https://doi.org/10.1080/01621459.1927.10502953)
+· JSTOR [2276774](https://www.jstor.org/stable/2276774) — **metadata verified,
+text not opened.** No ✓.
+
+> The interval is named for this paper, and this paper is **closed access** with
+> no open copy in Crossref, OpenAlex or JSTOR. Authors, year, title, venue,
+> volume, issue and pages were confirmed in the publisher-deposited Crossref
+> record and cross-checked against OpenAlex and the JSTOR landing page; **the
+> article's own text was not read.**
+>
+> So the attribution of the score interval to Wilson rests here on Brown, Cai
+> and DasGupta (2001), who write *"The score interval for the binomial case
+> seems to have been introduced in Wilson (1927); so we call it the Wilson
+> interval"* (§1) — a second-hand attribution, named as one. By this file's own
+> rule, no deliverable rests on this entry: the project uses the interval, it
+> does not cite Wilson for a claim.
+
+### Correction of 20 October 2026
+
+7. **A justification was about to be attributed to Brown, Cai and DasGupta that
+   is not in their paper, and the check caught it before it was written.** The
+   intended wording was that Wilson is used *because the measured proportion can
+   sit at 0 or 1, where the normal approximation fails*. The article says
+   nothing about the Wald interval at an observed count of 0 or n; what it
+   addresses is the **true** proportion near the boundary. That the Wald
+   interval has zero width when the observed proportion is 0 or 1 is elementary
+   algebra, it is correct, and it carries **no citation** — which is how it now
+   appears.
+
+8. **And the same check found what the project would rather not have seen.**
+   The authors' recommendation of the Wilson interval is conditioned on sample
+   size: *"we recommend the Wilson interval or the equal-tailed Jeffreys prior
+   interval for small n"*, and for larger n *"we recommend the Agresti–Coull
+   interval for practical use when n ≥ 40"* (§5), on the grounds that at that
+   size Wilson, Jeffreys and Agresti–Coull *"are all very similar"* and
+   Agresti–Coull has the simplest form. (§1 writes the threshold as `n > 40` and
+   §5 as `n ≥ 40`; the paper is inconsistent at the boundary and this is
+   reported rather than resolved.)
+>
+> **N1 is measured on 55 weeks, so this project sits in the regime where these
+> authors would prefer a different interval.** Wilson was declared in advance in
+> `config/g2_signals.json` and sealed before the discordance was computed, so it
+> stays: swapping the interval after seeing the number is the error the
+> pre-declaration exists to prevent, and the authors themselves say the two are
+> very similar at this n. What cannot be written — and is not — is that Brown,
+> Cai and DasGupta recommend the Wilson interval at this sample size.

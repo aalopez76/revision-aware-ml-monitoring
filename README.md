@@ -387,6 +387,17 @@ the same restatement pattern touches several of them, and the effective sample
 size is smaller than the row count. The Wilson interval prices binomial
 uncertainty, not dependence, so it is an understatement of the real uncertainty.
 
+**And the interval is not the one the standard reference would pick at this n.**
+Wilson was declared in `config/g2_signals.json` and sealed before the discordance
+was computed; it is used because the Wald interval has zero width when the
+observed proportion is 0 or 1, which is elementary algebra rather than a borrowed
+claim. Brown, Cai and DasGupta (2001) reject Wald in exactly these terms — its
+coverage is *"poor for p near 0 or 1"* — but recommend Wilson *"for small n"* and
+Agresti–Coull *"for practical use when n ≥ 40"*, noting the two are *"very
+similar"* at that size. With 55 weeks this project is in the second regime, and
+it keeps Wilson anyway: swapping the interval after seeing the number is the
+error that pre-declaring it exists to prevent. The trade is declared, not hidden.
+
 **This is a replay, not an operating history.** G2 is **E2**: the forecasts are
 reconstructed from as-of states. A replay built today does not demonstrate that
 this system ran then. Exactly one prediction in this repository was issued by a
