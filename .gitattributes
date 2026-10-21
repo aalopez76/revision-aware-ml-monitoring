@@ -1,0 +1,27 @@
+# Finales de línea, acotados a lo que escribe una persona.
+#
+# No es cosmético. Un archivo de código reescrito por una herramienta en Windows
+# aterriza con CRLF, y entonces git marca el cuerpo entero como cambiado: 146
+# líneas de edición real aparecieron como 2330 en los commits de G2. Un diff así
+# no se puede revisar pieza por pieza, que es el criterio de aceptación que el
+# plan de ejecución pide antes de commitear.
+
+*.py   text eol=lf
+*.md   text eol=lf
+*.toml text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.cfg  text eol=lf
+*.txt  text eol=lf
+
+# Y lo que escribió un script se queda byte a byte como el script lo escribió.
+#
+# `reports/` es evidencia: las predicciones son inmutables por contrato y sus
+# hashes son criterio de aceptación, así que git no debe convertir nada ahí
+# dentro. Normalizar esos archivos habría reescrito las 31 predicciones y los
+# seis artefactos de resultados, que es precisamente lo que las reglas del
+# proyecto prohíben y lo que los permisos deniegan.
+reports/** -text
+data/**    -text
+uv.lock    -text
+*.png      binary
