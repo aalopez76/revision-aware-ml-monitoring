@@ -711,9 +711,18 @@ The method is frozen before the confirmatory cohort is scored, and the freeze
 needs two bounds: an external value embedded in the act gives a lower bound,
 while an RFC 3161 timestamp or a *completed* OpenTimestamps proof gives the upper
 one. A commit date of our own is not evidence — the committer date is an
-environment variable. **The freeze has not yet been performed**, and the
-confirmatory cohort is protected for now only by the fact that those weeks have
-not happened.
+environment variable.
+
+**V1 does not perform that freeze, and that is a closed decision rather than an
+outstanding task.** The act exists to protect a confirmatory evaluation, and
+this release has none to protect: G0, G1 and G2 were scored on retrospective
+replays and labelled as such, and G3 was answered by derivation rather than run
+(§8). No cut in this release reaches the confirmatory cohort — `load_as_of`
+refuses one while the act is absent, and nothing in the repository asks for one.
+Writing the act now would date it *after* the results it would claim to predate,
+which is the single thing it exists to rule out. So it is not written, and the
+prospective state of this project is declared here as **not frozen, by
+decision**.
 
 ## 14. Scope & caveats
 

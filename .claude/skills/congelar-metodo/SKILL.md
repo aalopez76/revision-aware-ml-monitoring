@@ -19,7 +19,7 @@ Comprobar y **reportar cada una**. Si alguna falla, parar y decir cuál.
 
 1. **G0, G1 y G2 cerradas**, con sus artefactos en `reports/results/`:
    `00_source_feasibility.json`, `01_vertical_slice.json`,
-   `02_decision_sensitivity.json`.
+   `02_discordance.json`.
 2. **Las cifras de esas compuertas están en el README y en el verificador.**
    Correr `/auditar-cifras` y exigir cero huérfanas y cero sin fila.
 3. **El veredicto de G2 autoriza seguir.** Si G2 cerró corto, no hay nada que
