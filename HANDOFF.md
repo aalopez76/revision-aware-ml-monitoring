@@ -43,13 +43,12 @@ parametros, asi que su frontera de costos se deriva en lugar de simularse.
 
 ## Lo que NO está hecho
 
-- **G3 no se construye, y la decisión está razonada en el README §8.** M0 es
-  el último valor elegible arrastrado (`forecasting.py:128`): no hay parámetro
-  que reajustar, así que las cuatro políticas emiten la misma predicción, el
-  mismo error y la misma alarma. `Δ(c) = c·(r_A − r_P)`, la política simple
-  domina en todo `c ≥ 0`, no hay cruce y por tanto no hay `c_star`. Es la
-  conclusión **B** de las tres admisibles, y N3 sale de la misma álgebra.
-  Derivación, no simulación: va etiquetada **E3**.
+- **G3 no se construye, y la decisión está razonada en el README §8.** M0 no
+  tiene parámetros (`forecasting.py:128`) y V3.3 §11 cuenta reentrenamientos
+  **realizados**, así que `r_p = 0` en las cuatro políticas y `Δ(c) = 0` en
+  todo `c ≥ 0`: empatan exactamente. N2 vacío, `c_star` indefinido (`0/0`),
+  N3(c) = 0/55. Conclusión **B** por su cláusula de empate. Derivación
+  algebraica condicionada, no simulación: etiquetada **E3**.
 - **El método no está congelado** y `frozen_method.json` no existe. La escribe
   la persona; los permisos deniegan al modelo escribir en `reports/`.
 - **P3 y P4 sin objeto**: M0 ganó, no hay candidato que promover.

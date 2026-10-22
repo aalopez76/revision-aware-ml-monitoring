@@ -322,11 +322,14 @@ The criterion was written into the config before N1 existed: G3 proceeds if N1 i
 estimable at the primary cell **and** its Wilson lower bound exceeds 0.10. The
 measured lower bound is **0.330253**, so the gate opens. What G3 was to do was
 simulate four maintenance policies as complete trajectories from the same initial
-state — never retrain, periodic, reactive to mature error, and
-revision-and-coverage aware — and report the region of costs over
+state — **P0** never retrain, **P1** retrain on a fixed calendar, **P2** retrain
+when a mature error breaches fixed criteria, **P3** retrain using revision and
+coverage information — and report the region of costs over
 `L_p(c) = e_p + c·r_p`, where `e_p` is a policy's mean predictive loss, `r_p` its
 retraining frequency and `c` the cost of one retraining in units of predictive
-loss per period.
+loss per period. Those `P0`–`P3` are V3.3's **policy** labels and are used with
+that meaning throughout this section; the `P0`–`P6` of the G1-MP execution plan
+are unrelated **phase** numbers.
 
 **The Champion has no parameters to retrain.** M0 is the last eligible week's
 value carried forward — one line, [`forecasting.py`](src/revmon/forecasting.py),
@@ -334,44 +337,122 @@ value carried forward — one line, [`forecasting.py`](src/revmon/forecasting.py
 for a retraining policy to refresh. "Retrain M0" is not a cheap operation; it is
 not an operation.
 
-That makes the frontier derivable rather than measurable. If refitting is the
-identity, the four policies see the same state at every cut, emit the same
-forecast, incur the same error and raise the same alarms. So `e_p` is one number
-shared by all four, and the difference between any two policies collapses to
+### What G3's own definitions give when the Champion has no parameters
+
+The specification counts retrainings **performed**, not retrainings attempted.
+§11 defines `r_p` as *"número de reentrenamientos de p dividido por períodos
+comparables"*, and §12's per-period indicator `k_p,t` marks whether policy `p`
+*reentrenó* — retrained — at `t`. Both are past-tense counts of a completed
+operation.
+
+M0 has no such operation. So under G3's own definition, `r_p = 0` for **all four**
+policies. This is not "the specialised policy retrains less": **none of them
+retrains at all**, because there is nothing any of them could retrain.
+
+**That zero comes from the model, not from the monitor.** §7 happens to show
+`EVALUAR_REENTRENO` emitted 0 times by all four information arms, and it would be
+easy to read `r_p = 0` off that table. It does not come from there. Those zeros
+are a measured property of **this monitor's** performance threshold, which was
+declared insensitive in advance; a different threshold would have produced some
+retraining recommendations and would still not have moved `r_p` off zero,
+because `r_p` counts operations performed on a model that has no parameters to
+operate on. The two zeros are independent, and only `r_p = 0` carries this
+derivation.
+
+The predictive term vanishes for the same reason. If refitting is the identity,
+the four policies see the same state at every cut, emit the same forecast and
+incur the same error, so `e_p` is one number shared by all four. Both terms of
+the frontier are therefore zero:
 
 ```
-Δ(c) = (e_A − e_P) + c·(r_A − r_P) = c·(r_A − r_P)
+Δ(c) = (e_A − e_P) + c·(r_A − r_P) = 0 + c·0 = 0
 ```
 
-The simple policy **weakly dominates at every `c ≥ 0`, and strictly dominates at
-every `c > 0` at which the specialised policy triggers a retrain.** There is no
-crossing, so there is no `c*` — which is exactly the condition under which the
-method rule says `c*` must not be reported. Of the three admissible conclusions
-declared before any of this was measured, this is **conclusion B: the simple
-policy dominates.**
+for every `c ≥ 0` and every pair of policies. **The four policies are exactly
+equivalent at every cost.** The specification anticipates this branch in its own
+words — *"Si r_A = r_P, no hay cruce aislado (salvo indiferencia en todo c)"* —
+and this is that indifference case, not a dominance case.
 
-**N3 falls out of the same algebra.** The specification defines N3(c) as the
-count of weeks where the specialised policy costs more than the simple one,
-`N3(c) = #{t : l_A,t + c*k_A,t > l_P,t + c*k_P,t}`. With the predictive losses
-equal week by week, the comparison reduces to the retraining counts: N3(0) = 0,
-and for every `c > 0`, N3(c) is exactly the number of weeks at which the
-specialised policy retrains and the simple one does not. The magnitude of each
-such loss is `c` per excess retraining, with no predictive component at all. So
-the specialised policy never decides better, and it decides worse precisely when
-it acts.
+The three quantities G3 was to report follow, each with the condition under which
+its definition applies:
 
-**That result is a derivation, not a measurement**, and it is labelled E3 rather
-than E1 or E2. No trajectory was simulated, no cost grid was swept, and the
-reader should not be told that one was. The derivation is also not a discovery:
-it follows from the definition of M0, and anyone can check it against the line of
-code above.
+| quantity | definition in V3.3 | value here | why |
+|---|---|---|---|
+| **N2** | the set of `c ≥ 0` where `Δ(c) < 0` | **empty** | `Δ(c) = 0` everywhere, so it is never negative |
+| **`c*`** | `(e_A − e_P)/(r_P − r_A)`, defined only **if `r_A ≠ r_P`** | **undefined** — the quotient is `0/0` | the condition `r_A ≠ r_P` is not met, so no threshold exists to be stable or unstable |
+| **N3(c)** | `#{t : l_A,t + c·k_A,t > l_P,t + c·k_P,t} / #{t : both losses and actions comparable}` | **0 / 55 = 0** for every `c` | no period satisfies the strict inequality |
+
+Four points of precision, because each is a place where this is easy to state
+slightly wrong:
+
+- **N3 is a fraction, not a count**, and §12 requires publishing its
+  denominator. It is **55** comparable periods — the same exogenous set of target
+  weeks used in §7, which satisfies §12's requirement that both policies exclude
+  the same periods, automatically here because the set does not depend on any
+  policy's actions. And **`0/55` is a mathematical consequence conditioned on
+  that common universe, not a rate observed by running G3.** No trajectory
+  produced it: given premises 1–3 below, no period *can* satisfy the strict
+  inequality, so the numerator is zero by implication rather than by count. Had
+  the 55 weeks not been common to all policies, the quantity would not even be
+  well defined.
+- **`c*` is undefined, not absent and not zero.** Its formula is conditioned on
+  `r_A ≠ r_P` and that condition fails. Either way it is not reported, which is
+  what the method rule requires — but the reason matters, because "no crossing
+  was found" would suggest a comparison that discriminated, and this one did not.
+- **The magnitude, not only the frequency.** §12 asks for loss as magnitude too:
+  the per-period loss difference is identically zero, not merely small.
+- **No uncertainty bands, and that is not an omission.** §11 requires bands for
+  `Δ(c)` over the cost grid because `e_p` and `r_p` are normally estimates. Here
+  they are not: the policies share the same forecast at every single cut, so the
+  losses cancel period by period rather than on average, and `Δ(c) = 0` is an
+  identity with no sampling error to band. A band would imply an estimation step
+  that did not happen.
+
+Of the three admissible conclusions declared before any of this was measured,
+this is **conclusion B**, reached through its tie clause — the simple policy
+*"dominates, ties, or cannot justifiably be improved on."* It **ties**. Nothing
+here shows the simple policy winning, and nothing shows revision-and-coverage
+information being harmful. The comparison does not discriminate between the
+policies at all, which is a weaker and more accurate statement than either.
+
+**This is a conditioned algebraic derivation, not a simulation and not an
+empirical comparison.** It is labelled E3. No trajectory was simulated, no cost
+grid was swept, no policy code exists in this repository, and the reader should
+not be told otherwise. It rests on three premises, all three stated so that a
+reader can check them rather than take them:
+
+1. **Refitting is the identity**, because M0 estimates nothing. Checkable against
+   the line of code above.
+2. **No action in the five changes the forecast or the data it is drawn from.**
+   `ESPERAR_MADUREZ` and `INVESTIGAR_DATO` alter what is recommended, not the
+   as-of state the forecast is computed from, so they cannot separate `e_p`
+   between policies.
+3. **The comparable-period set is common to all policies**, as §12 requires. It
+   is the same exogenous 55 weeks, fixed by data availability rather than by what
+   any policy did.
+
+If premise 1 fails — a Champion with parameters — the whole derivation lapses and
+G3 has to be run. That is what the activation table below is for.
+
+**A reader will ask about charging for attempts**, and the answer leaves the
+conclusion where it is. Suppose a policy paid `c` for each *scheduled* retrain
+even when the operation is a no-op — a different cost model from the one §11
+defines, and no part of G3's design. The revision-aware policy would then come
+out below the periodic one, but purely **by not acting**, and it would tie
+*exactly* with P0, which uses no information whatsoever: a model in which the
+informed policy and the do-nothing policy are indistinguishable attributes
+nothing to the information. Its `c*` would be `0` — present but not positive, so
+still not reportable. And no number follows in any case, because V3.3 leaves
+P1's calendar and P2's criterion to be fixed on development data and this
+project fixed neither, so neither attempt rate was ever measured. The variant is
+an algebraic consequence of an assumption G3 does not make.
 
 **The premise failed two gates earlier than it was noticed.** G3 was designed
-assuming a Champion with parameters. P2 then chose, on measurement, a Champion
-with none — and that is the right choice, since the ridge candidates lost at 47
-of 55 weeks. The consequence for G3 was implicit from that moment and was not
-drawn until the gate had already opened. It is recorded here rather than
-presented as a plan that always said this.
+assuming a Champion with parameters. The G1-MP plan's selection phase then chose,
+on measurement, a Champion with none — and that is the right choice, since the
+ridge candidates lost at 47 of 55 weeks. The consequence for G3 was implicit from
+that moment and was not drawn until the gate had already opened. It is recorded
+here rather than presented as a plan that always said this.
 
 ### When retraining would be justified
 
